@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { SendIcon, SparklesIcon } from "lucide-react"
+import { CornerDownLeftIcon, SparklesIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -97,7 +97,7 @@ function SessionChatCard({
   return (
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
-        <CardTitle>Ask SLAI</CardTitle>
+        <CardTitle>Ask a question</CardTitle>
         {scopeLabel && (
           <CardAction>
             <Badge variant="secondary">{scopeLabel}</Badge>
@@ -144,7 +144,7 @@ function SessionChatCard({
           )}
         </ScrollArea>
       </CardContent>
-      <CardFooter className="border-t pt-3!">
+      <CardFooter>
         <InputGroup>
           <InputGroupInput
             placeholder={resolvedPlaceholder}
@@ -157,12 +157,11 @@ function SessionChatCard({
           <InputGroupAddon align="inline-end">
             <InputGroupButton
               size="icon-xs"
-              variant="default"
               aria-label="Send question"
               disabled={!question.trim()}
               onClick={() => submit(question)}
             >
-              <SendIcon />
+              <CornerDownLeftIcon />
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>

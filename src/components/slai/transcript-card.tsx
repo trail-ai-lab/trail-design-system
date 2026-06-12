@@ -16,7 +16,6 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -28,6 +27,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import {
   SessionStatusBadge,
@@ -50,6 +50,8 @@ export interface TranscriptGroup {
   name: string
   memberCount: number
   active?: boolean
+  /** Audio state for this group; colors its dot in the group switcher */
+  status?: SessionStatus
   /** Formatted start time, e.g. "3:38 PM" */
   startedAt?: string
   students?: string[]
@@ -229,12 +231,13 @@ function TranscriptCard({
             </div>
           )}
         </ScrollArea>
+        <div className="px-(--card-spacing)">
+          <Separator className="-mx-2 mt-1 w-auto!" />
+          <p className="pt-3 text-center text-xs text-muted-foreground/70">
+            SLAI can make mistakes. Double-check important responses.
+          </p>
+        </div>
       </CardContent>
-      <CardFooter className="justify-center border-t pt-3! pb-0">
-        <p className="text-xs text-muted-foreground/70">
-          SLAI can make mistakes. Double-check important responses.
-        </p>
-      </CardFooter>
     </Card>
   )
 }

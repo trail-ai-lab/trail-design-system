@@ -95,6 +95,7 @@ const GROUPS: TranscriptGroup[] = [
     name: "Group 1",
     memberCount: 5,
     active: true,
+    status: "recording",
     startedAt: "3:38 PM",
     students: ["Aarav", "Mia", "Jordan"],
     entries: [
@@ -143,6 +144,7 @@ const GROUPS: TranscriptGroup[] = [
     name: "Group 2",
     memberCount: 2,
     active: true,
+    status: "paused",
     startedAt: "3:41 PM",
     students: ["Sam", "Priya"],
     entries: [
@@ -342,7 +344,6 @@ function ActiveSessionPage() {
         <SessionHeader
           klass="Physics"
           session="Period 3 — Aug 21"
-          status="recording"
           elapsed="24:13"
           spokenLanguages={["Marathi", "English (US)"]}
           translationLanguage="English"
@@ -369,7 +370,7 @@ function ActiveSessionPage() {
           className="h-[60svh] lg:h-full"
           groups={GROUPS}
           scope={scope}
-          status="recording"
+          status={activeGroup?.status ?? "recording"}
           translationLanguage="English"
         />
         <div className="flex min-h-0 flex-col gap-4 lg:grid lg:grid-rows-[auto_minmax(0,1fr)]">
@@ -415,7 +416,6 @@ function WaitingForGroupsPage() {
         <SessionHeader
           klass="Pune"
           session="Test 5"
-          status="recording"
           spokenLanguages={["Marathi", "English (US)"]}
           translationLanguage="English"
           onInviteStudents={() => setInviteOpen(true)}

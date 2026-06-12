@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge"
 
 /**
  * Per-group audio state:
- * - `recording` — audio is actively being captured
- * - `paused` — capture is paused
- * - `uploaded` — the recording finished and uploaded successfully
+ * - `recording` — audio is actively being captured (red)
+ * - `paused` — capture is paused (amber)
+ * - `uploaded` — the recording finished and uploaded successfully (blue)
  */
 export type SessionStatus = "recording" | "paused" | "uploaded"
 
@@ -18,21 +18,26 @@ const statusConfig: Record<
   recording: {
     label: "Recording",
     icon: MicIcon,
-    className: "bg-primary/10 text-primary",
-    dotClassName: "bg-primary animate-pulse",
+    className: "bg-status-recording/10 text-status-recording",
+    dotClassName: "bg-status-recording animate-pulse",
   },
   paused: {
     label: "Paused",
     icon: PauseIcon,
-    className: "bg-muted text-muted-foreground",
-    dotClassName: "bg-muted-foreground",
+    className: "bg-status-paused/10 text-status-paused",
+    dotClassName: "bg-status-paused",
   },
   uploaded: {
     label: "Uploaded",
     icon: CheckIcon,
-    className: "bg-secondary text-secondary-foreground",
-    dotClassName: "bg-primary",
+    className: "bg-status-uploaded/10 text-status-uploaded",
+    dotClassName: "bg-status-uploaded",
   },
+}
+
+/** Dot color (with pulse for recording) for a status, reused by the group tabs. */
+export function statusDotClassName(status: SessionStatus) {
+  return statusConfig[status].dotClassName
 }
 
 function SessionStatusBadge({

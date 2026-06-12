@@ -62,7 +62,7 @@ function SummaryCard({
           </p>
         )}
       </CardContent>
-      <CardFooter className="gap-2 border-t pt-3!">
+      <CardFooter className="gap-2">
         <Button
           variant="outline"
           size="sm"

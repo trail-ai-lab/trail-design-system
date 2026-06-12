@@ -12,7 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -55,55 +61,56 @@ function NewSessionForm({
   return (
     <Card className={className}>
       <CardHeader>
+        <CardDescription>New session</CardDescription>
         <CardTitle className="font-heading">Start a new session</CardTitle>
-        <CardDescription>
-          Create a session for your class and invite students to join via link
-          or QR code.
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <FieldGroup>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field>
-              <FieldLabel htmlFor="slai-new-session-class">
-                Class / Year
-              </FieldLabel>
-              <Select value={klass} onValueChange={setKlass}>
-                <SelectTrigger
-                  id="slai-new-session-class"
-                  className="w-full"
-                >
-                  <SelectValue placeholder="Select a class..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {classes.map((name) => (
-                    <SelectItem key={name} value={name}>
-                      {name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="slai-new-session-name">
-                Session / Period
-              </FieldLabel>
-              <Input
-                id="slai-new-session-name"
-                placeholder="e.g., Period 3 — Aug 21"
-                value={session}
-                onChange={(event) => setSession(event.target.value)}
-              />
-            </Field>
-          </div>
+          <FieldSet>
+            <FieldLegend variant="label">Session details</FieldLegend>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="slai-new-session-class">
+                  Class / Year
+                </FieldLabel>
+                <Select value={klass} onValueChange={setKlass}>
+                  <SelectTrigger
+                    id="slai-new-session-class"
+                    className="w-full"
+                  >
+                    <SelectValue placeholder="Select a class..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classes.map((name) => (
+                      <SelectItem key={name} value={name}>
+                        {name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="slai-new-session-name">
+                  Session / Period
+                </FieldLabel>
+                <Input
+                  id="slai-new-session-name"
+                  placeholder="e.g., Period 3 — Aug 21"
+                  value={session}
+                  onChange={(event) => setSession(event.target.value)}
+                />
+              </Field>
+            </div>
+          </FieldSet>
 
-          <FieldSeparator />
-
-          <LanguageSettingsForm
-            onChange={(value) => {
-              languagesRef.current = value
-            }}
-          />
+          <FieldSet>
+            <FieldLegend variant="label">Languages</FieldLegend>
+            <LanguageSettingsForm
+              onChange={(value) => {
+                languagesRef.current = value
+              }}
+            />
+          </FieldSet>
         </FieldGroup>
       </CardContent>
       <CardFooter>

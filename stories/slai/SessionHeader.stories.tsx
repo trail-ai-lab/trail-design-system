@@ -17,18 +17,16 @@ export const LiveSession: Story = {
   args: {
     klass: "Physics",
     session: "Period 3 — Aug 21",
-    status: "recording",
     elapsed: "24:13",
     spokenLanguages: ["Marathi", "English (US)"],
     translationLanguage: "English",
   },
 }
 
-export const StoppedSession: Story = {
+export const WithoutElapsed: Story = {
   args: {
     klass: "Pune",
-    session: "Profanity Test",
-    status: "uploaded",
+    session: "Test 5",
     spokenLanguages: ["Marathi", "English (US)"],
     translationLanguage: "English",
   },
@@ -38,7 +36,6 @@ export const TranscriptionOnly: Story = {
   args: {
     klass: "Biology",
     session: "Period 6",
-    status: "recording",
     spokenLanguages: ["English (US)"],
   },
 }

@@ -5,6 +5,10 @@ import { LayersIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  statusDotClassName,
+  type SessionStatus,
+} from "@/components/slai/session-status-badge"
 
 /** Sentinel value for the combined "All groups" view. */
 export const ALL_GROUPS = "all"
@@ -14,6 +18,8 @@ export interface SwitcherGroup {
   name: string
   memberCount: number
   active?: boolean
+  /** Audio state; colors the group's dot (red/amber/blue) */
+  status?: SessionStatus
 }
 
 /**
@@ -51,7 +57,11 @@ function GroupSwitcher({
             <span
               className={cn(
                 "size-1.5 rounded-full",
-                group.active ? "bg-primary" : "bg-muted-foreground/40"
+                group.status
+                  ? statusDotClassName(group.status)
+                  : group.active
+                    ? "bg-primary"
+                    : "bg-muted-foreground/40"
               )}
             />
             {group.name}

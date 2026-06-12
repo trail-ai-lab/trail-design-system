@@ -18,21 +18,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import { LanguageChip } from "@/components/slai/language-chip"
-import {
-  SessionStatusBadge,
-  type SessionStatus,
-} from "@/components/slai/session-status-badge"
 
 /**
- * Toolbar shown at the top of an active session: status, class / session
- * breadcrumb, quiet language metadata, and consolidated session actions —
- * one primary Invite button, a settings menu, and a quiet End session.
+ * Toolbar shown at the top of an active session: class / session breadcrumb,
+ * quiet language metadata, and consolidated session actions — one primary
+ * Invite button, a settings menu, and a quiet End session.
  */
 function SessionHeader({
   className,
   klass,
   session,
-  status = "recording",
   elapsed,
   spokenLanguages = [],
   translationLanguage,
@@ -46,7 +41,6 @@ function SessionHeader({
   klass: string
   /** Session or period name, e.g. "Period 3 — Aug 21" */
   session: string
-  status?: SessionStatus
   /** Formatted elapsed time, e.g. "24:13" */
   elapsed?: string
   spokenLanguages?: string[]
@@ -61,7 +55,6 @@ function SessionHeader({
       className={cn("flex flex-wrap items-center gap-x-3 gap-y-2", className)}
     >
       <div className="flex min-w-0 items-center gap-3">
-        <SessionStatusBadge status={status} />
         <h1 className="truncate font-heading text-base font-semibold text-foreground">
           {klass}
           <span className="mx-1.5 font-normal text-muted-foreground">/</span>

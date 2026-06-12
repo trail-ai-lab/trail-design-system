@@ -11,7 +11,6 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
   FieldTitle,
 } from "@/components/ui/field"
 import {
@@ -221,8 +220,6 @@ function LanguageSettingsForm({
           )}
         </>
       )}
-
-      <FieldSeparator />
 
       <Field orientation="horizontal">
         <FieldContent>
