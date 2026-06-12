@@ -1,2 +1,27 @@
 // SLAI-specific components
-// Add exports here as components are created
+export { SessionStatusBadge, type SessionStatus } from "./session-status-badge"
+export { LanguageChip } from "./language-chip"
+export { SessionHeader } from "./session-header"
+export {
+  LanguageSettingsForm,
+  DEFAULT_LANGUAGES,
+  defaultLanguageSettings,
+  type LanguageSettingsValue,
+} from "./language-settings-form"
+export { LanguageSettingsSheet } from "./language-settings-sheet"
+export { NewSessionForm } from "./new-session-form"
+export {
+  TranscriptCard,
+  GroupsEmptyState,
+  type TranscriptEntry,
+  type TranscriptGroup,
+} from "./transcript-card"
+export { GroupSwitcher, ALL_GROUPS, type SwitcherGroup } from "./group-switcher"
+export { InvitePanel, InviteStudentsSheet } from "./invite-students-sheet"
+export {
+  ActivityPicker,
+  ActivityPickerSheet,
+  type SessionActivity,
+} from "./activity-picker"
+export { SummaryCard } from "./summary-card"
+export { SessionChatCard, type ChatMessage } from "./session-chat"
