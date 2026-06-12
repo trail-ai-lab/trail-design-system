@@ -374,7 +374,11 @@ function ActiveSessionPage() {
           translationLanguage="English"
         />
         <div className="flex min-h-0 flex-col gap-4 lg:grid lg:grid-rows-[auto_minmax(0,1fr)]">
-          <SummaryCard scopeLabel={scopeLabel} summary={SUMMARIES[scope]} />
+          <SummaryCard
+            scopeLabel={scopeLabel}
+            summary={SUMMARIES[scope]}
+            onCheckIn={() => {}}
+          />
           <SessionChatCard
             className="h-[60svh] lg:h-auto lg:min-h-0"
             scopeLabel={scopeLabel}

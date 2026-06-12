@@ -46,7 +46,7 @@ function SummaryCard({
           </CardAction>
         )}
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1">
         {loading ? (
           <div className="flex flex-col gap-2">
             <Skeleton className="h-4 w-full" />
@@ -72,10 +72,12 @@ function SummaryCard({
           <RefreshCwIcon data-icon="inline-start" />
           {summary ? "Regenerate" : "Generate"}
         </Button>
-        <Button variant="ghost" size="sm" onClick={onCheckIn}>
-          <CheckCheckIcon data-icon="inline-start" />
-          Check in
-        </Button>
+        {onCheckIn && (
+          <Button variant="ghost" size="sm" onClick={onCheckIn}>
+            <CheckCheckIcon data-icon="inline-start" />
+            Check in
+          </Button>
+        )}
       </CardFooter>
     </Card>
   )

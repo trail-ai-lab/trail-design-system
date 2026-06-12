@@ -93,7 +93,7 @@ function TranscriptRow({
               {groupName}
             </Badge>
           )}
-          <span className="font-medium text-foreground">{entry.language}</span>
+          <span>{entry.language}</span>
           {entry.timestamp && (
             <>
               <span aria-hidden>·</span>

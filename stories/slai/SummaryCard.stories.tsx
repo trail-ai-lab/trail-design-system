@@ -23,11 +23,14 @@ export const Empty: Story = {
   args: { scopeLabel: "Group 1" },
 }
 
+// `onCheckIn` adds the live-session "Check in" button; omit it (e.g. in
+// post-session) and only Regenerate shows.
 export const WithSummary: Story = {
   args: {
     scopeLabel: "Group 1",
     summary:
       "Group 1 is testing how ramp angle affects ball speed. They connected steeper ramps to greater acceleration and are designing a three-angle comparison.",
+    onCheckIn: () => {},
   },
 }
 

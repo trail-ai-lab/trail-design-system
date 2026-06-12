@@ -25,3 +25,16 @@ export {
 } from "./activity-picker"
 export { SummaryCard } from "./summary-card"
 export { SessionChatCard, type ChatMessage } from "./session-chat"
+
+// Post-session (review) components
+export { AudioPlayerCard } from "./audio-player-card"
+export {
+  ParticipationCard,
+  type ParticipationEntry,
+} from "./participation-card"
+export {
+  RecordedTranscriptCard,
+  type RecordedSpeaker,
+  type RecordedEntry,
+} from "./recorded-transcript-card"
+export { ActivityLogCard, type ActivityLogEvent } from "./activity-log-card"
