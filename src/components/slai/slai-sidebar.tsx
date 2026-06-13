@@ -4,11 +4,14 @@ import * as React from "react"
 import {
   AudioLinesIcon,
   ChevronRightIcon,
+  EllipsisVerticalIcon,
   FolderIcon,
   MicIcon,
   MountainIcon,
   MoreHorizontalIcon,
+  PencilIcon,
   ShapesIcon,
+  Trash2Icon,
   UploadIcon,
   UsersIcon,
 } from "lucide-react"
@@ -21,6 +24,12 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -28,7 +37,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -44,8 +53,6 @@ export interface SidebarSession {
 
 export interface SidebarPeriod {
   name: string
-  /** Member/source count shown as a trailing badge. Omit to hide the badge. */
-  count?: number
   /** Marks this period as the one currently being viewed. */
   active?: boolean
 }
@@ -66,6 +73,43 @@ const NAV_ITEMS = [
 ] as const
 
 export type SlaiNavId = (typeof NAV_ITEMS)[number]["id"]
+
+/**
+ * Rename / delete dropdown shared by session and source rows. The `trigger`
+ * is the row's hover action button (a SidebarMenuAction for top-level rows or
+ * a positioned button for sub-rows).
+ */
+function RowMenu({ trigger }: { trigger: React.ReactNode }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent side="right" align="start">
+        <DropdownMenuItem>
+          <PencilIcon />
+          Rename
+        </DropdownMenuItem>
+        <DropdownMenuItem variant="destructive">
+          <Trash2Icon />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+/** Hover action trigger for a session sub-row (periods use a different
+ * group hook than SidebarMenuAction, so it gets its own positioned button). */
+function SubRowAction({ label }: { label: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      className="absolute top-1 right-1 flex aspect-square w-5 items-center justify-center rounded-md text-sidebar-foreground opacity-0 outline-hidden transition-opacity group-focus-within/menu-sub-item:opacity-100 group-hover/menu-sub-item:opacity-100 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:opacity-100 [&>svg]:size-4 [&>svg]:shrink-0"
+    >
+      <EllipsisVerticalIcon />
+    </button>
+  )
+}
 
 /**
  * The SLAI app sidebar: brand header, primary nav, the class/session tree,
@@ -128,19 +172,34 @@ function SlaiSidebar({
                     <SidebarMenuButton>
                       <ChevronRightIcon className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
                       <FolderIcon />
-                      {session.name}
+                      <span className="truncate">{session.name}</span>
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
+                  <RowMenu
+                    trigger={
+                      <SidebarMenuAction
+                        showOnHover
+                        aria-label={`${session.name} options`}
+                      >
+                        <EllipsisVerticalIcon />
+                      </SidebarMenuAction>
+                    }
+                  />
                   <CollapsibleContent>
-                    <SidebarMenuSub>
+                    <SidebarMenuSub className="mr-0 pr-0">
                       {session.periods.map((period) => (
                         <SidebarMenuSubItem key={period.name}>
-                          <SidebarMenuSubButton isActive={period.active}>
-                            {period.name}
+                          <SidebarMenuSubButton
+                            isActive={period.active}
+                            className="pr-7"
+                          >
+                            <span className="truncate">{period.name}</span>
                           </SidebarMenuSubButton>
-                          {period.count != null && (
-                            <SidebarMenuBadge>{period.count}</SidebarMenuBadge>
-                          )}
+                          <RowMenu
+                            trigger={
+                              <SubRowAction label={`${period.name} options`} />
+                            }
+                          />
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>
@@ -159,6 +218,13 @@ function SlaiSidebar({
                   <AudioLinesIcon />
                   <span className="truncate">{source}</span>
                 </SidebarMenuButton>
+                <RowMenu
+                  trigger={
+                    <SidebarMenuAction showOnHover aria-label={`${source} options`}>
+                      <EllipsisVerticalIcon />
+                    </SidebarMenuAction>
+                  }
+                />
               </SidebarMenuItem>
             ))}
           </SidebarMenu>

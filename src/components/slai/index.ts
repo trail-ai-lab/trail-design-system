@@ -33,6 +33,7 @@ export {
   ActivityPickerSheet,
   type SessionActivity,
 } from "./activity-picker"
+export { ActivityCard } from "./activity-card"
 export { SummaryCard } from "./summary-card"
 export { SessionChatCard, type ChatMessage } from "./session-chat"
 

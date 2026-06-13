@@ -51,7 +51,11 @@ const SESSIONS: SidebarSession[] = [
   { name: "Science", periods: [] },
 ]
 
-const SOURCES = ["Jai Audio 1", "Transcription English Apr 13", "RCS 3"]
+const SOURCES = [
+  "Inclined Plane Lab",
+  "Photosynthesis Discussion",
+  "Newton's Laws Review",
+]
 
 const SIDEBAR_USER = {
   name: "Anurag Maravi",
@@ -65,7 +69,7 @@ const SIDEBAR_USER = {
  * unnamed ("Speaker 1/2") until the teacher labels them.
  */
 const RECORDING = {
-  name: "Jai Audio 1",
+  name: "Inclined Plane Lab",
   durationSeconds: 1453,
   speakers: [
     { id: "s1", name: "Speaker 1" },

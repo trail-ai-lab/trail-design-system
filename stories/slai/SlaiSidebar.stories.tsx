@@ -6,23 +6,24 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 const SESSIONS: SidebarSession[] = [
   {
     name: "Biology",
-    periods: [
-      { name: "Period 1", count: 2 },
-      { name: "Period 6", count: 2 },
-    ],
+    periods: [{ name: "Period 1" }, { name: "Period 6" }],
   },
-  { name: "Gravity", periods: [{ name: "Period 1", count: 1 }] },
+  { name: "Gravity", periods: [{ name: "Period 1" }] },
   {
     name: "Physics",
     periods: [
-      { name: "Period 1", count: 1 },
+      { name: "Period 1" },
       { name: "Period 3 — Aug 21", active: true },
     ],
   },
   { name: "Science", periods: [] },
 ]
 
-const SOURCES = ["Jai Audio 1", "Transcription English Apr 13", "RCS 3"]
+const SOURCES = [
+  "Inclined Plane Lab",
+  "Photosynthesis Discussion",
+  "Newton's Laws Review",
+]
 
 const USER = { name: "Anurag Maravi", email: "amaravi@wisc.edu", initials: "AM" }
 
@@ -49,7 +50,7 @@ const meta: Meta<typeof SlaiSidebar> = {
 export default meta
 type Story = StoryObj<typeof SlaiSidebar>
 
-/** Live-session context: "Manage Session" highlighted, period counts shown. */
+/** Live-session context: "Manage Session" highlighted. */
 export const ManageSession: Story = {
   args: { activeNav: "manage" },
 }

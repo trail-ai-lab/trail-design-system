@@ -60,7 +60,11 @@ const SIDEBAR_USER = {
   initials: "AM",
 }
 
-const SOURCES = ["Jai Audio 1", "Transcription English Apr 13", "RCS 3"]
+const SOURCES = [
+  "Inclined Plane Lab",
+  "Photosynthesis Discussion",
+  "Newton's Laws Review",
+]
 
 const GROUP_1 = {
   id: "group-1",

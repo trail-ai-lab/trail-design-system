@@ -26,10 +26,10 @@ import {
 const JOIN_URL = "https://trail.wcer.wisc.edu/slai/student-view?token=mn1pCSGtJnd0ZWC0"
 
 const SESSIONS: SidebarSession[] = [
-  { name: "Biology", periods: [{ name: "Period 1", count: 2 }, { name: "Period 6", count: 2 }] },
-  { name: "Gravity", periods: [{ name: "Period 1", count: 1 }] },
-  { name: "Physics", periods: [{ name: "Period 1", count: 1 }] },
-  { name: "Pune", periods: [{ name: "Test 5", count: 1 }] },
+  { name: "Biology", periods: [{ name: "Period 1" }, { name: "Period 6" }] },
+  { name: "Gravity", periods: [{ name: "Period 1" }] },
+  { name: "Physics", periods: [{ name: "Period 1" }] },
+  { name: "Pune", periods: [{ name: "Test 5" }] },
   { name: "Science", periods: [] },
 ]
 
@@ -39,7 +39,12 @@ const SIDEBAR_USER = {
   initials: "AM",
 }
 
-const SOURCES = ["Jai Audio 1", "Transcription English Apr 13", "RCS 3", "Adam Rogers"]
+const SOURCES = [
+  "Inclined Plane Lab",
+  "Photosynthesis Discussion",
+  "Newton's Laws Review",
+  "Cell Division Walkthrough",
+]
 
 const ACTIVITIES = [
   {
