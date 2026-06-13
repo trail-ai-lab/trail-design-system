@@ -1,48 +1,21 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/nextjs"
-import {
-  AudioLinesIcon,
-  ChevronRightIcon,
-  FolderIcon,
-  MicIcon,
-  MountainIcon,
-  MoreHorizontalIcon,
-  ShapesIcon,
-  UploadIcon,
-  UsersIcon,
-} from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuBadge,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 import { ActivityPickerSheet } from "@/components/slai/activity-picker"
+import { AppShell } from "@/components/slai/app-shell"
 import { ALL_GROUPS, GroupSwitcher } from "@/components/slai/group-switcher"
 import { InviteStudentsSheet } from "@/components/slai/invite-students-sheet"
 import { LanguageSettingsSheet } from "@/components/slai/language-settings-sheet"
 import { NewSessionForm } from "@/components/slai/new-session-form"
+import { SessionActions } from "@/components/slai/session-actions"
 import { SessionChatCard, type ChatMessage } from "@/components/slai/session-chat"
-import { SessionHeader } from "@/components/slai/session-header"
+import { SlaiSidebar, type SidebarSession } from "@/components/slai/slai-sidebar"
 import { SummaryCard } from "@/components/slai/summary-card"
 import {
   GroupsEmptyState,
@@ -52,13 +25,19 @@ import {
 
 const JOIN_URL = "https://trail.wcer.wisc.edu/slai/student-view?token=mn1pCSGtJnd0ZWC0"
 
-const SESSIONS: { name: string; periods: { name: string; count: number }[] }[] = [
+const SESSIONS: SidebarSession[] = [
   { name: "Biology", periods: [{ name: "Period 1", count: 2 }, { name: "Period 6", count: 2 }] },
   { name: "Gravity", periods: [{ name: "Period 1", count: 1 }] },
   { name: "Physics", periods: [{ name: "Period 1", count: 1 }] },
   { name: "Pune", periods: [{ name: "Test 5", count: 1 }] },
   { name: "Science", periods: [] },
 ]
+
+const SIDEBAR_USER = {
+  name: "Anurag Maravi",
+  email: "amaravi@wisc.edu",
+  initials: "AM",
+}
 
 const SOURCES = ["Jai Audio 1", "Transcription English Apr 13", "RCS 3", "Adam Rogers"]
 
@@ -203,130 +182,15 @@ const CHATS: Record<string, ChatMessage[]> = {
   "group-2": [],
 }
 
-function SlaiSidebar() {
-  return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <MountainIcon className="size-5 text-primary" />
-          <span className="font-heading text-sm font-semibold">SLAI</span>
-        </div>
-      </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton isActive>
-                <UsersIcon />
-                Manage Session
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <MicIcon />
-                Record Audio
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <UploadIcon />
-                Add Source
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <ShapesIcon />
-                Activities
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Sessions</SidebarGroupLabel>
-          <SidebarMenu>
-            {SESSIONS.map((session) => (
-              <Collapsible
-                key={session.name}
-                defaultOpen={session.name === "Physics"}
-                className="group/collapsible"
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton>
-                      <ChevronRightIcon className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      <FolderIcon />
-                      {session.name}
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {session.periods.map((period) => (
-                        <SidebarMenuSubItem key={period.name}>
-                          <SidebarMenuSubButton>
-                            {period.name}
-                          </SidebarMenuSubButton>
-                          <SidebarMenuBadge>{period.count}</SidebarMenuBadge>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Sources</SidebarGroupLabel>
-          <SidebarMenu>
-            {SOURCES.map((source) => (
-              <SidebarMenuItem key={source}>
-                <SidebarMenuButton>
-                  <AudioLinesIcon />
-                  <span className="truncate">{source}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <Avatar className="size-7">
-            <AvatarFallback>AM</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">Anurag Maravi</p>
-            <p className="truncate text-xs text-muted-foreground">
-              amaravi@wisc.edu
-            </p>
-          </div>
-          <Button variant="ghost" size="icon-sm" aria-label="Account menu">
-            <MoreHorizontalIcon />
-          </Button>
-        </div>
-      </SidebarFooter>
-    </Sidebar>
-  )
-}
-
-function PageShell({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-      <div className="flex min-h-svh w-full bg-background lg:h-svh lg:overflow-hidden">
-        <SlaiSidebar />
-        <main className="flex min-w-0 flex-1 flex-col lg:h-full">
-          <div className="flex shrink-0 items-center gap-2 border-b border-border px-6 py-3">
-            <SidebarTrigger />
-            <span className="text-sm font-medium text-muted-foreground">
-              Manage Session
-            </span>
-          </div>
-          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-        </main>
-      </div>
-    </SidebarProvider>
-  )
-}
+const SLAI_SIDEBAR = (
+  <SlaiSidebar
+    sessions={SESSIONS}
+    sources={SOURCES}
+    user={SIDEBAR_USER}
+    activeNav="manage"
+    defaultOpenSession="Physics"
+  />
+)
 
 function ActiveSessionPage() {
   const [sheet, setSheet] = React.useState<
@@ -339,33 +203,35 @@ function ActiveSessionPage() {
   const scopeLabel = scope === ALL_GROUPS ? "All groups" : activeGroup?.name
 
   return (
-    <PageShell>
-      <div className="shrink-0 border-b border-border px-6 py-3">
-        <SessionHeader
-          klass="Physics"
-          session="Period 3 — Aug 21"
-          elapsed="24:13"
-          spokenLanguages={["Marathi", "English (US)"]}
-          translationLanguage="English"
-          onAddActivity={() => setSheet("activity")}
-          onOpenLanguageSettings={() => setSheet("language")}
-          onInviteStudents={() => setSheet("invite")}
-          onEndSession={() => {}}
-        />
-      </div>
-
-      <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-6 py-2.5">
-        <GroupSwitcher
-          groups={GROUPS}
-          value={scope}
-          onValueChange={setScope}
-        />
-        <span className="text-xs text-muted-foreground">
-          Switches the transcript, summary, and Q&A together
-        </span>
-      </div>
-
-      <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 lg:grid lg:grid-cols-2">
+    <AppShell
+      sidebar={SLAI_SIDEBAR}
+      title={
+        <>
+          <span className="text-muted-foreground">Physics</span>
+          <span className="text-muted-foreground">/</span>
+          <span className="font-medium">Period 3 — Aug 21</span>
+          <span className="ml-2 text-muted-foreground tabular-nums">24:13</span>
+        </>
+      }
+      toolbar={
+        <>
+          <GroupSwitcher
+            groups={GROUPS}
+            value={scope}
+            onValueChange={setScope}
+          />
+          <div className="ml-auto">
+            <SessionActions
+              onAddActivity={() => setSheet("activity")}
+              onOpenLanguageSettings={() => setSheet("language")}
+              onInviteStudents={() => setSheet("invite")}
+              onEndSession={() => {}}
+            />
+          </div>
+        </>
+      }
+    >
+      <div className="flex min-h-0 flex-1 flex-col gap-(--shell-gap) p-(--shell-gap) lg:grid lg:grid-cols-2">
         <TranscriptCard
           className="h-[60svh] lg:h-full"
           groups={GROUPS}
@@ -373,22 +239,31 @@ function ActiveSessionPage() {
           status={activeGroup?.status ?? "recording"}
           translationLanguage="English"
         />
-        <div className="flex min-h-0 flex-col gap-4 lg:grid lg:grid-rows-[auto_minmax(0,1fr)]">
-          <SummaryCard
-            scopeLabel={scopeLabel}
-            summary={SUMMARIES[scope]}
-            onCheckIn={() => {}}
-          />
-          <SessionChatCard
-            className="h-[60svh] lg:h-auto lg:min-h-0"
-            scopeLabel={scopeLabel}
-            messages={CHATS[scope]}
-            suggestions={[
-              "Which group needs help?",
-              "Summarize misconceptions",
-            ]}
-          />
-        </div>
+        <Tabs defaultValue="summary" className="h-[60svh] min-h-0 lg:h-full">
+          <TabsList className="w-full">
+            <TabsTrigger value="summary">Summary</TabsTrigger>
+            <TabsTrigger value="qa">Q&amp;A</TabsTrigger>
+          </TabsList>
+          <TabsContent value="summary" className="min-h-0">
+            <SummaryCard
+              className="h-full"
+              scopeLabel={scopeLabel}
+              summary={SUMMARIES[scope]}
+              onCheckIn={() => {}}
+            />
+          </TabsContent>
+          <TabsContent value="qa" className="min-h-0">
+            <SessionChatCard
+              className="h-full"
+              scopeLabel={scopeLabel}
+              messages={CHATS[scope]}
+              suggestions={[
+                "Which group needs help?",
+                "Summarize misconceptions",
+              ]}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <ActivityPickerSheet
@@ -407,7 +282,7 @@ function ActiveSessionPage() {
         onOpenChange={(open) => setSheet(open ? "invite" : null)}
         joinUrl={JOIN_URL}
       />
-    </PageShell>
+    </AppShell>
   )
 }
 
@@ -415,18 +290,25 @@ function WaitingForGroupsPage() {
   const [inviteOpen, setInviteOpen] = React.useState(false)
 
   return (
-    <PageShell>
-      <div className="shrink-0 border-b border-border px-6 py-3">
-        <SessionHeader
-          klass="Pune"
-          session="Test 5"
-          spokenLanguages={["Marathi", "English (US)"]}
-          translationLanguage="English"
-          onInviteStudents={() => setInviteOpen(true)}
-          onEndSession={() => {}}
-        />
-      </div>
-      <div className="flex min-h-0 flex-1 items-center justify-center p-4">
+    <AppShell
+      sidebar={SLAI_SIDEBAR}
+      title={
+        <>
+          <span className="text-muted-foreground">Pune</span>
+          <span className="text-muted-foreground">/</span>
+          <span className="font-medium">Test 5</span>
+        </>
+      }
+      toolbar={
+        <div className="ml-auto">
+          <SessionActions
+            onInviteStudents={() => setInviteOpen(true)}
+            onEndSession={() => {}}
+          />
+        </div>
+      }
+    >
+      <div className="flex min-h-0 flex-1 items-center justify-center p-(--shell-gap)">
         <GroupsEmptyState onShowInvite={() => setInviteOpen(true)} />
       </div>
       <InviteStudentsSheet
@@ -434,20 +316,25 @@ function WaitingForGroupsPage() {
         onOpenChange={setInviteOpen}
         joinUrl={JOIN_URL}
       />
-    </PageShell>
+    </AppShell>
   )
 }
 
 function NewSessionPage() {
   return (
-    <PageShell>
-      <div className="flex flex-1 items-start justify-center overflow-y-auto p-6 pt-8">
+    <AppShell
+      sidebar={SLAI_SIDEBAR}
+      title={
+        <span className="font-medium text-muted-foreground">Manage Session</span>
+      }
+    >
+      <div className="flex flex-1 items-start justify-center overflow-y-auto px-(--shell-px) pt-8 pb-(--shell-px)">
         <NewSessionForm
           classes={SESSIONS.map((s) => s.name)}
           className="w-full max-w-xl"
         />
       </div>
-    </PageShell>
+    </AppShell>
   )
 }
 

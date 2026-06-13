@@ -1,7 +1,17 @@
+// Page shell / navigation
+export { AppShell } from "./app-shell"
+export {
+  SlaiSidebar,
+  type SidebarSession,
+  type SidebarPeriod,
+  type SidebarUser,
+  type SlaiNavId,
+} from "./slai-sidebar"
+export { SessionActions } from "./session-actions"
+
 // SLAI-specific components
 export { SessionStatusBadge, type SessionStatus } from "./session-status-badge"
 export { LanguageChip } from "./language-chip"
-export { SessionHeader } from "./session-header"
 export {
   LanguageSettingsForm,
   DEFAULT_LANGUAGES,

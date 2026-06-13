@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/nextjs"
 import React from "react"
 import "../src/tokens/globals.css"
+import "../src/tokens/layout.css"
 import "../src/tokens/storybook-fonts.css"
 
 // Toolbar control for switching the design-system theme. The cards project uses

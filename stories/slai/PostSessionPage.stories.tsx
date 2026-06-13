@@ -2,28 +2,15 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/nextjs"
 import {
   AudioLinesIcon,
-  ChevronRightIcon,
   DownloadIcon,
-  FolderIcon,
-  MapIcon,
-  MicIcon,
-  MountainIcon,
   MoreHorizontalIcon,
   PencilIcon,
   ShapesIcon,
   SlidersHorizontalIcon,
   Trash2Icon,
-  UploadIcon,
-  UsersIcon,
 } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,28 +20,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Toggle } from "@/components/ui/toggle"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { ActivityLogCard } from "@/components/slai/activity-log-card"
+import { AppShell } from "@/components/slai/app-shell"
 import { AudioPlayerCard } from "@/components/slai/audio-player-card"
 import { ALL_GROUPS, GroupSwitcher } from "@/components/slai/group-switcher"
 import { ParticipationCard } from "@/components/slai/participation-card"
@@ -66,21 +38,27 @@ import {
   SessionChatCard,
   type ChatMessage,
 } from "@/components/slai/session-chat"
+import { SlaiSidebar, type SidebarSession } from "@/components/slai/slai-sidebar"
 import { SummaryCard } from "@/components/slai/summary-card"
 
-const SESSIONS: { name: string; periods: { name: string; active?: boolean }[] }[] =
-  [
-    { name: "Biology", periods: [{ name: "Period 1" }, { name: "Period 6" }] },
-    { name: "Gravity", periods: [{ name: "Period 1" }] },
-    {
-      name: "Physics",
-      periods: [
-        { name: "Period 1" },
-        { name: "Period 3 — Aug 21", active: true },
-      ],
-    },
-    { name: "Science", periods: [] },
-  ]
+const SESSIONS: SidebarSession[] = [
+  { name: "Biology", periods: [{ name: "Period 1" }, { name: "Period 6" }] },
+  { name: "Gravity", periods: [{ name: "Period 1" }] },
+  {
+    name: "Physics",
+    periods: [
+      { name: "Period 1" },
+      { name: "Period 3 — Aug 21", active: true },
+    ],
+  },
+  { name: "Science", periods: [] },
+]
+
+const SIDEBAR_USER = {
+  name: "Anurag Maravi",
+  email: "amaravi@wisc.edu",
+  initials: "AM",
+}
 
 const SOURCES = ["Jai Audio 1", "Transcription English Apr 13", "RCS 3"]
 
@@ -294,110 +272,14 @@ const ALL_CHAT: ChatMessage[] = [
   },
 ]
 
-function SlaiSidebar() {
-  return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <MountainIcon className="size-5 text-primary" />
-          <span className="font-heading text-sm font-semibold">SLAI</span>
-        </div>
-      </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <UsersIcon />
-                Manage Session
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <MicIcon />
-                Record Audio
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <UploadIcon />
-                Add Source
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <ShapesIcon />
-                Activities
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Sessions</SidebarGroupLabel>
-          <SidebarMenu>
-            {SESSIONS.map((session) => (
-              <Collapsible
-                key={session.name}
-                defaultOpen={session.name === "Physics"}
-                className="group/collapsible"
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton>
-                      <ChevronRightIcon className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      <FolderIcon />
-                      {session.name}
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {session.periods.map((period) => (
-                        <SidebarMenuSubItem key={period.name}>
-                          <SidebarMenuSubButton isActive={period.active}>
-                            {period.name}
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Sources</SidebarGroupLabel>
-          <SidebarMenu>
-            {SOURCES.map((source) => (
-              <SidebarMenuItem key={source}>
-                <SidebarMenuButton>
-                  <AudioLinesIcon />
-                  <span className="truncate">{source}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <Avatar className="size-7">
-            <AvatarFallback>AM</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">Anurag Maravi</p>
-            <p className="truncate text-xs text-muted-foreground">
-              amaravi@wisc.edu
-            </p>
-          </div>
-          <Button variant="ghost" size="icon-sm" aria-label="Account menu">
-            <MoreHorizontalIcon />
-          </Button>
-        </div>
-      </SidebarFooter>
-    </Sidebar>
-  )
-}
+const SLAI_SIDEBAR = (
+  <SlaiSidebar
+    sessions={SESSIONS}
+    sources={SOURCES}
+    user={SIDEBAR_USER}
+    defaultOpenSession="Physics"
+  />
+)
 
 function PostSessionPage() {
   const [scope, setScope] = React.useState(ALL_GROUPS)
@@ -409,91 +291,91 @@ function PostSessionPage() {
   const chat = isAll ? ALL_CHAT : (activeGroup?.chat ?? [])
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-svh w-full bg-background lg:h-svh lg:overflow-hidden">
-        <SlaiSidebar />
-        <main className="flex min-w-0 flex-1 flex-col lg:h-full">
-          <div className="flex shrink-0 items-center gap-1.5 border-b border-border px-6 py-3 text-sm">
-            <SidebarTrigger />
-            <span className="text-muted-foreground">Physics</span>
-            <span className="text-muted-foreground">/</span>
-            <span className="font-medium">Period 3 — Aug 21</span>
-          </div>
-
-          <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-6 py-2.5">
-            <GroupSwitcher
-              groups={GROUPS}
-              value={scope}
-              onValueChange={setScope}
-            />
-            <div className="ml-auto flex items-center gap-2">
-              {!isAll && (
-                <Toggle
+    <AppShell
+      sidebar={SLAI_SIDEBAR}
+      title={
+        <>
+          <span className="text-muted-foreground">Physics</span>
+          <span className="text-muted-foreground">/</span>
+          <span className="font-medium">Period 3 — Aug 21</span>
+        </>
+      }
+      toolbar={
+        <>
+          <GroupSwitcher
+            groups={GROUPS}
+            value={scope}
+            onValueChange={setScope}
+          />
+          <div className="ml-auto flex items-center gap-2">
+            {!isAll && (
+              <Toggle
+                variant="outline"
+                size="lg"
+                pressed={audioVisible}
+                onPressedChange={setAudioVisible}
+                aria-label="Toggle audio playback"
+              >
+                <AudioLinesIcon data-icon="inline-start" />
+                Audio
+              </Toggle>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
                   variant="outline"
-                  size="lg"
-                  pressed={audioVisible}
-                  onPressedChange={setAudioVisible}
-                  aria-label="Toggle audio playback"
+                  size="icon"
+                  aria-label="More actions"
                 >
-                  <AudioLinesIcon data-icon="inline-start" />
-                  Audio
-                </Toggle>
-              )}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    aria-label="More actions"
-                  >
-                    <MoreHorizontalIcon />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <DownloadIcon />
-                    Export
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <PencilIcon />
-                    Rename session
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive">
-                    <Trash2Icon />
-                    Delete recording
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  <MoreHorizontalIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <DownloadIcon />
+                  Export
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <PencilIcon />
+                  Rename session
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">
+                  <Trash2Icon />
+                  Delete recording
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            {isAll ? (
-              // Combined view: only Summary and Q&A make sense across groups.
-              <div className="grid gap-4 p-4 lg:h-full lg:grid-cols-2">
-                <SessionChatCard
-                  className="h-[480px] lg:h-full"
-                  scopeLabel={scopeLabel}
-                  messages={chat}
+        </>
+      }
+    >
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {isAll ? (
+          // Combined view: only Summary and Q&A make sense across groups.
+          <div className="grid gap-(--shell-gap) p-(--shell-gap) lg:h-full lg:grid-cols-2">
+            <SessionChatCard
+              className="h-[480px] lg:h-full"
+              scopeLabel={scopeLabel}
+              messages={chat}
+            />
+            <SummaryCard
+              className="lg:h-full"
+              scopeLabel={scopeLabel}
+              summary={summary}
+            />
+          </div>
+        ) : (
+          activeGroup && (
+            <div className="flex flex-col gap-(--shell-gap) p-(--shell-gap) lg:h-full">
+              {audioVisible && (
+                <AudioPlayerCard
+                  title={`${activeGroup.name} recording`}
+                  durationSeconds={activeGroup.durationSeconds}
                 />
-                <SummaryCard
-                  className="lg:h-full"
-                  scopeLabel={scopeLabel}
-                  summary={summary}
-                />
-              </div>
-            ) : (
-              activeGroup && (
-                <div className="flex flex-col gap-4 p-4 lg:h-full">
-                  {audioVisible && (
-                    <AudioPlayerCard
-                      title={`${activeGroup.name} recording`}
-                      durationSeconds={activeGroup.durationSeconds}
-                    />
-                  )}
+              )}
 
-                  <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-2">
+              <div className="grid gap-(--shell-gap) lg:min-h-0 lg:flex-1 lg:grid-cols-2">
                     <SessionChatCard
                       className="h-[60svh] lg:h-full"
                       scopeLabel={scopeLabel}
@@ -546,10 +428,8 @@ function PostSessionPage() {
                 </div>
               )
             )}
-          </div>
-        </main>
       </div>
-    </SidebarProvider>
+    </AppShell>
   )
 }
 

@@ -40,7 +40,7 @@ function ChatRow({ message }: { message: ChatMessage }) {
     )
   }
   return (
-    <div className="flex gap-2.5">
+    <div className="flex gap-3">
       <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted">
         <SparklesIcon className="size-3 text-primary" />
       </div>
@@ -133,7 +133,7 @@ function SessionChatCard({
                 <ChatRow key={message.id} message={message} />
               ))}
               {thinking && (
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-3">
                   <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted">
                     <SparklesIcon className="size-3 text-primary" />
                   </div>
