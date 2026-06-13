@@ -181,7 +181,7 @@ function QuickRecordingPage() {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <FolderPlusIcon />
-                Create session from recording
+                Create new session
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>

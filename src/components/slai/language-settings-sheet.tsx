@@ -38,7 +38,7 @@ function LanguageSettingsSheet({
             Changes may take up to 5 minutes to apply to active recordings.
           </SheetDescription>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-4 pb-6">
+        <div className="flex-1 overflow-y-auto px-6 pb-6">
           <LanguageSettingsForm value={value} onChange={onChange} />
         </div>
       </SheetContent>
