@@ -80,6 +80,7 @@ function SlaiSidebar({
   sources,
   user,
   activeNav,
+  activeSource,
   defaultOpenSession,
 }: {
   sessions: SidebarSession[]
@@ -87,6 +88,8 @@ function SlaiSidebar({
   user: SidebarUser
   /** Which primary nav item is highlighted. */
   activeNav?: SlaiNavId
+  /** Name of the source (quick recording) currently being viewed. */
+  activeSource?: string
   /** Name of the session folder expanded on first render. */
   defaultOpenSession?: string
 }) {
@@ -152,7 +155,7 @@ function SlaiSidebar({
           <SidebarMenu>
             {sources.map((source) => (
               <SidebarMenuItem key={source}>
-                <SidebarMenuButton>
+                <SidebarMenuButton isActive={source === activeSource}>
                   <AudioLinesIcon />
                   <span className="truncate">{source}</span>
                 </SidebarMenuButton>
