@@ -9,6 +9,8 @@ const meta: Meta<typeof StudentRecordingScreen> = {
   tags: ["autodocs"],
   args: {
     groupName: "bbb",
+    sessionName: "Physics · Period 3 — Aug 21",
+    joinedAt: "10:32 AM",
     students: ["Student 1", "Student 2"],
   },
 }

@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { initials } from "@/components/slai/lib/format"
 
 export interface ParticipationEntry {
   name: string
@@ -17,15 +18,6 @@ export interface ParticipationEntry {
   percent: number
   /** Number of speaking turns */
   turns: number
-}
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
 }
 
 /**

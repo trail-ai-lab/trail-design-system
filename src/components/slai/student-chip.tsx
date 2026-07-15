@@ -3,16 +3,7 @@
 import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-
-function initials(name: string) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
-}
+import { initials } from "@/components/slai/lib/format"
 
 /**
  * A student's name as a pill with an initials badge. Removable on the group

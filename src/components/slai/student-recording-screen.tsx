@@ -1,61 +1,53 @@
 "use client"
 
-import * as React from "react"
-import { LogOutIcon, MicIcon, PauseIcon, PlayIcon, SquareIcon } from "lucide-react"
+import { ClockIcon, LogOutIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { CardDescription, CardTitle } from "@/components/ui/card"
+import { RecordingControl } from "@/components/slai/recording-control"
 import { StudentChip } from "@/components/slai/student-chip"
 
-type RecordingState = "idle" | "recording" | "paused"
-
-function formatDuration(totalSeconds: number) {
-  const h = Math.floor(totalSeconds / 3600)
-  const m = Math.floor((totalSeconds % 3600) / 60)
-  const s = Math.floor(totalSeconds % 60)
-  return [h, m, s].map((value) => value.toString().padStart(2, "0")).join(":")
-}
-
 /**
- * The screen a student sees on their own device while recording: their
- * group's roster up top, a big tap-to-record button front and center. No
- * teacher shell/sidebar here — this runs standalone on a phone.
+ * The screen a student sees on their own device while recording: session
+ * context and roster up top, the shared tap-to-record control front and
+ * center. No teacher shell/sidebar here — this runs standalone on a phone.
  */
 function StudentRecordingScreen({
   groupName,
+  sessionName,
+  joinedAt,
   students = [],
   onLeave,
   className,
 }: {
   groupName: string
+  /** e.g. "Physics · Period 3 — Aug 21" */
+  sessionName?: string
+  /** Pre-formatted time the student joined, e.g. "10:32 AM" */
+  joinedAt?: string
   students?: string[]
   onLeave?: () => void
   className?: string
 }) {
-  const [state, setState] = React.useState<RecordingState>("idle")
-  const [elapsed, setElapsed] = React.useState(0)
-
-  React.useEffect(() => {
-    if (state !== "recording") return
-    const id = setInterval(() => setElapsed((value) => value + 1), 1000)
-    return () => clearInterval(id)
-  }, [state])
-
-  const stop = () => {
-    setState("idle")
-    setElapsed(0)
-  }
-
   return (
     <div className={cn("flex min-h-svh flex-col px-6 py-4", className)}>
       <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium tracking-widest text-muted-foreground uppercase">
-            SLAI
-          </span>
-          <h1 className="font-heading text-xl font-semibold">{groupName}</h1>
+        <div className="flex flex-col gap-1">
+          <CardTitle>{groupName}</CardTitle>
+          {(sessionName || joinedAt) && (
+            <CardDescription className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              {sessionName && <span>{sessionName}</span>}
+              {joinedAt && (
+                <span className="flex items-center gap-1">
+                  <ClockIcon className="size-3.5" />
+                  Joined at {joinedAt}
+                </span>
+              )}
+            </CardDescription>
+          )}
           {students.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               {students.map((name, index) => (
                 <StudentChip key={`${name}-${index}`} name={name} />
               ))}
@@ -68,65 +60,14 @@ function StudentRecordingScreen({
         </Button>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-10">
-        <span
-          className={cn(
-            "font-heading text-6xl font-semibold tracking-tight tabular-nums",
-            state === "idle" ? "text-muted-foreground/25" : "text-foreground"
-          )}
-        >
-          {formatDuration(elapsed)}
-        </span>
-
-        <div className="flex items-center gap-4">
-          {state !== "idle" && (
-            <Button
-              type="button"
-              size="icon"
-              variant="outline"
-              onClick={() =>
-                setState((current) =>
-                  current === "recording" ? "paused" : "recording"
-                )
-              }
-              aria-label={
-                state === "recording" ? "Pause recording" : "Resume recording"
-              }
-              className="size-14 rounded-full"
-            >
-              {state === "recording" ? (
-                <PauseIcon className="size-5" />
-              ) : (
-                <PlayIcon className="size-5" />
-              )}
-            </Button>
-          )}
-
-          <Button
-            type="button"
-            size="icon"
-            variant={state === "idle" ? "outline" : "destructive"}
-            onClick={state === "idle" ? () => setState("recording") : stop}
-            aria-label={
-              state === "idle" ? "Start recording" : "Stop recording"
-            }
-            className="size-24 rounded-full"
-          >
-            {state === "idle" ? (
-              <MicIcon className="size-8" />
-            ) : (
-              <SquareIcon className="size-8" />
-            )}
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {state === "idle"
-            ? "Tap to start recording"
-            : state === "recording"
-              ? "Tap to pause recording"
-              : "Paused — tap to resume"}
-        </p>
+      <div className="flex flex-1 items-center justify-center">
+        <RecordingControl
+          captions={{
+            idle: "Tap to start recording",
+            recording: "Tap to pause recording",
+            paused: "Paused — tap to resume",
+          }}
+        />
       </div>
     </div>
   )

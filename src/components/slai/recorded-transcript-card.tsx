@@ -20,6 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { initials } from "@/components/slai/lib/format"
 
 export interface RecordedSpeaker {
   id: string
@@ -37,15 +38,6 @@ export interface RecordedEntry {
   original: string
   /** Rendered stacked below the original; hidden when identical */
   translation?: string
-}
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
 }
 
 function RecordedRow({
