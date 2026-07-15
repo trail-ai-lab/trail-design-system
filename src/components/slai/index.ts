@@ -20,6 +20,12 @@ export {
 } from "./language-settings-form"
 export { LanguageSettingsSheet } from "./language-settings-sheet"
 export { NewSessionForm } from "./new-session-form"
+export { LiveWaveform } from "./live-waveform"
+export { RecordingCard } from "./recording-card"
+export { GroupSetupForm } from "./group-setup-form"
+export { StudentChip } from "./student-chip"
+export { MicPermissionError } from "./mic-permission-error"
+export { StudentRecordingScreen } from "./student-recording-screen"
 export {
   TranscriptCard,
   GroupsEmptyState,
