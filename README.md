@@ -1,25 +1,32 @@
-# @trail/ui
+# @trail-ai-lab/trail-design-system
 
 Trail Lab's shared design system — Shadcn-based UI primitives plus components for the Trail
 Lab website and internal research tools (SLAI, and future tools). Published to GitHub
 Packages so other Trail Lab repos can install and share the same components, tokens, and
 visual language.
 
-## Install
+## Consuming this package
 
-The package is published to GitHub Packages, so npm/pnpm needs to know to resolve the
-`@trail` scope there. Add to your consuming repo's `.npmrc`:
+This package is published as **`@trail-ai-lab/trail-design-system`** on **GitHub
+Packages**, not the public npm registry. GitHub Packages is private by default: pulling
+the package into a consumer repo requires an authenticated `read:packages` token, the
+same as publishing does — an anonymous `pnpm install` will fail with a bare "package not
+found" even though the package exists.
+
+Add to your consuming repo's `.npmrc` (see [`.npmrc`](.npmrc) in this repo for the
+matching pattern used here):
 
 ```
-@trail:registry=https://npm.pkg.github.com
+@trail-ai-lab:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
 `NODE_AUTH_TOKEN` needs `read:packages` access to this repo (a GitHub PAT, or
-`GITHUB_TOKEN` in Actions). Then install:
+`GITHUB_TOKEN` in Actions — Actions' default token only has read access to packages in
+the same repo, so cross-repo consumers need a PAT). Then install:
 
 ```
-pnpm add @trail/ui
+pnpm add @trail-ai-lab/trail-design-system
 ```
 
 `react`, `react-dom`, and `next` are peer dependencies — the consuming app supplies its own.
@@ -28,25 +35,25 @@ pnpm add @trail/ui
 
 | Import | What it's for |
 | --- | --- |
-| `@trail/ui` | Shadcn UI primitives — `Button`, `Card`, `Dialog`, `Sidebar`, etc. Anything in `src/components/ui/`. |
-| `@trail/ui/slai` | Components specific to the SLAI tool (recording flow, transcripts, activity picker, `AppShell`/`SlaiSidebar` page shell). |
-| `@trail/ui/lab-website` | Components for the Trail Lab marketing site (`Header`, `Footer`, `Hero`, `PersonCard`, `ResourceCard`, etc.). |
-| `@trail/ui/globals.css` | The design tokens (semantic colors, radius scale, fonts) every other subpath's components are styled against. Import this once in your app's root layout/entry — nothing here will look right without it. |
+| `@trail-ai-lab/trail-design-system` | Shadcn UI primitives — `Button`, `Card`, `Dialog`, `Sidebar`, etc. Anything in `src/components/ui/`. |
+| `@trail-ai-lab/trail-design-system/slai` | Components specific to the SLAI tool (recording flow, transcripts, activity picker, `AppShell`/`SlaiSidebar` page shell). |
+| `@trail-ai-lab/trail-design-system/lab-website` | Components for the Trail Lab marketing site (`Header`, `Footer`, `Hero`, `PersonCard`, `ResourceCard`, etc.). |
+| `@trail-ai-lab/trail-design-system/globals.css` | The design tokens (semantic colors, radius scale, fonts) every other subpath's components are styled against. Import this once in your app's root layout/entry — nothing here will look right without it. |
 
 `aibat`, `bias-audit`, `casting-lab`, `murder-mystery`, and `trail-console` are also
-declared as subpaths (`@trail/ui/aibat`, etc.), but each is currently an **empty stub** —
-no components exist yet. They're placeholders for tools that will get built out over
-time; importing from them today gets you nothing.
+declared as subpaths (`@trail-ai-lab/trail-design-system/aibat`, etc.), but each is
+currently an **empty stub** — no components exist yet. They're placeholders for tools
+that will get built out over time; importing from them today gets you nothing.
 
 ## Usage
 
 ```tsx
 // once, in your app's root layout
-import "@trail/ui/globals.css"
+import "@trail-ai-lab/trail-design-system/globals.css"
 
-import { Button } from "@trail/ui"
-import { RecordingControl } from "@trail/ui/slai"
-import { Hero } from "@trail/ui/lab-website"
+import { Button } from "@trail-ai-lab/trail-design-system"
+import { RecordingControl } from "@trail-ai-lab/trail-design-system/slai"
+import { Hero } from "@trail-ai-lab/trail-design-system/lab-website"
 ```
 
 ## Development
