@@ -105,8 +105,8 @@
     "src/tokens/globals.css"
   ],
   "scripts": {
-    "build": "tsup",
-    "prepare": "tsup",
+    "build": "tsup && node scripts/add-use-client-banner.mjs",
+    "prepare": "tsup && node scripts/add-use-client-banner.mjs",
     "dev": "tsup --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
