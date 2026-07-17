@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 export interface Publication {
   id: string
   title: string
-  authors: string[]
+  authors: React.ReactNode
   year: number
   publisher: string
   link?: string
@@ -55,9 +55,7 @@ export function PublicationList({ items, className }: PublicationListProps) {
                 ) : (
                   <p className="text-base font-medium text-foreground">{pub.title}</p>
                 )}
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {pub.authors.join(", ")}
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{pub.authors}</p>
                 <p className="mt-1 text-sm text-muted-foreground italic">
                   {pub.publisher}
                 </p>
