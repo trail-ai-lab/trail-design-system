@@ -12,6 +12,12 @@ export interface HeroProps {
   secondaryAction: { label: string; href: string }
   meta: { label: string; value: string }[]
   className?: string
+  /** Full-bleed absolute-positioned layer behind the content grid (e.g. an
+   * ambient background illustration). Rendered first, before the grid. */
+  backdrop?: React.ReactNode
+  /** Overrides the default right-column placeholder card with custom
+   * content (e.g. a bespoke illustration). */
+  visual?: React.ReactNode
 }
 
 /**
@@ -27,9 +33,12 @@ export function Hero({
   secondaryAction,
   meta,
   className,
+  backdrop,
+  visual,
 }: HeroProps) {
   return (
     <section className={cn("relative overflow-hidden border-b border-border", className)}>
+      {backdrop}
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:py-24 lg:grid-cols-12 lg:items-center lg:px-8">
         <div className="lg:col-span-7">
           <Badge variant="outline" className="gap-1.5 py-1">
@@ -72,18 +81,20 @@ export function Hero({
         </div>
 
         <div className="lg:col-span-5">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-4xl bg-card ring-1 ring-foreground/5">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,var(--color-border)_1px,transparent_0)] bg-[length:24px_24px] opacity-60" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/15 via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6 rounded-2xl bg-background/80 p-4 backdrop-blur ring-1 ring-foreground/5">
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Fig. 01
-              </p>
-              <p className="mt-1 text-sm text-foreground">
-                A classroom moment, studied closely.
-              </p>
+          {visual ?? (
+            <div className="relative aspect-[4/5] overflow-hidden rounded-4xl bg-card ring-1 ring-foreground/5">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,var(--color-border)_1px,transparent_0)] bg-[length:24px_24px] opacity-60" />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/15 via-transparent to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 rounded-2xl bg-background/80 p-4 backdrop-blur ring-1 ring-foreground/5">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Fig. 01
+                </p>
+                <p className="mt-1 text-sm text-foreground">
+                  A classroom moment, studied closely.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>
