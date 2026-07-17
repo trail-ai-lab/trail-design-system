@@ -11,6 +11,8 @@ export interface Person {
   name: string
   designation: string
   image?: string
+  advisor?: string
+  advisorUrl?: string
 }
 
 export interface PersonCardProps {
@@ -53,6 +55,23 @@ export function PersonCard({ person, className }: PersonCardProps) {
             {person.name}
           </CardTitle>
           <CardDescription className="mt-1">{person.designation}</CardDescription>
+          {person.advisor ? (
+            <p className="relative z-10 mt-2 text-sm text-muted-foreground">
+              Advisor:{" "}
+              {person.advisorUrl ? (
+                <a
+                  href={person.advisorUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline decoration-from-font underline-offset-[3px] hover:text-foreground"
+                >
+                  {person.advisor}
+                </a>
+              ) : (
+                person.advisor
+              )}
+            </p>
+          ) : null}
         </div>
       </CardContent>
     </Card>
