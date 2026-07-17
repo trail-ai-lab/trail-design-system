@@ -1,4 +1,4 @@
-import { ArrowUpRight, Download, FileText, PlayCircle } from "lucide-react"
+import { ArrowUpRight, Download, FileText } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -54,11 +54,18 @@ export function ResourceCard({ resource, className }: ResourceCardProps) {
   }
 
   if (resource.variant === "video") {
+    const embedUrl = resource.youtubeUrl.replace("watch?v=", "embed/")
     return (
       <Card className={className}>
         <CardContent className="flex flex-col gap-3">
-          <div className="flex aspect-video items-center justify-center rounded-2xl bg-muted text-muted-foreground">
-            <PlayCircle className="size-10" strokeWidth={1.25} />
+          <div className="relative aspect-video overflow-hidden rounded-2xl bg-muted">
+            <iframe
+              src={embedUrl}
+              title={resource.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 size-full"
+            />
           </div>
           <CardTitle className="text-lg">{resource.title}</CardTitle>
           {resource.description ? (
