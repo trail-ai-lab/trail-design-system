@@ -10,6 +10,9 @@ export interface JoinCtaProps {
   primaryAction: { label: string; href: string }
   secondaryAction: { label: string; href: string }
   className?: string
+  /** Full-bleed absolute-positioned layer behind the content (e.g. an
+   * ambient background illustration). Rendered first, before the content. */
+  backdrop?: React.ReactNode
 }
 
 /**
@@ -24,10 +27,12 @@ export function JoinCta({
   primaryAction,
   secondaryAction,
   className,
+  backdrop,
 }: JoinCtaProps) {
   return (
-    <section className={cn("border-b border-border", className)}>
-      <div className="mx-auto max-w-3xl px-6 py-20 text-center md:py-28 lg:px-8">
+    <section className={cn("relative overflow-hidden border-b border-border", className)}>
+      {backdrop}
+      <div className="relative mx-auto max-w-3xl px-6 py-20 text-center md:py-28 lg:px-8">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {eyebrow}
         </p>

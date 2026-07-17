@@ -10,9 +10,11 @@ export interface PullQuoteProps {
 }
 
 /**
- * Large decorative pull-quote section on a solid primary-color background —
- * used on the homepage. For the closing two-CTA section instead, use
- * JoinCta.
+ * Large decorative pull-quote section — used on the homepage. Defaults to a
+ * solid primary-color background; pass `className` with your own background
+ * and text color utilities to use a different tone (children use
+ * text-current with opacity modifiers, so the override cascades to them
+ * automatically). For the closing two-CTA section instead, use JoinCta.
  */
 export function PullQuote({ eyebrow, quote, cite, className }: PullQuoteProps) {
   return (
@@ -28,16 +30,16 @@ export function PullQuote({ eyebrow, quote, cite, className }: PullQuoteProps) {
         strokeWidth={0.75}
       />
       <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28 lg:px-8">
-        <p className="text-xs font-medium uppercase tracking-wider text-primary-foreground/70">
+        <p className="text-xs font-medium uppercase tracking-wider text-current opacity-70">
           {eyebrow}
         </p>
         <blockquote className="mt-8">
-          <p className="font-heading text-[clamp(1.5rem,2.5vw+1rem,2.5rem)] leading-[1.2] tracking-tight">
+          <p className="font-heading text-[clamp(1.5rem,2.5vw+1rem,2.5rem)] leading-[1.2] tracking-tight text-current">
             {quote}
           </p>
           <footer className="mt-8 flex items-center gap-4">
-            <span aria-hidden="true" className="h-px w-10 bg-primary-foreground/40" />
-            <cite className="font-mono text-xs not-italic uppercase tracking-wider text-primary-foreground/80">
+            <span aria-hidden="true" className="h-px w-10 bg-current opacity-40" />
+            <cite className="font-mono text-xs not-italic uppercase tracking-wider text-current opacity-80">
               {cite}
             </cite>
           </footer>
