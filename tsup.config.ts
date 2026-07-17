@@ -3,6 +3,7 @@ import { defineConfig } from "tsup"
 export default defineConfig({
   entry: {
     index: "src/index.ts",
+    "ui/index": "src/ui.ts",
     "slai/index": "src/components/slai/index.ts",
     "lab-website/index": "src/components/lab-website/index.ts",
     "aibat/index": "src/components/aibat/index.ts",
