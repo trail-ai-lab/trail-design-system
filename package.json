@@ -6,49 +6,89 @@
   "description": "Trail Lab design system — shared UI components for SLAI, AIBAT, Casting Lab, Murder Mystery, Trail Console, and Bias Audit",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./slai": {
-      "types": "./dist/slai/index.d.ts",
-      "import": "./dist/slai/index.js",
-      "require": "./dist/slai/index.cjs"
+      "import": {
+        "types": "./dist/slai/index.d.mts",
+        "default": "./dist/slai/index.mjs"
+      },
+      "require": {
+        "types": "./dist/slai/index.d.ts",
+        "default": "./dist/slai/index.js"
+      }
     },
     "./lab-website": {
-      "types": "./dist/lab-website/index.d.ts",
-      "import": "./dist/lab-website/index.js",
-      "require": "./dist/lab-website/index.cjs"
+      "import": {
+        "types": "./dist/lab-website/index.d.mts",
+        "default": "./dist/lab-website/index.mjs"
+      },
+      "require": {
+        "types": "./dist/lab-website/index.d.ts",
+        "default": "./dist/lab-website/index.js"
+      }
     },
     "./aibat": {
-      "types": "./dist/aibat/index.d.ts",
-      "import": "./dist/aibat/index.js",
-      "require": "./dist/aibat/index.cjs"
+      "import": {
+        "types": "./dist/aibat/index.d.mts",
+        "default": "./dist/aibat/index.mjs"
+      },
+      "require": {
+        "types": "./dist/aibat/index.d.ts",
+        "default": "./dist/aibat/index.js"
+      }
     },
     "./casting-lab": {
-      "types": "./dist/casting-lab/index.d.ts",
-      "import": "./dist/casting-lab/index.js",
-      "require": "./dist/casting-lab/index.cjs"
+      "import": {
+        "types": "./dist/casting-lab/index.d.mts",
+        "default": "./dist/casting-lab/index.mjs"
+      },
+      "require": {
+        "types": "./dist/casting-lab/index.d.ts",
+        "default": "./dist/casting-lab/index.js"
+      }
     },
     "./murder-mystery": {
-      "types": "./dist/murder-mystery/index.d.ts",
-      "import": "./dist/murder-mystery/index.js",
-      "require": "./dist/murder-mystery/index.cjs"
+      "import": {
+        "types": "./dist/murder-mystery/index.d.mts",
+        "default": "./dist/murder-mystery/index.mjs"
+      },
+      "require": {
+        "types": "./dist/murder-mystery/index.d.ts",
+        "default": "./dist/murder-mystery/index.js"
+      }
     },
     "./trail-console": {
-      "types": "./dist/trail-console/index.d.ts",
-      "import": "./dist/trail-console/index.js",
-      "require": "./dist/trail-console/index.cjs"
+      "import": {
+        "types": "./dist/trail-console/index.d.mts",
+        "default": "./dist/trail-console/index.mjs"
+      },
+      "require": {
+        "types": "./dist/trail-console/index.d.ts",
+        "default": "./dist/trail-console/index.js"
+      }
     },
     "./bias-audit": {
-      "types": "./dist/bias-audit/index.d.ts",
-      "import": "./dist/bias-audit/index.js",
-      "require": "./dist/bias-audit/index.cjs"
+      "import": {
+        "types": "./dist/bias-audit/index.d.mts",
+        "default": "./dist/bias-audit/index.mjs"
+      },
+      "require": {
+        "types": "./dist/bias-audit/index.d.ts",
+        "default": "./dist/bias-audit/index.js"
+      }
     },
     "./globals.css": "./src/tokens/globals.css"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
