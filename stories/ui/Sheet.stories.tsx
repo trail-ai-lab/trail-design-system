@@ -50,3 +50,35 @@ export const Left: Story = {
     </Sheet>
   ),
 }
+
+export const Top: Story = {
+  render: () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Open top</Button>
+      </SheetTrigger>
+      <SheetContent side="top">
+        <SheetHeader>
+          <SheetTitle>Announcement</SheetTitle>
+          <SheetDescription>A banner-style sheet from the top edge.</SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  ),
+}
+
+export const Bottom: Story = {
+  render: () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Open bottom</Button>
+      </SheetTrigger>
+      <SheetContent side="bottom">
+        <SheetHeader>
+          <SheetTitle>Quick actions</SheetTitle>
+          <SheetDescription>A tray-style sheet from the bottom edge.</SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  ),
+}
