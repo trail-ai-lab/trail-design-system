@@ -59,11 +59,11 @@ export const Conversation: Story = {
   },
 }
 
-export const Thinking: Story = {
+export const Loading: Story = {
   args: {
     messages: MESSAGES,
     scopeLabel: "Group 1",
-    thinking: true,
+    loading: true,
     className: "h-full",
   },
 }

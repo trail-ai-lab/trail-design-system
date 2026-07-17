@@ -1,14 +1,27 @@
 import { Quote } from "lucide-react"
 
+import { cn } from "@/lib/utils"
+
 export interface PullQuoteProps {
   eyebrow: string
   quote: React.ReactNode
   cite: string
+  className?: string
 }
 
-export function PullQuote({ eyebrow, quote, cite }: PullQuoteProps) {
+/**
+ * Large decorative pull-quote section on a solid primary-color background —
+ * used on the homepage. For the closing two-CTA section instead, use
+ * JoinCta.
+ */
+export function PullQuote({ eyebrow, quote, cite, className }: PullQuoteProps) {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-primary text-primary-foreground">
+    <section
+      className={cn(
+        "relative overflow-hidden border-b border-border bg-primary text-primary-foreground",
+        className
+      )}
+    >
       <Quote
         aria-hidden="true"
         className="pointer-events-none absolute -right-10 top-1/2 hidden size-[22rem] -translate-y-1/2 opacity-10 md:block"

@@ -5,6 +5,7 @@ import { RecentNews } from "@/components/lab-website/recent-news"
 const meta: Meta<typeof RecentNews> = {
   title: "LabWebsite/RecentNews",
   component: RecentNews,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     eyebrow: "§ 03 · News",

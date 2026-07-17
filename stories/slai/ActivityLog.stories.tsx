@@ -57,3 +57,10 @@ export const Default: Story = {
     ],
   },
 }
+
+export const Empty: Story = {
+  args: {
+    scopeLabel: "Group 2",
+    events: [],
+  },
+}

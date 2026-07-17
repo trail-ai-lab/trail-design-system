@@ -1,21 +1,25 @@
 import { ArrowRight } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-
-export interface NewsItem {
-  date: string
-  text: React.ReactNode
-}
+import { NewsArchive, type NewsEntry } from "@/components/lab-website/news-archive"
 
 export interface RecentNewsProps {
   eyebrow: string
   title: React.ReactNode
   description: string
-  items: NewsItem[]
+  items: NewsEntry[]
   viewAllHref: string
   totalCount: number
+  className?: string
 }
 
+/**
+ * Homepage-only preview of the most recent news entries plus a "view all"
+ * link and total count — composes NewsArchive internally with a narrower
+ * date column. For the full, unbounded news list, use NewsArchive directly
+ * on the dedicated News page.
+ */
 export function RecentNews({
   eyebrow,
   title,
@@ -23,9 +27,10 @@ export function RecentNews({
   items,
   viewAllHref,
   totalCount,
+  className,
 }: RecentNewsProps) {
   return (
-    <section className="border-b border-border">
+    <section className={cn("border-b border-border", className)}>
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
@@ -41,21 +46,7 @@ export function RecentNews({
           </p>
         </div>
 
-        <ul className="mt-12 border-t border-border">
-          {items.map((item, i) => (
-            <li
-              key={i}
-              className="grid grid-cols-1 gap-2 border-b border-border py-6 md:grid-cols-[8rem_1fr] md:gap-8 md:py-7"
-            >
-              <time className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                {item.date}
-              </time>
-              <p className="text-base leading-relaxed text-foreground">
-                {item.text}
-              </p>
-            </li>
-          ))}
-        </ul>
+        <NewsArchive items={items} columnWidth="8rem" className="mt-12" />
 
         <div className="mt-8 flex items-center justify-between">
           <Button variant="link" className="h-auto px-0" asChild>

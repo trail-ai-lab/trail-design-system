@@ -5,6 +5,7 @@ import { EventCard } from "@/components/lab-website/event-card"
 const meta: Meta<typeof EventCard> = {
   title: "LabWebsite/EventCard",
   component: EventCard,
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: {
     event: {

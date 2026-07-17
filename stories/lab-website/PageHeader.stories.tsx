@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/lab-website/page-header"
 const meta: Meta<typeof PageHeader> = {
   title: "LabWebsite/PageHeader",
   component: PageHeader,
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: {
     eyebrow: "Research",

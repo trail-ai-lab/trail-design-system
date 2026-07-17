@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
@@ -18,9 +19,15 @@ export interface PersonProfileData {
 
 export interface PersonProfileProps {
   person: PersonProfileData
+  className?: string
 }
 
-export function PersonProfile({ person }: PersonProfileProps) {
+/**
+ * Full single-page profile for one person — photo, bio, advisor, and
+ * research areas. For the compact card used on the listing page, use
+ * PersonCard instead.
+ */
+export function PersonProfile({ person, className }: PersonProfileProps) {
   const initials = person.name
     .split(" ")
     .map((part) => part[0])
@@ -28,7 +35,7 @@ export function PersonProfile({ person }: PersonProfileProps) {
     .join("")
 
   return (
-    <section className="border-b border-border">
+    <section className={cn("border-b border-border", className)}>
       <div className="mx-auto max-w-4xl px-6 py-16 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-[12rem_1fr] sm:items-start">
           <div className="flex aspect-[4/5] items-center justify-center overflow-hidden rounded-4xl bg-muted">

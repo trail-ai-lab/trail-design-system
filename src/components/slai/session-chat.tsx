@@ -60,7 +60,7 @@ function SessionChatCard({
   onSend,
   scopeLabel,
   placeholder,
-  thinking = false,
+  loading = false,
   suggestions = [],
   className,
 }: {
@@ -70,7 +70,7 @@ function SessionChatCard({
   scopeLabel?: string
   placeholder?: string
   /** Shows a spinner row while the assistant is answering */
-  thinking?: boolean
+  loading?: boolean
   /** Suggested questions shown in the empty state */
   suggestions?: string[]
   className?: string
@@ -92,7 +92,7 @@ function SessionChatCard({
       '[data-slot="scroll-area-viewport"]'
     )
     viewport?.scrollTo({ top: viewport.scrollHeight })
-  }, [messages.length, thinking])
+  }, [messages.length, loading])
 
   return (
     <Card className={cn("flex min-h-0 flex-col", className)}>
@@ -106,7 +106,7 @@ function SessionChatCard({
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
-          {messages.length === 0 && !thinking ? (
+          {messages.length === 0 && !loading ? (
             <div className="flex h-full flex-col items-center justify-center gap-3 px-(--card-spacing) py-8 text-center">
               <p className="text-sm text-muted-foreground">
                 Ask anything about what {scopeLabel ?? "your students"}{" "}
@@ -132,7 +132,7 @@ function SessionChatCard({
               {messages.map((message) => (
                 <ChatRow key={message.id} message={message} />
               ))}
-              {thinking && (
+              {loading && (
                 <div className="flex items-center gap-3">
                   <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted">
                     <SparklesIcon className="size-3 text-primary" />

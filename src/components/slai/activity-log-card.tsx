@@ -1,6 +1,6 @@
 "use client"
 
-import type { LucideIcon } from "lucide-react"
+import { ListIcon, type LucideIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -10,6 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import {
   Table,
   TableBody,
@@ -55,40 +62,55 @@ function ActivityLogCard({
         )}
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableBody>
-            {events.map((event) => {
-              const Icon = event.icon
-              return (
-                <TableRow key={event.id}>
-                  <TableCell className="w-10">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                      <Icon className="size-4 shrink-0 text-muted-foreground" />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{event.title}</span>
-                      {event.detail && (
-                        <span className="text-sm text-muted-foreground">
-                          {event.detail}
-                        </span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground tabular-nums">
-                    {event.time}
-                  </TableCell>
-                  {event.value && (
-                    <TableCell className="text-right text-sm font-medium tabular-nums">
-                      {event.value}
+        {events.length === 0 ? (
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <ListIcon />
+              </EmptyMedia>
+              <EmptyTitle>No activity yet</EmptyTitle>
+              <EmptyDescription>
+                Trail runs and simulation changes will appear here as{" "}
+                {scopeLabel ?? "the group"} works.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : (
+          <Table>
+            <TableBody>
+              {events.map((event) => {
+                const Icon = event.icon
+                return (
+                  <TableRow key={event.id}>
+                    <TableCell className="w-10">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
+                        <Icon className="size-4 shrink-0 text-muted-foreground" />
+                      </div>
                     </TableCell>
-                  )}
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{event.title}</span>
+                        {event.detail && (
+                          <span className="text-sm text-muted-foreground">
+                            {event.detail}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground tabular-nums">
+                      {event.time}
+                    </TableCell>
+                    {event.value && (
+                      <TableCell className="text-right text-sm font-medium tabular-nums">
+                        {event.value}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
       </CardContent>
     </Card>
   )

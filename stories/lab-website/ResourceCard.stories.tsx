@@ -5,6 +5,7 @@ import { ResourceCard } from "@/components/lab-website/resource-card"
 const meta: Meta<typeof ResourceCard> = {
   title: "LabWebsite/ResourceCard",
   component: ResourceCard,
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
 }
 export default meta
@@ -14,7 +15,7 @@ type Story = StoryObj<typeof ResourceCard>
 export const Tool: Story = {
   args: {
     resource: {
-      type: "tool",
+      variant: "tool",
       id: "tool-4",
       title: "SLAI: Bridging Science and Language using AI",
       description: "A teacher tool to support students' translanguaging in small group discussions.",
@@ -32,7 +33,7 @@ export const Tool: Story = {
 export const Dataset: Story = {
   args: {
     resource: {
-      type: "dataset",
+      variant: "dataset",
       id: "dataset-1",
       title: "Classroom Discourse Corpus",
       description: "Anonymized transcripts from multilingual classroom discussions.",
@@ -49,7 +50,7 @@ export const Dataset: Story = {
 export const Workshop: Story = {
   args: {
     resource: {
-      type: "workshop",
+      variant: "workshop",
       id: "workshop-aibat-aied2026",
       title: "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
       conference: "AIED 2026",

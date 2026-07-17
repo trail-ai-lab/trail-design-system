@@ -5,19 +5,20 @@ import { Badge } from "@/components/ui/badge"
 
 /**
  * Compact chip summarizing the session's language configuration.
- * `kind="spoken"` shows the languages being transcribed; `kind="translation"`
- * shows the target language transcripts are translated into.
+ * `variant="spoken"` shows the languages being transcribed;
+ * `variant="translation"` shows the target language transcripts are
+ * translated into.
  */
 function LanguageChip({
-  kind,
+  variant,
   languages,
   className,
 }: {
-  kind: "spoken" | "translation"
+  variant: "spoken" | "translation"
   languages: string[]
   className?: string
 }) {
-  const Icon = kind === "spoken" ? MicIcon : LanguagesIcon
+  const Icon = variant === "spoken" ? MicIcon : LanguagesIcon
   return (
     <Badge variant="outline" className={cn("text-muted-foreground", className)}>
       <Icon data-icon="inline-start" />

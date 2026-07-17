@@ -5,6 +5,7 @@ import { PullQuote } from "@/components/lab-website/pull-quote"
 const meta: Meta<typeof PullQuote> = {
   title: "LabWebsite/PullQuote",
   component: PullQuote,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     eyebrow: "A defining stance",

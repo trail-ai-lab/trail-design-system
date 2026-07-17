@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -47,6 +48,56 @@ export const Default: Story = {
                 {s.status}
               </Badge>
             </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  ),
+}
+
+// A single full-width cell spanning all columns is the standard pattern for
+// "nothing to show" — colSpan matches the header's column count.
+export const Empty: Story = {
+  render: () => (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Session</TableHead>
+          <TableHead>Tool</TableHead>
+          <TableHead>Duration</TableHead>
+          <TableHead>Status</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+            No sessions yet.
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  ),
+}
+
+// Skeleton rows stand in for each cell while data is still loading.
+export const Loading: Story = {
+  render: () => (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Session</TableHead>
+          <TableHead>Tool</TableHead>
+          <TableHead>Duration</TableHead>
+          <TableHead>Status</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 3 }, (_, i) => (
+          <TableRow key={i}>
+            <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+            <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+            <TableCell><Skeleton className="h-4 w-14" /></TableCell>
+            <TableCell><Skeleton className="h-5 w-16 rounded-2xl" /></TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -5,6 +5,7 @@ import { PersonCard } from "@/components/lab-website/person-card"
 const meta: Meta<typeof PersonCard> = {
   title: "LabWebsite/PersonCard",
   component: PersonCard,
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: {
     person: {

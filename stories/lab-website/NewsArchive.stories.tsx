@@ -5,6 +5,7 @@ import { NewsArchive } from "@/components/lab-website/news-archive"
 const meta: Meta<typeof NewsArchive> = {
   title: "LabWebsite/NewsArchive",
   component: NewsArchive,
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: {
     items: [

@@ -5,6 +5,7 @@ import { PersonProfile } from "@/components/lab-website/person-profile"
 const meta: Meta<typeof PersonProfile> = {
   title: "LabWebsite/PersonProfile",
   component: PersonProfile,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     person: {

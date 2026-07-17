@@ -7,7 +7,6 @@ import {
   EllipsisVerticalIcon,
   FolderIcon,
   MicIcon,
-  MountainIcon,
   MoreHorizontalIcon,
   PencilIcon,
   ShapesIcon,
@@ -16,6 +15,7 @@ import {
   UsersIcon,
 } from "lucide-react"
 
+import { Logo } from "@/components/trail"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -141,7 +141,7 @@ function SlaiSidebar({
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <MountainIcon className="size-5 text-primary" />
+          <Logo className="h-5 text-primary" />
           <span className="font-heading text-sm font-semibold">SLAI</span>
         </div>
       </SidebarHeader>

@@ -4,9 +4,11 @@ import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { initials } from "@/components/slai/lib/format"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 
 /**
- * A student's name as a pill with an initials badge. Removable on the group
+ * A student's name as a pill with an initials avatar. Removable on the group
  * setup form; read-only as a roster chip on the recording screen.
  */
 function StudentChip({
@@ -19,16 +21,17 @@ function StudentChip({
   className?: string
 }) {
   return (
-    <div
+    <Badge
+      variant="outline"
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border border-border py-1 pr-2 pl-1 text-sm",
+        "h-auto gap-1.5 py-1 pr-2 pl-1 text-sm font-normal text-foreground",
         onRemove && "pr-1.5",
         className
       )}
     >
-      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground">
-        {initials(name)}
-      </span>
+      <Avatar size="sm">
+        <AvatarFallback>{initials(name)}</AvatarFallback>
+      </Avatar>
       <span className="max-w-40 truncate">{name}</span>
       {onRemove && (
         <button
@@ -40,7 +43,7 @@ function StudentChip({
           <XIcon className="size-3" />
         </button>
       )}
-    </div>
+    </Badge>
   )
 }
 

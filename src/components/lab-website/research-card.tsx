@@ -1,3 +1,6 @@
+import { cn } from "@/lib/utils"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
+
 export interface ResearchCardItem {
   index: string
   title: string
@@ -6,24 +9,31 @@ export interface ResearchCardItem {
 }
 
 export interface ResearchCardProps {
-  item: ResearchCardItem
+  research: ResearchCardItem
+  className?: string
 }
 
-export function ResearchCard({ item }: ResearchCardProps) {
+/**
+ * Card for one research area/project in a grid (index, title, funders) —
+ * the Research listing page. For a downloadable tool, dataset, or event
+ * writeup, use ResourceCard instead; for an academic citation list, use
+ * PublicationList.
+ */
+export function ResearchCard({ research, className }: ResearchCardProps) {
   return (
-    <a
-      href={item.href}
-      className="group flex flex-col gap-6 rounded-4xl border border-border bg-card p-6 transition-colors hover:bg-accent"
-    >
-      <span className="font-mono text-xs text-muted-foreground">{item.index}</span>
-      <h3 className="font-heading text-xl tracking-tight text-foreground group-hover:text-primary">
-        {item.title}
-      </h3>
-      {item.funders.length > 0 ? (
-        <p className="mt-auto text-xs uppercase tracking-wider text-muted-foreground">
-          Funded by {item.funders.join(" · ")}
-        </p>
-      ) : null}
-    </a>
+    <Card className={cn("relative transition-colors hover:bg-accent", className)}>
+      <a href={research.href} className="absolute inset-0" aria-label={research.title} />
+      <CardContent className="flex flex-1 flex-col gap-6">
+        <span className="font-mono text-xs text-muted-foreground">{research.index}</span>
+        <CardTitle className="text-xl tracking-tight group-hover/card:text-primary">
+          {research.title}
+        </CardTitle>
+        {research.funders.length > 0 ? (
+          <p className="mt-auto text-xs uppercase tracking-wider text-muted-foreground">
+            Funded by {research.funders.join(" · ")}
+          </p>
+        ) : null}
+      </CardContent>
+    </Card>
   )
 }

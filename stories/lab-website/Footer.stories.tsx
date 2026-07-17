@@ -5,6 +5,7 @@ import { Footer } from "@/components/lab-website/footer"
 const meta: Meta<typeof Footer> = {
   title: "LabWebsite/Footer",
   component: Footer,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
 }
 export default meta

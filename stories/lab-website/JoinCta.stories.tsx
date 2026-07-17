@@ -5,6 +5,7 @@ import { JoinCta } from "@/components/lab-website/join-cta"
 const meta: Meta<typeof JoinCta> = {
   title: "LabWebsite/JoinCta",
   component: JoinCta,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     eyebrow: "§ 04 · An invitation",

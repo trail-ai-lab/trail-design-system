@@ -25,6 +25,10 @@
   --status-recording: oklch(0.577 0.245 27.325);
   --status-paused: oklch(0.72 0.155 75);
   --status-uploaded: oklch(0.55 0.21 258);
+  /* Dialog/sheet/alert-dialog scrim (hand-added; not part of the generated preset).
+     Theme-invariant on purpose — same dark backdrop in light and dark mode, so it's
+     only declared here in :root and not overridden under .dark. */
+  --overlay: oklch(0 0 0 / 30%);
   --border: oklch(0.925 0.005 214.3);
   --input: oklch(0.925 0.005 214.3);
   --ring: oklch(0.723 0.014 214.4);
@@ -105,6 +109,7 @@
     --color-status-recording: var(--status-recording);
     --color-status-paused: var(--status-paused);
     --color-status-uploaded: var(--status-uploaded);
+    --color-overlay: var(--overlay);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -119,6 +124,7 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+    --radius-xs: calc(var(--radius) * 0.2);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -126,6 +132,9 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    /* Clamped alias (hand-added; not part of the generated preset) for the repeated
+       rounded-[min(var(--radius-4xl),24px)] pattern in card/dialog/alert-dialog. */
+    --radius-card: min(var(--radius-4xl), 24px);
 }
 
 @layer base {

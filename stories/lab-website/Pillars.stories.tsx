@@ -6,6 +6,7 @@ import { Pillars } from "@/components/lab-website/pillars"
 const meta: Meta<typeof Pillars> = {
   title: "LabWebsite/Pillars",
   component: Pillars,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     eyebrow: "§ 01 · Disciplines",

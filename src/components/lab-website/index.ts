@@ -10,7 +10,7 @@ export { Pillars, type Pillar, type PillarsProps } from "./pillars"
 export { FocusAreas, type FocusArea, type FocusAreasProps } from "./focus-areas"
 export { PullQuote, type PullQuoteProps } from "./pull-quote"
 export { JoinCta, type JoinCtaProps } from "./join-cta"
-export { RecentNews, type NewsItem, type RecentNewsProps } from "./recent-news"
+export { RecentNews, type RecentNewsProps } from "./recent-news"
 
 // Research
 export { ResearchCard, type ResearchCardItem, type ResearchCardProps } from "./research-card"

@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 export interface JoinCtaProps {
@@ -8,17 +9,24 @@ export interface JoinCtaProps {
   description: string
   primaryAction: { label: string; href: string }
   secondaryAction: { label: string; href: string }
+  className?: string
 }
 
+/**
+ * Closing call-to-action section (centered, two CTAs) — used near the
+ * bottom of the homepage. For the pull-quote treatment instead, use
+ * PullQuote.
+ */
 export function JoinCta({
   eyebrow,
   title,
   description,
   primaryAction,
   secondaryAction,
+  className,
 }: JoinCtaProps) {
   return (
-    <section className="border-b border-border">
+    <section className={cn("border-b border-border", className)}>
       <div className="mx-auto max-w-3xl px-6 py-20 text-center md:py-28 lg:px-8">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {eyebrow}

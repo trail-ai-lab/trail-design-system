@@ -18,4 +18,8 @@
   --shell-px: 1.5rem;  /* 24px — horizontal padding for header/toolbar rows (spacing 6) */
   --shell-py: 0.75rem; /* 12px — vertical padding for header/toolbar rows (spacing 3) */
   --shell-gap: 1rem;   /* 16px — content-area padding and gap between content cards (spacing 4) */
+
+  --shell-sidebar-width: 16rem;        /* SidebarProvider default --sidebar-width */
+  --shell-sidebar-width-mobile: 18rem; /* SidebarProvider --sidebar-width on the mobile sheet */
+  --shell-sidebar-width-icon: 3rem;    /* SidebarProvider --sidebar-width-icon (collapsed rail) */
 }

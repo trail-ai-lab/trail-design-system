@@ -5,6 +5,7 @@ import { NotFound } from "@/components/lab-website/not-found"
 const meta: Meta<typeof NotFound> = {
   title: "LabWebsite/NotFound",
   component: NotFound,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
 }
 export default meta

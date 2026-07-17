@@ -1,3 +1,11 @@
+import { cn } from "@/lib/utils"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card"
+
 export interface Person {
   id: string
   name: string
@@ -7,9 +15,14 @@ export interface Person {
 
 export interface PersonCardProps {
   person: Person
+  className?: string
 }
 
-export function PersonCard({ person }: PersonCardProps) {
+/**
+ * Compact card for one person in a grid — the People listing page. For the
+ * full single-person profile page, use PersonProfile instead.
+ */
+export function PersonCard({ person, className }: PersonCardProps) {
   const initials = person.name
     .split(" ")
     .map((part) => part[0])
@@ -17,27 +30,31 @@ export function PersonCard({ person }: PersonCardProps) {
     .join("")
 
   return (
-    <a
-      href={`/people/${person.id}`}
-      className="group flex flex-col gap-4 rounded-4xl border border-border bg-card p-5 transition-colors hover:bg-accent"
-    >
-      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-muted">
-        {person.image ? (
-          <img
-            src={person.image}
-            alt={person.name}
-            className="size-full object-cover"
-          />
-        ) : (
-          <span className="font-heading text-2xl text-muted-foreground">{initials}</span>
-        )}
-      </div>
-      <div>
-        <h3 className="font-heading text-base text-foreground group-hover:text-primary">
-          {person.name}
-        </h3>
-        <p className="mt-1 text-sm text-muted-foreground">{person.designation}</p>
-      </div>
-    </a>
+    <Card className={cn("relative transition-colors hover:bg-accent", className)}>
+      <a
+        href={`/people/${person.id}`}
+        className="absolute inset-0"
+        aria-label={person.name}
+      />
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-muted">
+          {person.image ? (
+            <img
+              src={person.image}
+              alt={person.name}
+              className="size-full object-cover"
+            />
+          ) : (
+            <span className="font-heading text-2xl text-muted-foreground">{initials}</span>
+          )}
+        </div>
+        <div>
+          <CardTitle className="group-hover/card:text-primary">
+            {person.name}
+          </CardTitle>
+          <CardDescription className="mt-1">{person.designation}</CardDescription>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

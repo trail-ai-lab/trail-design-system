@@ -15,6 +15,11 @@
       "import": "./dist/slai/index.js",
       "require": "./dist/slai/index.cjs"
     },
+    "./lab-website": {
+      "types": "./dist/lab-website/index.d.ts",
+      "import": "./dist/lab-website/index.js",
+      "require": "./dist/lab-website/index.cjs"
+    },
     "./aibat": {
       "types": "./dist/aibat/index.d.ts",
       "import": "./dist/aibat/index.js",
@@ -54,7 +59,9 @@
     "dev": "tsup --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "changeset": "changeset",
+    "version-packages": "changeset version"
   },
   "peerDependencies": {
     "next": "^14.0.0 || ^15.0.0",
@@ -62,6 +69,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.1",
     "@chromatic-com/storybook": "^5.2.1",
     "@storybook/addon-a11y": "^10.4.3",
     "@storybook/addon-docs": "^10.4.3",

@@ -5,6 +5,7 @@ import { EventDetail } from "@/components/lab-website/event-detail"
 const meta: Meta<typeof EventDetail> = {
   title: "LabWebsite/EventDetail",
   component: EventDetail,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     event: {

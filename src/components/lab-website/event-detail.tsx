@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
@@ -35,11 +36,17 @@ export interface EventDetailData {
 
 export interface EventDetailProps {
   event: EventDetailData
+  className?: string
 }
 
-export function EventDetail({ event }: EventDetailProps) {
+/**
+ * Full single-page layout for one tutorial or workshop — status, topics,
+ * important dates, schedule, and organizers. For the compact card used on
+ * the listing page, use EventCard instead.
+ */
+export function EventDetail({ event, className }: EventDetailProps) {
   return (
-    <section className="border-b border-border">
+    <section className={cn("border-b border-border", className)}>
       <div className="mx-auto max-w-3xl px-6 py-16 lg:px-8">
         <div className="flex items-center gap-3">
           <Badge variant={event.status === "upcoming" ? "default" : "secondary"}>

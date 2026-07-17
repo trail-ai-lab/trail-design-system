@@ -1,5 +1,7 @@
 import type { LucideIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
+
 export interface Pillar {
   icon: LucideIcon
   index: string
@@ -11,11 +13,16 @@ export interface PillarsProps {
   eyebrow: string
   title: React.ReactNode
   items: Pillar[]
+  className?: string
 }
 
-export function Pillars({ eyebrow, title, items }: PillarsProps) {
+/**
+ * Homepage section presenting the lab's pillars/principles as a card grid,
+ * each with a numbered index and icon. Presentational only.
+ */
+export function Pillars({ eyebrow, title, items, className }: PillarsProps) {
   return (
-    <section className="border-b border-border">
+    <section className={cn("border-b border-border", className)}>
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 lg:px-8">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {eyebrow}

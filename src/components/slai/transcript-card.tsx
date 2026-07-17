@@ -4,7 +4,6 @@ import * as React from "react"
 import {
   AudioLinesIcon,
   ClockIcon,
-  LanguagesIcon,
   QrCodeIcon,
   UsersIcon,
 } from "lucide-react"
@@ -33,6 +32,7 @@ import {
   SessionStatusBadge,
   type SessionStatus,
 } from "@/components/slai/session-status-badge"
+import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
 
 export interface TranscriptEntry {
   id: string
@@ -78,40 +78,22 @@ function TranscriptRow({
   groupName?: string
   translationLanguage?: string
 }) {
-  const showTranslation =
-    Boolean(entry.translation) && entry.translation !== entry.original
-
   return (
-    <div className="flex gap-3">
-      <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted">
-        <AudioLinesIcon className="size-3.5 text-muted-foreground" />
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
-          {groupName && (
-            <Badge variant="outline" className="h-4 px-1.5 text-[10px]">
-              {groupName}
-            </Badge>
-          )}
-          <span>{entry.language}</span>
-          {entry.timestamp && (
-            <>
-              <span aria-hidden>·</span>
-              <span className="tabular-nums">{entry.timestamp}</span>
-            </>
-          )}
+    <TranscriptUtteranceRow
+      leading={
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted">
+          <AudioLinesIcon className="size-3.5 text-muted-foreground" />
         </div>
-        <p className="text-sm leading-relaxed text-foreground">
-          {entry.original}
-        </p>
-        {showTranslation && (
-          <p className="flex items-start gap-1.5 text-sm leading-relaxed text-muted-foreground">
-            <LanguagesIcon className="mt-1 size-3 shrink-0" />
-            {entry.translation}
-          </p>
-        )}
-      </div>
-    </div>
+      }
+      meta={
+        groupName && (
+          <Badge variant="outline" className="h-4 px-1.5 text-[10px]">
+            {groupName}
+          </Badge>
+        )
+      }
+      entry={entry}
+    />
   )
 }
 

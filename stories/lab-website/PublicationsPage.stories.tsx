@@ -12,7 +12,7 @@ const PUBLICATIONS: Publication[] = [
     title:
       "Multimodal Analytics for Collaborative Teacher Reflection of Human-AI Hybrid Teaching: Design Opportunities and Constraints",
     authors: ["Shamya Karumbaiah"],
-    year: "2024",
+    year: 2024,
     publisher: "Proceedings of the International Conference on Learning Analytics & Knowledge",
     link: "",
   },
@@ -20,7 +20,7 @@ const PUBLICATIONS: Publication[] = [
     id: "publication-6",
     title: "Optimizing philosophies for predictive models in learning analytics",
     authors: ["Shane Hutt", "Shamya Karumbaiah", "Joshua Ocumpaugh"],
-    year: "2021",
+    year: 2021,
     publisher: "Journal of Educational Data Mining",
     link: "",
   },
@@ -34,7 +34,7 @@ const PUBLICATIONS: Publication[] = [
       "Alexandra Durcikova",
       "Matthew L Jensen",
     ],
-    year: "2016",
+    year: 2016,
     publisher: "Proceedings of the 11th Pre-ICIS Workshop on Information Security and Privacy (WISP)",
     link: "https://core.ac.uk/download/pdf/301371589.pdf",
   },
@@ -47,8 +47,8 @@ function PublicationsPage() {
 
       <PageHeader
         eyebrow="Publications"
-        title="The record — 2016–2024."
-        description="Peer-reviewed papers, workshop proceedings, and preprints from the lab, in reverse chronological order."
+        title="The written record."
+        description="Conference proceedings, journal articles, workshop papers — 61 entries spanning 2016 – 2025."
       />
 
       <section className="border-b border-border">

@@ -1,5 +1,6 @@
 import { ArrowRight, Sparkles } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
@@ -10,8 +11,14 @@ export interface HeroProps {
   primaryAction: { label: string; href: string }
   secondaryAction: { label: string; href: string }
   meta: { label: string; value: string }[]
+  className?: string
 }
 
+/**
+ * Homepage's top banner: eyebrow, headline, description, two CTAs, and a
+ * stat row. Homepage-specific — for a secondary page's top banner (Research,
+ * Resources, People, ...), use PageHeader instead.
+ */
 export function Hero({
   eyebrow,
   title,
@@ -19,9 +26,10 @@ export function Hero({
   primaryAction,
   secondaryAction,
   meta,
+  className,
 }: HeroProps) {
   return (
-    <section className="relative overflow-hidden border-b border-border">
+    <section className={cn("relative overflow-hidden border-b border-border", className)}>
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:py-24 lg:grid-cols-12 lg:items-center lg:px-8">
         <div className="lg:col-span-7">
           <Badge variant="outline" className="gap-1.5 py-1">

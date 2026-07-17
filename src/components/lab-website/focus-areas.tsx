@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 
 export interface FocusArea {
@@ -13,11 +14,16 @@ export interface FocusAreasProps {
   eyebrow: string
   title: React.ReactNode
   items: FocusArea[]
+  className?: string
 }
 
-export function FocusAreas({ eyebrow, title, items }: FocusAreasProps) {
+/**
+ * Homepage section alternating icon/text panels, one per focus area.
+ * Presentational only — pass `items` describing each area.
+ */
+export function FocusAreas({ eyebrow, title, items, className }: FocusAreasProps) {
   return (
-    <section className="border-b border-border bg-accent/40">
+    <section className={cn("border-b border-border bg-accent/40", className)}>
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 lg:px-8">
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">

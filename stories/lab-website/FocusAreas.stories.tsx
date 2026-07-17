@@ -6,6 +6,7 @@ import { FocusAreas } from "@/components/lab-website/focus-areas"
 const meta: Meta<typeof FocusAreas> = {
   title: "LabWebsite/FocusAreas",
   component: FocusAreas,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     eyebrow: "§ 02 · Focus areas",

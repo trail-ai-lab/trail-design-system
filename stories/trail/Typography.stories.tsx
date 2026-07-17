@@ -7,70 +7,86 @@ const meta: Meta = {
 export default meta
 type Story = StoryObj
 
+/**
+ * No custom type-scale tokens exist yet (src/tokens/globals.css only
+ * defines --font-sans/--font-heading — family, not size/weight/line-height).
+ * These are Tailwind's stock text-* utilities. Listed here so a size choice
+ * always references a class name, never a raw px/rem value.
+ */
+const SCALE_ROWS = [
+  {
+    label: "h1",
+    className: "text-4xl font-extrabold tracking-tight lg:text-5xl",
+    classes: "text-4xl (lg:text-5xl)",
+    size: "2.25rem / 36px (lg: 3rem / 48px)",
+  },
+  {
+    label: "h2",
+    className: "text-3xl font-semibold tracking-tight",
+    classes: "text-3xl",
+    size: "1.875rem / 30px",
+  },
+  {
+    label: "h3",
+    className: "text-2xl font-semibold tracking-tight",
+    classes: "text-2xl",
+    size: "1.5rem / 24px",
+  },
+  {
+    label: "h4",
+    className: "text-xl font-semibold tracking-tight",
+    classes: "text-xl",
+    size: "1.25rem / 20px",
+  },
+  {
+    label: "body",
+    className: "leading-7 text-base text-foreground",
+    classes: "text-base",
+    size: "1rem / 16px",
+  },
+  {
+    label: "small",
+    className: "text-sm leading-6 text-foreground",
+    classes: "text-sm",
+    size: "0.875rem / 14px",
+  },
+  {
+    label: "muted",
+    className: "text-sm leading-6 text-muted-foreground",
+    classes: "text-sm text-muted-foreground",
+    size: "0.875rem / 14px",
+  },
+  {
+    label: "label",
+    className: "text-sm font-medium leading-none text-foreground",
+    classes: "text-sm font-medium",
+    size: "0.875rem / 14px",
+  },
+  {
+    label: "caption",
+    className: "text-xs text-muted-foreground",
+    classes: "text-xs text-muted-foreground",
+    size: "0.75rem / 12px",
+  },
+]
+
 function TypographyScale() {
   return (
     <div className="flex flex-col gap-8 max-w-2xl">
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">h1</p>
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          The quick brown fox jumps
-        </h1>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">h2</p>
-        <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">
-          The quick brown fox jumps
-        </h2>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">h3</p>
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-          The quick brown fox jumps
-        </h3>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">h4</p>
-        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-          The quick brown fox jumps
-        </h4>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">body</p>
-        <p className="leading-7 text-base text-foreground">
-          The quick brown fox jumps over the lazy dog. Typography drives clarity and hierarchy in
-          every interface. Good type choices communicate trust and professionalism at a glance.
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">small</p>
-        <p className="text-sm leading-6 text-foreground">
-          The quick brown fox jumps over the lazy dog. Smaller body text for secondary information.
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">muted</p>
-        <p className="text-sm leading-6 text-muted-foreground">
-          The quick brown fox jumps over the lazy dog. Muted text for supporting information.
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">label</p>
-        <p className="text-sm font-medium leading-none text-foreground">Form label or strong emphasis</p>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">caption</p>
-        <p className="text-xs text-muted-foreground">
-          Caption text for metadata, timestamps, and supplementary details.
-        </p>
-      </div>
+      {SCALE_ROWS.map((row) => (
+        <div key={row.label} className="flex flex-col gap-1.5">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+              {row.label}
+            </p>
+            <code className="text-xs text-foreground">{row.classes}</code>
+            <span className="text-xs tabular-nums text-muted-foreground">{row.size}</span>
+          </div>
+          <p className={row.className}>
+            The quick brown fox jumps over the lazy dog.
+          </p>
+        </div>
+      ))}
     </div>
   )
 }

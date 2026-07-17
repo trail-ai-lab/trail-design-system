@@ -137,6 +137,34 @@ function ColorPaletteDisplay() {
           { variable: "--sidebar-border", label: "Sidebar Border" },
         ]}
       />
+
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2 border-b border-border pb-1">
+          <h3 className="text-sm font-semibold text-foreground">
+            SLAI Status Colors
+          </h3>
+          <span className="rounded-full bg-destructive/10 px-2 py-0.5 font-mono text-[10px] font-medium text-destructive">
+            hand-added
+          </span>
+        </div>
+        <p className="max-w-prose text-xs text-muted-foreground">
+          <code className="font-mono">--status-recording</code>,{" "}
+          <code className="font-mono">--status-paused</code>, and{" "}
+          <code className="font-mono">--status-uploaded</code> are hand-added
+          directly in <code className="font-mono">globals.css</code> — they
+          are <strong className="text-foreground">not part of the generated
+          design preset</strong>. Regenerating the preset (e.g. via the
+          Shadcn theme generator) will silently drop them; re-add them
+          manually afterward. See{" "}
+          <code className="font-mono">src/tokens/globals.css</code> for the
+          exact values in both light and dark mode.
+        </p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <Swatch variable="--status-recording" label="Recording" />
+          <Swatch variable="--status-paused" label="Paused" />
+          <Swatch variable="--status-uploaded" label="Uploaded" />
+        </div>
+      </div>
     </div>
   )
 }

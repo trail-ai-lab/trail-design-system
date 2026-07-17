@@ -5,9 +5,10 @@ import { ResearchCard } from "@/components/lab-website/research-card"
 const meta: Meta<typeof ResearchCard> = {
   title: "LabWebsite/ResearchCard",
   component: ResearchCard,
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: {
-    item: {
+    research: {
       index: "01",
       title: "Reliability Issues in Current Approaches to Identify and Mitigate AI Bias",
       funders: ["NSF", "Google"],

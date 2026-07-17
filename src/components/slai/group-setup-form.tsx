@@ -10,17 +10,17 @@ import { Input } from "@/components/ui/input"
 import { StudentChip } from "@/components/slai/student-chip"
 
 function StepNumber({
-  active,
+  isActive,
   children,
 }: {
-  active?: boolean
+  isActive?: boolean
   children: React.ReactNode
 }) {
   return (
     <span
       className={cn(
         "flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-medium",
-        active
+        isActive
           ? "bg-foreground text-background"
           : "bg-muted text-muted-foreground"
       )}
@@ -69,7 +69,7 @@ function GroupSetupForm({
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="slai-group-name" className="items-center gap-2">
-            <StepNumber active>1</StepNumber>
+            <StepNumber isActive>1</StepNumber>
             Group Name
             <span className="text-destructive">*</span>
           </FieldLabel>

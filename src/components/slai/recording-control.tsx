@@ -21,12 +21,17 @@ function RecordingControl({
     recording: "Recording...",
     paused: "Paused — tap to resume",
   },
+  defaultState = "idle",
   className,
 }: {
   captions?: { idle: string; recording: string; paused: string }
+  /** Seeds the initial state — useful in Storybook to demonstrate
+   * recording/paused without a real interaction. Real usage always starts
+   * idle. */
+  defaultState?: RecordingState
   className?: string
 }) {
-  const [state, setState] = React.useState<RecordingState>("idle")
+  const [state, setState] = React.useState<RecordingState>(defaultState)
   const [elapsed, setElapsed] = React.useState(0)
 
   React.useEffect(() => {

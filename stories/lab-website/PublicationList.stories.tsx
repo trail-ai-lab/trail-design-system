@@ -5,6 +5,7 @@ import { PublicationList } from "@/components/lab-website/publication-list"
 const meta: Meta<typeof PublicationList> = {
   title: "LabWebsite/PublicationList",
   component: PublicationList,
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: {
     items: [

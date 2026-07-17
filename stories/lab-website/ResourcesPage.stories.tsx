@@ -11,7 +11,7 @@ const CATEGORIES: { category: string; items: Resource[] }[] = [
     category: "Tools",
     items: [
       {
-        type: "tool",
+        variant: "tool",
         id: "tool-4",
         title: "SLAI: Bridging Science and Language using AI",
         description:
@@ -20,7 +20,7 @@ const CATEGORIES: { category: string; items: Resource[] }[] = [
         link: "https://trail.wcer.wisc.edu/slai",
       },
       {
-        type: "tool",
+        variant: "tool",
         id: "tool-6",
         title: "CLUE-AI: Critical Literacy for Uncovering Errors in AI",
         description: "A classroom activity for teaching students to spot AI errors and bias.",
@@ -34,7 +34,7 @@ const CATEGORIES: { category: string; items: Resource[] }[] = [
     category: "Tutorials",
     items: [
       {
-        type: "tutorial",
+        variant: "tutorial",
         id: "tutorial-aibat-aied2026",
         title: "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
         description: "A hands-on tutorial on contextual LLM evaluation for education stakeholders.",

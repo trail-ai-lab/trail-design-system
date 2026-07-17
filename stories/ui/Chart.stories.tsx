@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import {
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
@@ -38,6 +40,24 @@ export const TalkTimeBar: Story = {
         <Bar dataKey="marcus" fill="var(--color-secondary)" radius={4} />
         <Bar dataKey="priya" fill="var(--color-muted-foreground)" radius={4} />
       </BarChart>
+    </ChartContainer>
+  ),
+}
+
+// A line chart with a legend — ChartLegendContent reads its labels/colors
+// from the same ChartConfig as the bar chart above.
+export const TalkTimeLine: Story = {
+  render: () => (
+    <ChartContainer config={chartConfig} className="h-64 w-full max-w-lg">
+      <LineChart data={data}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="segment" tickLine={false} axisLine={false} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <ChartLegend content={<ChartLegendContent />} />
+        <Line dataKey="sarah" stroke="var(--color-primary)" strokeWidth={2} dot={false} />
+        <Line dataKey="marcus" stroke="var(--color-secondary)" strokeWidth={2} dot={false} />
+        <Line dataKey="priya" stroke="var(--color-muted-foreground)" strokeWidth={2} dot={false} />
+      </LineChart>
     </ChartContainer>
   ),
 }

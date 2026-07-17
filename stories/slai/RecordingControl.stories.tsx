@@ -23,3 +23,11 @@ export const StudentCaptions: Story = {
     },
   },
 }
+
+export const Recording: Story = {
+  args: { defaultState: "recording" },
+}
+
+export const Paused: Story = {
+  args: { defaultState: "paused" },
+}

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { LanguagesIcon, PlusIcon, UsersIcon, XIcon } from "lucide-react"
+import { PlusIcon, UsersIcon, XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { initials } from "@/components/slai/lib/format"
+import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
 
 export interface RecordedSpeaker {
   id: string
@@ -49,36 +50,16 @@ function RecordedRow({
   speakerLabel: string
   speakerInitials: string
 }) {
-  const showTranslation =
-    Boolean(entry.translation) && entry.translation !== entry.original
-
   return (
-    <div className="flex gap-3">
-      <Avatar size="sm" className="mt-0.5">
-        <AvatarFallback>{speakerInitials}</AvatarFallback>
-      </Avatar>
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
-          <span className="font-medium text-foreground">{speakerLabel}</span>
-          <span>{entry.language}</span>
-          {entry.timestamp && (
-            <>
-              <span aria-hidden>·</span>
-              <span className="tabular-nums">{entry.timestamp}</span>
-            </>
-          )}
-        </div>
-        <p className="text-sm leading-relaxed text-foreground">
-          {entry.original}
-        </p>
-        {showTranslation && (
-          <p className="flex items-start gap-1.5 text-sm leading-relaxed text-muted-foreground">
-            <LanguagesIcon className="mt-1 size-3 shrink-0" />
-            {entry.translation}
-          </p>
-        )}
-      </div>
-    </div>
+    <TranscriptUtteranceRow
+      leading={
+        <Avatar size="sm" className="mt-0.5">
+          <AvatarFallback>{speakerInitials}</AvatarFallback>
+        </Avatar>
+      }
+      meta={<span className="font-medium text-foreground">{speakerLabel}</span>}
+      entry={entry}
+    />
   )
 }
 

@@ -1,19 +1,22 @@
+import { cn } from "@/lib/utils"
+
 export interface Publication {
   id: string
   title: string
   authors: string[]
-  year: string
+  year: number
   publisher: string
   link?: string
 }
 
 export interface PublicationListProps {
   items: Publication[]
+  className?: string
 }
 
 function groupByYear(items: Publication[]) {
   const years = Array.from(new Set(items.map((item) => item.year))).sort(
-    (a, b) => Number(b) - Number(a)
+    (a, b) => b - a
   )
   return years.map((year) => ({
     year,
@@ -21,11 +24,16 @@ function groupByYear(items: Publication[]) {
   }))
 }
 
-export function PublicationList({ items }: PublicationListProps) {
+/**
+ * Academic citation list grouped by year — the Publications page. Not a
+ * card grid: for a research project card, use ResearchCard; for a
+ * downloadable tool, dataset, or event writeup, use ResourceCard.
+ */
+export function PublicationList({ items, className }: PublicationListProps) {
   const groups = groupByYear(items)
 
   return (
-    <div className="flex flex-col">
+    <div className={cn("flex flex-col", className)}>
       {groups.map((group) => (
         <div
           key={group.year}

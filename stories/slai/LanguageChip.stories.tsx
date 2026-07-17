@@ -12,9 +12,9 @@ export default meta
 type Story = StoryObj<typeof LanguageChip>
 
 export const Spoken: Story = {
-  args: { kind: "spoken", languages: ["Marathi", "English (US)"] },
+  args: { variant: "spoken", languages: ["Marathi", "English (US)"] },
 }
 
 export const Translation: Story = {
-  args: { kind: "translation", languages: ["English (US)"] },
+  args: { variant: "translation", languages: ["English (US)"] },
 }

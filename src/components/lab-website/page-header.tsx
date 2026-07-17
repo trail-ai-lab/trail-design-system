@@ -1,12 +1,25 @@
+import { cn } from "@/lib/utils"
+
 export interface PageHeaderProps {
   eyebrow: string
   title: React.ReactNode
   description?: string
+  className?: string
 }
 
-export function PageHeader({ eyebrow, title, description }: PageHeaderProps) {
+/**
+ * Generic top banner for secondary pages (Research, Resources, People, ...):
+ * eyebrow, title, optional description. For the homepage's banner
+ * specifically, use Hero instead.
+ */
+export function PageHeader({
+  eyebrow,
+  title,
+  description,
+  className,
+}: PageHeaderProps) {
   return (
-    <section className="border-b border-border">
+    <section className={cn("border-b border-border", className)}>
       <div className="mx-auto max-w-6xl px-6 py-14 md:py-20 lg:px-8">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {eyebrow}

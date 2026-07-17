@@ -5,6 +5,7 @@ import { Hero } from "@/components/lab-website/hero"
 const meta: Meta<typeof Hero> = {
   title: "LabWebsite/Hero",
   component: Hero,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   args: {
     eyebrow: "The Responsible AI for Learning Lab · UW–Madison",

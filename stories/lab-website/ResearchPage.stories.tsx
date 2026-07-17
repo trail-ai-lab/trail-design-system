@@ -45,7 +45,7 @@ function ResearchPage() {
         <div className="mx-auto max-w-6xl px-6 py-16 lg:px-8">
           <div className="grid gap-6 md:grid-cols-2">
             {RESEARCH_AREAS.map((area) => (
-              <ResearchCard key={area.index} item={area} />
+              <ResearchCard key={area.index} research={area} />
             ))}
           </div>
         </div>
