@@ -5,6 +5,9 @@ export interface PageHeaderProps {
   title: React.ReactNode
   description?: string
   className?: string
+  /** Full-bleed absolute-positioned layer behind the content (e.g. an
+   * ambient background illustration). Rendered first, before the content. */
+  backdrop?: React.ReactNode
 }
 
 /**
@@ -17,10 +20,12 @@ export function PageHeader({
   title,
   description,
   className,
+  backdrop,
 }: PageHeaderProps) {
   return (
-    <section className={cn("border-b border-border", className)}>
-      <div className="mx-auto max-w-6xl px-6 py-14 md:py-20 lg:px-8">
+    <section className={cn("relative overflow-hidden border-b border-border", className)}>
+      {backdrop}
+      <div className="relative mx-auto max-w-6xl px-6 py-14 md:py-20 lg:px-8">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {eyebrow}
         </p>
