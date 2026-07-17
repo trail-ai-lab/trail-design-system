@@ -1,4 +1,4 @@
-// @trail/ui — main package entry
+// @trail-ai-lab/trail-design-system — main package entry
 // Exports all Shadcn UI components and shared Trail components
 
 export * from "@/components/ui/accordion"

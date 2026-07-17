@@ -1,5 +1,5 @@
 ---
-"@trail/ui": minor
+"@trail-ai-lab/trail-design-system": minor
 ---
 
 Wire `lab-website` into the build and export map. `@trail/ui/lab-website` now resolves

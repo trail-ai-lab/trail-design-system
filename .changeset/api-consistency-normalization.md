@@ -1,5 +1,5 @@
 ---
-"@trail/ui": minor
+"@trail-ai-lab/trail-design-system": minor
 ---
 
 Normalize component APIs toward Button's canonical patterns (Section 3 of the design

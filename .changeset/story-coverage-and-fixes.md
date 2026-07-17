@@ -1,5 +1,5 @@
 ---
-"@trail/ui": minor
+"@trail-ai-lab/trail-design-system": minor
 ---
 
 Section 5 (story/documentation coverage) of the design system audit. Mostly additive —

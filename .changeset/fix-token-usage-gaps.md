@@ -1,5 +1,5 @@
 ---
-"@trail/ui": patch
+"@trail-ai-lab/trail-design-system": patch
 ---
 
 Fix invalid `hsl(var(--sidebar-border))` shadow (oklch wrapped in `hsl()` was silently
