@@ -1,5 +1,13 @@
 # @trail/ui
 
+## 0.3.0
+
+### Minor Changes
+
+- `Header`: add an optional `actions` prop, rendered between the nav links and the mobile menu
+  button (visible on both desktop and mobile). Lets consumers drop in a theme toggle or similar
+  control without forking the component. Non-breaking.
+
 ## 0.2.0
 
 ### Minor Changes

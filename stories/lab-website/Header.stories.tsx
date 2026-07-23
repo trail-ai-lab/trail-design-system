@@ -15,3 +15,13 @@ export default meta
 type Story = StoryObj<typeof Header>
 
 export const Default: Story = {}
+
+export const WithActions: Story = {
+  args: {
+    actions: (
+      <span className="flex size-9 items-center justify-center rounded-full text-muted-foreground">
+        ☀︎
+      </span>
+    ),
+  },
+}

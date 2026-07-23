@@ -24,6 +24,8 @@ export interface HeaderProps {
   routes: NavRoute[]
   activePath?: string
   className?: string
+  /** Extra controls rendered after the nav links, e.g. a theme toggle. Shown on both desktop and inside the mobile menu. */
+  actions?: React.ReactNode
 }
 
 /**
@@ -35,6 +37,7 @@ export function Header({
   routes,
   activePath = "/",
   className,
+  actions,
 }: HeaderProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -51,48 +54,52 @@ export function Header({
           {logoText}
         </a>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {routes.map((route) => (
-            <a
-              key={route.path}
-              href={route.path}
-              data-active={route.path === activePath}
-              className="rounded-full px-3.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[active=true]:bg-accent data-[active=true]:text-foreground"
-            >
-              {route.label}
-            </a>
-          ))}
-        </nav>
+        <div className="flex items-center gap-3">
+          <nav className="hidden items-center gap-1 md:flex">
+            {routes.map((route) => (
+              <a
+                key={route.path}
+                href={route.path}
+                data-active={route.path === activePath}
+                className="rounded-full px-3.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[active=true]:bg-accent data-[active=true]:text-foreground"
+              >
+                {route.label}
+              </a>
+            ))}
+          </nav>
 
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent side="right">
-            <SheetHeader>
-              <SheetTitle>{logoText}</SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-1 px-6 pb-6">
-              {routes.map((route) => (
-                <SheetClose key={route.path} asChild>
-                  <a
-                    href={route.path}
-                    data-active={route.path === activePath}
-                    className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[active=true]:bg-accent data-[active=true]:text-foreground"
-                  >
-                    {route.label}
-                  </a>
-                </SheetClose>
-              ))}
-            </nav>
-          </SheetContent>
-          <Button
-            variant="outline"
-            size="icon"
-            className="md:hidden"
-            aria-label="Open menu"
-            onClick={() => setOpen(true)}
-          >
-            <Menu />
-          </Button>
-        </Sheet>
+          {actions}
+
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetContent side="right">
+              <SheetHeader>
+                <SheetTitle>{logoText}</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-1 px-6 pb-6">
+                {routes.map((route) => (
+                  <SheetClose key={route.path} asChild>
+                    <a
+                      href={route.path}
+                      data-active={route.path === activePath}
+                      className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[active=true]:bg-accent data-[active=true]:text-foreground"
+                    >
+                      {route.label}
+                    </a>
+                  </SheetClose>
+                ))}
+              </nav>
+            </SheetContent>
+            <Button
+              variant="outline"
+              size="icon"
+              className="md:hidden"
+              aria-label="Open menu"
+              onClick={() => setOpen(true)}
+            >
+              <Menu />
+            </Button>
+          </Sheet>
+        </div>
       </div>
     </header>
   )
