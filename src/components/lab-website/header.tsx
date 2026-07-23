@@ -1,7 +1,17 @@
+"use client"
+
+import * as React from "react"
 import { Menu } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import { Logo } from "@/components/trail"
 
 export interface NavRoute {
@@ -26,6 +36,8 @@ export function Header({
   activePath = "/",
   className,
 }: HeaderProps) {
+  const [open, setOpen] = React.useState(false)
+
   return (
     <header
       className={cn(
@@ -52,9 +64,35 @@ export function Header({
           ))}
         </nav>
 
-        <Button variant="outline" size="icon" className="md:hidden" aria-label="Open menu">
-          <Menu />
-        </Button>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetContent side="right">
+            <SheetHeader>
+              <SheetTitle>{logoText}</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-1 px-6 pb-6">
+              {routes.map((route) => (
+                <SheetClose key={route.path} asChild>
+                  <a
+                    href={route.path}
+                    data-active={route.path === activePath}
+                    className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[active=true]:bg-accent data-[active=true]:text-foreground"
+                  >
+                    {route.label}
+                  </a>
+                </SheetClose>
+              ))}
+            </nav>
+          </SheetContent>
+          <Button
+            variant="outline"
+            size="icon"
+            className="md:hidden"
+            aria-label="Open menu"
+            onClick={() => setOpen(true)}
+          >
+            <Menu />
+          </Button>
+        </Sheet>
       </div>
     </header>
   )

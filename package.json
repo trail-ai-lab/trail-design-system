@@ -1,9 +1,9 @@
 {
   "name": "@trail-ai-lab/trail-design-system",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "license": "MIT",
-  "description": "Trail Lab design system \u2014 shared UI components for SLAI, AIBAT, Casting Lab, Murder Mystery, Trail Console, and Bias Audit",
+  "description": "Trail Lab design system — shared UI components for SLAI, AIBAT, Casting Lab, Murder Mystery, Trail Console, and Bias Audit",
   "exports": {
     ".": {
       "import": {

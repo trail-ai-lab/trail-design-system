@@ -43,4 +43,4 @@ export * from "@/components/ui/toggle-group"
 export * from "@/components/ui/tooltip"
 
 // Shared Trail components
-// Add exports from src/components/trail/ as components are created
+export * from "@/components/trail"

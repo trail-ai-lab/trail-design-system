@@ -13,3 +13,7 @@ export default meta
 type Story = StoryObj<typeof Footer>
 
 export const Default: Story = {}
+
+export const WithoutCrest: Story = {
+  args: { showCrest: false },
+}
