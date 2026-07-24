@@ -15,13 +15,23 @@ export interface FocusAreasProps {
   title: React.ReactNode
   items: FocusArea[]
   className?: string
+  /** Size/color classes applied to each `icon`. Defaults to a small glyph
+   * (`size-16 text-primary`) — pass a larger `size-*` here if `icon` is a
+   * richer illustration rather than a simple Lucide-style icon. */
+  iconClassName?: string
 }
 
 /**
  * Homepage section alternating icon/text panels, one per focus area.
  * Presentational only — pass `items` describing each area.
  */
-export function FocusAreas({ eyebrow, title, items, className }: FocusAreasProps) {
+export function FocusAreas({
+  eyebrow,
+  title,
+  items,
+  className,
+  iconClassName = "size-16 text-primary",
+}: FocusAreasProps) {
   return (
     <section className={cn("border-b border-border bg-accent/40", className)}>
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 lg:px-8">
@@ -48,8 +58,8 @@ export function FocusAreas({ eyebrow, title, items, className }: FocusAreasProps
                     reversed ? "lg:col-start-8 lg:row-start-1" : ""
                   }`}
                 >
-                  <div className="flex aspect-square items-center justify-center rounded-4xl bg-card ring-1 ring-foreground/5">
-                    <Icon className="size-16 text-primary" strokeWidth={1.25} />
+                  <div className="flex aspect-square items-center justify-center overflow-hidden rounded-4xl bg-card ring-1 ring-foreground/5">
+                    <Icon className={iconClassName} strokeWidth={1.25} />
                   </div>
                 </figure>
                 <div

@@ -23,3 +23,10 @@ export default meta
 type Story = StoryObj<typeof FocusAreas>
 
 export const Default: Story = {}
+
+/** When `icon` is a richer illustration rather than a small glyph, size it up via `iconClassName`. */
+export const LargeIcons: Story = {
+  args: {
+    iconClassName: "size-full p-6 text-primary",
+  },
+}

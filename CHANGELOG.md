@@ -1,5 +1,35 @@
 # @trail/ui
 
+## 2.1.1
+
+### Patch Changes
+
+- Every composed page story (`HomePage`, `NewsPage`, `PeoplePage`, etc.) was rendering
+  `<LabFooter />` with no props, showing only the crest — Contact, Affiliations, and the
+  feedback line never appeared since they're all conditional on props. Added a shared demo-props
+  fixture (`stories/lab-website/lab-footer-demo-props.tsx`) and wired it into every composed page
+  story so Storybook now shows the footer's full content everywhere. No component changes.
+
+## 2.1.0
+
+### Minor Changes
+
+- `FocusAreas`: add an optional `iconClassName` prop (defaults to `size-16 text-primary`, matching
+  prior behavior) so consumers passing a richer illustration instead of a small Lucide-style icon
+  can size it appropriately. Also adds `overflow-hidden` to the icon card so larger icons stay
+  clipped to its rounded corners.
+
+## 2.0.3
+
+### Patch Changes
+
+- Add weight 400 to the Montserrat fallback `@import` in `globals.css`. Headings (`h1`–`h4`,
+  and any `font-heading` element) render at `font-weight: 400` by default with no explicit
+  weight utility, but the font-family only shipped 500/600/700 — so browsers substituted the
+  nearest available weight (500), rendering every heading visibly heavier than intended.
+  Consumers using their own font loader (e.g. `next/font`) for `--font-heading` should make sure
+  it also includes weight 400.
+
 ## 2.0.2
 
 ### Patch Changes

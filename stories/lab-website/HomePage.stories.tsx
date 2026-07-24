@@ -17,6 +17,7 @@ import { PullQuote } from "@/components/lab-website/pull-quote"
 import { JoinCta } from "@/components/lab-website/join-cta"
 import { RecentNews } from "@/components/lab-website/recent-news"
 import { ROUTES } from "@/components/lab-website/lib/routes"
+import { labFooterDemoProps } from "./lab-footer-demo-props"
 
 function HomePage() {
   return (
@@ -138,7 +139,7 @@ function HomePage() {
         secondaryAction={{ label: "Get in touch", href: "mailto:shamya.karumbaiah@wisc.edu" }}
       />
 
-      <LabFooter />
+      <LabFooter {...labFooterDemoProps} />
     </div>
   )
 }

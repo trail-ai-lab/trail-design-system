@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
+import { labFooterDemoProps } from "./lab-footer-demo-props"
 import { PageHeader } from "@/components/lab-website/page-header"
 import { PublicationList, type Publication } from "@/components/lab-website/publication-list"
 import { ROUTES } from "@/components/lab-website/lib/routes"
@@ -57,7 +58,7 @@ function PublicationsPage() {
         </div>
       </section>
 
-      <LabFooter />
+      <LabFooter {...labFooterDemoProps} />
     </div>
   )
 }
