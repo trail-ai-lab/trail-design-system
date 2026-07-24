@@ -17,7 +17,7 @@ export interface NotFoundProps {
 
 /**
  * 404 page content — icon, message, and a "back home" action. Pair with
- * Header/Footer the same as any other page.
+ * Header/LabFooter the same as any other page.
  */
 export function NotFound({ homeHref = "/", className }: NotFoundProps) {
   return (

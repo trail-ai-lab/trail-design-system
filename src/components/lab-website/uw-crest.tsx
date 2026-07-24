@@ -1,60 +1,9 @@
-import { cn } from "@/lib/utils"
-import { Logo } from "@/components/trail"
-
-export interface FooterProps {
-  labName?: string
-  year?: number
+export interface UwCrestProps {
   className?: string
-  /** Show the official UW crest graphic above the affiliation links. Defaults to true. */
-  showCrest?: boolean
-}
-
-/**
- * Site-wide footer with UW–Madison affiliation links and copyright.
- * Rendered once per page, typically paired with Header at the very end.
- */
-export function Footer({
-  labName = "TRAIL Lab",
-  year = 2026,
-  className,
-  showCrest = true,
-}: FooterProps) {
-  return (
-    <footer className={cn("border-t border-border", className)}>
-      {showCrest ? (
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 pt-10 text-center lg:px-8">
-          <a
-            href="https://www.wisc.edu"
-            aria-label="University of Wisconsin–Madison"
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <UwCrest className="h-[90px] w-[120px]" />
-          </a>
-        </div>
-      ) : null}
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-8">
-        <div className="flex flex-col gap-1">
-          <a href="https://www.wisc.edu" className="text-sm font-medium text-foreground hover:text-primary">
-            University of Wisconsin–Madison
-          </a>
-          <a
-            href="https://www.wisconsin.edu"
-            className="text-xs text-muted-foreground hover:text-foreground"
-          >
-            Part of the Universities of Wisconsin
-          </a>
-        </div>
-        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Logo className="h-3.5 text-muted-foreground" />
-          © {year} {labName} · UW–Madison · All Rights Reserved
-        </p>
-      </div>
-    </footer>
-  )
 }
 
 /** Official UW–Madison crest mark, `fill="currentColor"` so it follows theme color. */
-function UwCrest({ className }: { className?: string }) {
+export function UwCrest({ className }: UwCrestProps) {
   return (
     <svg viewBox="0 0 200 132.78" xmlns="http://www.w3.org/2000/svg" fill="currentColor" role="img" aria-label="University of Wisconsin–Madison crest" className={className}>
       <path d="M31.65,93.63c3,1.09,1.75,4.35,1,6.65L28.31,115l-5.4-17.44a8.47,8.47,0,0,1-.58-4.07H16.85v0.12c2.14,1.13,1.36,3.75.62,6.2l-4.55,15.31L7.14,96.41a7.23,7.23,0,0,1-.47-2.9H1v0.12c1.94,1.37,2.53,4,3.23,6.2l4.58,14.86c1.28,4.15,1.63,3.87,5.16,6.53L20,100.88l4.27,13.86c1.29,4.15,1.56,3.95,5.13,6.49l8.19-27.71h-6v0.12Z" transform="translate(-1 -0.61)" />

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs"
 
 import { Header } from "@/components/lab-website/header"
-import { Footer } from "@/components/lab-website/footer"
+import { LabFooter } from "@/components/lab-website/lab-footer"
 import { PageHeader } from "@/components/lab-website/page-header"
 import { EventCard, type EventCardItem } from "@/components/lab-website/event-card"
 import { ROUTES } from "@/components/lab-website/lib/routes"
@@ -39,7 +39,7 @@ function TutorialsPage() {
         </div>
       </section>
 
-      <Footer />
+      <LabFooter />
     </div>
   )
 }

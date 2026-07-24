@@ -9,7 +9,7 @@ import {
 } from "lucide-react"
 
 import { Header } from "@/components/lab-website/header"
-import { Footer } from "@/components/lab-website/footer"
+import { LabFooter } from "@/components/lab-website/lab-footer"
 import { Hero } from "@/components/lab-website/hero"
 import { Pillars } from "@/components/lab-website/pillars"
 import { FocusAreas } from "@/components/lab-website/focus-areas"
@@ -138,7 +138,7 @@ function HomePage() {
         secondaryAction={{ label: "Get in touch", href: "mailto:shamya.karumbaiah@wisc.edu" }}
       />
 
-      <Footer />
+      <LabFooter />
     </div>
   )
 }

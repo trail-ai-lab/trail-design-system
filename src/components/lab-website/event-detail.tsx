@@ -231,11 +231,11 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
             <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Important dates
             </h2>
-            <ul className="mt-3 flex flex-col gap-2 border-t border-border">
+            <ul className="mt-3 flex flex-col gap-2">
               {event.importantDates.map((item) => (
                 <li
                   key={item.label}
-                  className="flex items-center justify-between border-b border-border py-2.5 text-sm"
+                  className="flex items-center justify-between border-t border-border py-2.5 text-sm first:border-t-0"
                 >
                   <span className="text-foreground">{item.label}</span>
                   <span className="font-mono text-muted-foreground">{item.date}</span>

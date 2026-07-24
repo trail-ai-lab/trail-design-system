@@ -25,13 +25,13 @@ export function NewsArchive({
 }: NewsArchiveProps) {
   return (
     <ul
-      className={cn("border-t border-border", className)}
+      className={cn(className)}
       style={{ "--news-column-width": columnWidth } as React.CSSProperties}
     >
       {items.map((item, i) => (
         <li
           key={i}
-          className="grid grid-cols-1 gap-2 border-b border-border py-6 md:grid-cols-[var(--news-column-width)_1fr] md:gap-8 md:py-7"
+          className="grid grid-cols-1 gap-2 border-t border-border py-6 first:border-t-0 md:grid-cols-[var(--news-column-width)_1fr] md:gap-8 md:py-7"
         >
           <time className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
             {item.date}

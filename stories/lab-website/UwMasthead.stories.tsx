@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs"
 
-import { UwMasthead } from "@/components/trail"
+import { UwMasthead } from "@/components/lab-website/uw-masthead"
 
 const meta: Meta<typeof UwMasthead> = {
-  title: "Trail/UwMasthead",
+  title: "LabWebsite/UwMasthead",
   component: UwMasthead,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

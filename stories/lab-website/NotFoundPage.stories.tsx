@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs"
 
 import { Header } from "@/components/lab-website/header"
-import { Footer } from "@/components/lab-website/footer"
+import { LabFooter } from "@/components/lab-website/lab-footer"
 import { NotFound } from "@/components/lab-website/not-found"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
@@ -12,7 +12,7 @@ function NotFoundPage() {
       <div className="flex flex-1 items-center justify-center">
         <NotFound />
       </div>
-      <Footer />
+      <LabFooter />
     </div>
   )
 }

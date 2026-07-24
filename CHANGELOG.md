@@ -1,5 +1,71 @@
 # @trail/ui
 
+## 2.0.2
+
+### Patch Changes
+
+- Fix duplicated dividers in `NewsArchive` and `EventDetail`'s important-dates list: both drew a
+  leading border on the outer container _and_ a trailing border on every item (including the
+  last), producing an extra line above the first item — redundant with a `PageHeader`'s own
+  bottom border directly above it — and a stray trailing line after the last item. Switched both
+  to the same "border between items only" pattern already used by `PublicationList`
+  (`border-t` + `first:border-t-0`) for visual consistency across all list-style components.
+
+## 2.0.1
+
+### Patch Changes
+
+- Update the neutral gray family in `globals.css` (`background`, `foreground`, `muted`, `accent`,
+  `border`, `input`, `ring`, `sidebar-*`) to match the design system's actual preset — these had
+  drifted to a different (cooler, bluer) neutral than intended. Also add a `::selection` rule using
+  `--primary`/`--primary-foreground` so text selection is consistent with the theme instead of
+  falling back to the browser default.
+
+## 2.0.0
+
+### Major Changes
+
+- Move `UwCrest` and `UwMasthead` from the shared `trail/` namespace (and the root `.` export) into
+  `lab-website/`. Both are specific to the marketing-site chrome and aren't used by any other tool,
+  so they no longer belong in the cross-tool `trail/` namespace. Import them from
+  `@trail-ai-lab/trail-design-system/lab-website` instead of the root package.
+
+## 1.0.0
+
+### Major Changes
+
+- Remove `lab-website/Footer`. `LabFooter` now covers everything it did (UW compliance links via
+  the crest + "Part of the Universities of Wisconsin", plus the copyright line) and more —
+  there's no remaining reason to keep both. Consumers importing `Footer` should switch to
+  `LabFooter`.
+
+## 0.6.0
+
+### Minor Changes
+
+- `LabFooter`: replace the `coordinates` prop with a built-in copyright line (Logo + `labName` +
+  `year`, matching `Footer`'s copyright text). `LabFooter` is now a complete, self-sufficient
+  footer — pages using it no longer need to also render `Footer`.
+
+## 0.5.0
+
+### Minor Changes
+
+- Add `lab-website/LabFooter`: the rich marketing-site footer band (UW crest + tagline, Contact,
+  Affiliations, optional feedback/coordinates strip) that was previously bespoke per-consumer
+  code. The crest doubles as the lab's identity mark, so it's not paired with a wordmark — pair
+  with the plain compliance `Footer` underneath (`showCrest={false}`) for the University links
+  and copyright line.
+
+## 0.4.0
+
+### Minor Changes
+
+- Extract `UwCrest` (previously a private helper inside `Footer`) into its own `trail/UwCrest`
+  component so consumers can place the crest graphic elsewhere on the page — e.g. as a lab's
+  visual identity mark in a footer, replacing a redundant wordmark repeat. `Footer`'s own
+  `showCrest` behavior is unchanged.
+
 ## 0.3.0
 
 ### Minor Changes

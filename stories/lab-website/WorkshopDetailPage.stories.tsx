@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs"
 
 import { Header } from "@/components/lab-website/header"
-import { Footer } from "@/components/lab-website/footer"
+import { LabFooter } from "@/components/lab-website/lab-footer"
 import { EventDetail, type EventDetailData } from "@/components/lab-website/event-detail"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
@@ -43,7 +43,7 @@ function WorkshopDetailPage() {
     <div className="bg-background">
       <Header routes={ROUTES} activePath="/resources" />
       <EventDetail event={WORKSHOP} />
-      <Footer />
+      <LabFooter />
     </div>
   )
 }

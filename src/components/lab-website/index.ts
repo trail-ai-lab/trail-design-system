@@ -1,7 +1,14 @@
 // Site chrome
 export { Header, type NavRoute, type HeaderProps } from "./header"
-export { Footer, type FooterProps } from "./footer"
+export {
+  LabFooter,
+  type LabFooterProps,
+  type LabFooterContactLink,
+  type LabFooterAffiliation,
+} from "./lab-footer"
 export { PageHeader, type PageHeaderProps } from "./page-header"
+export { UwCrest, type UwCrestProps } from "./uw-crest"
+export { UwMasthead, type UwMastheadProps } from "./uw-masthead"
 export { ROUTES } from "./lib/routes"
 
 // Home page sections

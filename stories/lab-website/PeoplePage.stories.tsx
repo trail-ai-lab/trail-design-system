@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs"
 
 import { Header } from "@/components/lab-website/header"
-import { Footer } from "@/components/lab-website/footer"
+import { LabFooter } from "@/components/lab-website/lab-footer"
 import { PageHeader } from "@/components/lab-website/page-header"
 import { PersonCard, type Person } from "@/components/lab-website/person-card"
 import { ROUTES } from "@/components/lab-website/lib/routes"
@@ -63,7 +63,7 @@ function PeoplePage() {
         </section>
       ))}
 
-      <Footer />
+      <LabFooter />
     </div>
   )
 }

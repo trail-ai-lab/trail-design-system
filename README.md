@@ -37,7 +37,7 @@ pnpm add @trail-ai-lab/trail-design-system
 | --- | --- |
 | `@trail-ai-lab/trail-design-system` | Shadcn UI primitives — `Button`, `Card`, `Dialog`, `Sidebar`, etc. Anything in `src/components/ui/`. |
 | `@trail-ai-lab/trail-design-system/slai` | Components specific to the SLAI tool (recording flow, transcripts, activity picker, `AppShell`/`SlaiSidebar` page shell). |
-| `@trail-ai-lab/trail-design-system/lab-website` | Components for the Trail Lab marketing site (`Header`, `Footer`, `Hero`, `PersonCard`, `ResourceCard`, etc.). |
+| `@trail-ai-lab/trail-design-system/lab-website` | Components for the Trail Lab marketing site (`Header`, `LabFooter`, `Hero`, `PersonCard`, `ResourceCard`, etc.). |
 | `@trail-ai-lab/trail-design-system/globals.css` | The design tokens (semantic colors, radius scale, fonts) every other subpath's components are styled against. Import this once in your app's root layout/entry — nothing here will look right without it. |
 
 `aibat`, `bias-audit`, `casting-lab`, `murder-mystery`, and `trail-console` are also
