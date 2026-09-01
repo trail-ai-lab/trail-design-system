@@ -5,7 +5,13 @@ export interface ResearchCardItem {
   index: string
   title: string
   funders: string[]
-  href: string
+  /**
+   * Destination for the whole-card link. Omit to render a static card —
+   * useful while an area's detail page doesn't exist yet. Leaving it out
+   * also drops the hover affordances, so the card doesn't advertise a
+   * click that goes nowhere.
+   */
+  href?: string
 }
 
 export interface ResearchCardProps {
@@ -20,12 +26,16 @@ export interface ResearchCardProps {
  * PublicationList.
  */
 export function ResearchCard({ research, className }: ResearchCardProps) {
+  const isLinked = Boolean(research.href)
+
   return (
-    <Card className={cn("relative transition-colors hover:bg-accent", className)}>
-      <a href={research.href} className="absolute inset-0" aria-label={research.title} />
+    <Card className={cn("relative", isLinked && "transition-colors hover:bg-accent", className)}>
+      {research.href ? (
+        <a href={research.href} className="absolute inset-0" aria-label={research.title} />
+      ) : null}
       <CardContent className="flex flex-1 flex-col gap-6">
         <span className="font-mono text-xs text-muted-foreground">{research.index}</span>
-        <CardTitle className="text-xl tracking-tight group-hover/card:text-primary">
+        <CardTitle className={cn("text-xl tracking-tight", isLinked && "group-hover/card:text-primary")}>
           {research.title}
         </CardTitle>
         {research.funders.length > 0 ? (
