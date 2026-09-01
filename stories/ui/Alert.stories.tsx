@@ -36,7 +36,7 @@ export const WithAction: Story = {
     <Alert className="w-96">
       <Info />
       <AlertTitle>New preset available</AlertTitle>
-      <AlertDescription>The SLAI preset has been updated with new teal tokens.</AlertDescription>
+      <AlertDescription>The SLAI preset has been updated with new red tokens.</AlertDescription>
       <AlertAction>
         <Button size="sm" variant="outline">Update now</Button>
       </AlertAction>

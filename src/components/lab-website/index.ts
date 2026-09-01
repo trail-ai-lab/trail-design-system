@@ -21,6 +21,17 @@ export { RecentNews, type RecentNewsProps } from "./recent-news"
 
 // Research
 export { ResearchCard, type ResearchCardItem, type ResearchCardProps } from "./research-card"
+export {
+  ResearchDetail,
+  type ResearchDetailData,
+  type ResearchDetailProps,
+  type ResearchPerson,
+} from "./research-detail"
+export {
+  ResearchIntro,
+  type ResearchIntroFaq,
+  type ResearchIntroProps,
+} from "./research-intro"
 
 // Publications
 export { PublicationList, type Publication, type PublicationListProps } from "./publication-list"
