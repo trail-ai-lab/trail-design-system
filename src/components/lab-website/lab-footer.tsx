@@ -53,13 +53,18 @@ export function LabFooter({
       {backdrop}
       <div className="relative mx-auto max-w-6xl px-6 py-16 md:py-20 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-12">
-          <div className="flex flex-col items-start gap-4 lg:col-span-5">
-            <a href="https://www.wisc.edu" aria-label="University of Wisconsin–Madison" className="text-foreground hover:text-primary">
-              <UwCrest className="h-28 w-auto" />
-            </a>
-            <a href="https://www.wisconsin.edu" className="text-sm text-muted-foreground hover:text-foreground">
-              Part of the Universities of Wisconsin
-            </a>
+          <div className="flex flex-col items-start lg:col-span-5">
+            {/* Inner wrapper shrinks to its widest child (the line of text), so
+                items-center centers the narrower crest over that text while the
+                group as a whole stays flush left in the column. */}
+            <div className="flex flex-col items-center gap-4">
+              <a href="https://www.wisc.edu" aria-label="University of Wisconsin–Madison" className="text-foreground hover:text-primary">
+                <UwCrest className="h-28 w-auto" />
+              </a>
+              <a href="https://www.wisconsin.edu" className="text-sm text-muted-foreground hover:text-foreground">
+                Part of the Universities of Wisconsin
+              </a>
+            </div>
           </div>
 
           {hasContact ? (

@@ -50,7 +50,7 @@ export function Header({
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
         <a href="/" className="flex items-center gap-2 font-heading text-lg font-semibold tracking-tight text-foreground">
-          <Logo className="h-7 text-primary" />
+          <Logo className="h-7 text-foreground" />
           {logoText}
         </a>
 
