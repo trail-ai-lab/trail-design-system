@@ -31,7 +31,14 @@ export function ResourceCard({ resource, className }: ResourceCardProps) {
   if (resource.variant === "tool") {
     return (
       <Card className={cn("pt-0", className)}>
-        <div className="aspect-video bg-muted bg-[radial-gradient(circle_at_1px_1px,var(--color-border)_1px,transparent_0)] bg-[length:20px_20px]" />
+        {/* The dotted pattern is the empty/loading state; the screenshot sits on
+            top of it when the resource has one. Card is overflow-hidden, so the
+            top corners clip without any rounding here. */}
+        <div className="aspect-video bg-muted bg-[radial-gradient(circle_at_1px_1px,var(--color-border)_1px,transparent_0)] bg-[length:20px_20px]">
+          {resource.image ? (
+            <img src={resource.image} alt="" loading="lazy" className="size-full object-cover" />
+          ) : null}
+        </div>
         <CardContent className="flex flex-1 flex-col gap-2">
           <CardTitle className="text-lg">{resource.title}</CardTitle>
           {resource.description ? (
