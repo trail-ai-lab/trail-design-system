@@ -87,7 +87,7 @@ function TranscriptRow({
       }
       meta={
         groupName && (
-          <Badge variant="outline" className="h-4 px-1.5 text-[10px]">
+          <Badge variant="outline" className="h-4 px-1.5 text-xs">
             {groupName}
           </Badge>
         )

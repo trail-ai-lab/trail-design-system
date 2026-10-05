@@ -141,7 +141,7 @@ function SlaiSidebar({
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <Logo className="h-5 text-primary" />
+          <Logo className="h-5 text-foreground" />
           <span className="font-heading text-sm font-semibold">SLAI</span>
         </div>
       </SidebarHeader>

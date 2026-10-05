@@ -372,6 +372,8 @@ function LiveWaveform({
         (() => {
           const style = getComputedStyle(canvas)
           const color = style.color
+          // Canvas 2D cannot resolve CSS variables; this only fires when the
+          // element has no computed color at all.
           return color || "#000"
         })()
       const step = barWidth + barGap
@@ -420,6 +422,8 @@ function LiveWaveform({
       }
       if (fadeEdges && fadeWidth > 0 && rect.width > 0) {
         if (!gradientCacheRef.current || lastWidthRef.current !== rect.width) {
+          // Alpha-only mask for the "destination-out" fade below — the RGB
+          // value is irrelevant, only the alpha stops matter.
           const gradient = ctx.createLinearGradient(0, 0, rect.width, 0)
           const fadePercent = Math.min(0.3, fadeWidth / rect.width)
           gradient.addColorStop(0, "rgba(255,255,255,1)")

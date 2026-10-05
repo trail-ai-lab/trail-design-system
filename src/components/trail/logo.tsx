@@ -7,8 +7,9 @@ export interface LogoProps {
 /**
  * The TRAIL Lab mark: two peaks split by a switchback trail. Renders with
  * `fill="currentColor"` so it inherits whatever text color class is passed
- * (`text-foreground`, `text-primary`, `text-primary-foreground` on a filled
- * surface, etc.) and follows theme changes automatically.
+ * (`text-foreground`, or `text-background` on a `bg-foreground` surface).
+ * The mark is monochrome (black in light mode, white in dark), so don't
+ * color it with `text-primary`.
  */
 function Logo({ className }: LogoProps) {
   return (

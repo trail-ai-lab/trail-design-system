@@ -33,6 +33,10 @@ export {
   type TranscriptEntry,
   type TranscriptGroup,
 } from "./transcript-card"
+export {
+  TranscriptUtteranceRow,
+  type TranscriptUtterance,
+} from "./transcript-utterance-row"
 export { GroupSwitcher, ALL_GROUPS, type SwitcherGroup } from "./group-switcher"
 export { InvitePanel, InviteStudentsSheet } from "./invite-students-sheet"
 export {

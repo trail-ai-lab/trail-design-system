@@ -30,10 +30,9 @@ export const ColorTokens: Story = {
   render: () => (
     <div className="flex items-center gap-6">
       <Logo className="h-10 text-foreground" />
-      <Logo className="h-10 text-primary" />
       <Logo className="h-10 text-muted-foreground" />
-      <div className="rounded-md bg-primary p-3">
-        <Logo className="h-10 text-primary-foreground" />
+      <div className="rounded-md bg-foreground p-3">
+        <Logo className="h-10 text-background" />
       </div>
     </div>
   ),
@@ -43,7 +42,7 @@ export const ColorTokens: Story = {
 export const Lockup: Story = {
   render: () => (
     <div className="flex items-center gap-2 font-heading text-lg font-semibold tracking-tight text-foreground">
-      <Logo className="h-7 text-primary" />
+      <Logo className="h-7 text-foreground" />
       TRAIL Lab
     </div>
   ),

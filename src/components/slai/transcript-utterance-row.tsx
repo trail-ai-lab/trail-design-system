@@ -1,6 +1,8 @@
 import * as React from "react"
 import { LanguagesIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
+
 export interface TranscriptUtterance {
   /** Formatted time of the utterance, e.g. "3:42 PM" */
   timestamp?: string
@@ -23,16 +25,18 @@ function TranscriptUtteranceRow({
   leading,
   meta,
   entry,
+  className,
 }: {
   leading: React.ReactNode
   meta?: React.ReactNode
   entry: TranscriptUtterance
+  className?: string
 }) {
   const showTranslation =
     Boolean(entry.translation) && entry.translation !== entry.original
 
   return (
-    <div className="flex gap-3">
+    <div className={cn("flex gap-3", className)}>
       {leading}
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
