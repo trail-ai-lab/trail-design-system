@@ -75,3 +75,14 @@ export const Unnamed: Story = {
     className: "h-full",
   },
 }
+
+/** `onPlayEntry` adds a per-utterance play button; `playingEntryId` marks the active one. */
+export const WithSegmentPlayback: Story = {
+  args: {
+    speakers: SPEAKERS,
+    entries: ENTRIES,
+    className: "h-full",
+    playingEntryId: ENTRIES[0]?.id,
+    onPlayEntry: () => {},
+  },
+}

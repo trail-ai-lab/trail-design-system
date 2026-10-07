@@ -8,9 +8,11 @@ import {
 } from "@/components/slai/group-switcher"
 
 const GROUPS: SwitcherGroup[] = [
-  { id: "group-1", name: "Group 1", memberCount: 5, status: "recording" },
-  { id: "group-2", name: "Group 2", memberCount: 2, status: "paused" },
-  { id: "group-3", name: "Group 3", memberCount: 3, status: "uploaded" },
+  { id: "group-1", name: "Group 1", status: "recording" },
+  { id: "group-2", name: "Group 2", status: "paused" },
+  { id: "group-3", name: "Group 3", status: "uploaded" },
+  { id: "group-4", name: "Group 4", status: "stopped" },
+  { id: "group-5", name: "Group 5", status: "idle" },
 ]
 
 const meta: Meta<typeof GroupSwitcher> = {

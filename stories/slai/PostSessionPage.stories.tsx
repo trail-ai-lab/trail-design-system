@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs"
 import {
   AudioLinesIcon,
   DownloadIcon,
+  MessagesSquareIcon,
   MoreHorizontalIcon,
   PencilIcon,
   ShapesIcon,
@@ -10,6 +11,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -25,11 +27,17 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { GoalsPanel } from "@/components/slai/goals-panel"
+import { INSIGHTS } from "./_student-fixtures"
 import { ActivityLogCard } from "@/components/slai/activity-log-card"
 import { AppShell } from "@/components/slai/app-shell"
 import { AudioPlayerCard } from "@/components/slai/audio-player-card"
 import { ALL_GROUPS, GroupSwitcher } from "@/components/slai/group-switcher"
 import { ParticipationCard } from "@/components/slai/participation-card"
+import {
+  TranscriptCard,
+  type TranscriptGroup,
+} from "@/components/slai/transcript-card"
 import {
   RecordedTranscriptCard,
   type RecordedEntry,
@@ -259,6 +267,12 @@ const GROUP_2 = {
 
 const GROUPS = [GROUP_1, GROUP_2]
 
+// The raw transcript: same utterances, but the speaker is unknown.
+const TRANSCRIPT_GROUPS: TranscriptGroup[] = GROUPS.map((group) => ({
+  ...group,
+  students: group.speakers.map((speaker) => speaker.name),
+}))
+
 const ALL_SUMMARY =
   "Both groups studied how ramp angle affects ball speed on the Inclined Plane trail. Group 1 ran three angles and concluded steeper ramps accelerate the ball more; Group 2 focused on establishing a flat baseline first. Across the class, students connected ramp angle to acceleration."
 
@@ -288,6 +302,7 @@ const SLAI_SIDEBAR = (
 function PostSessionPage() {
   const [scope, setScope] = React.useState(ALL_GROUPS)
   const [audioVisible, setAudioVisible] = React.useState(false)
+  const [qaVisible, setQaVisible] = React.useState(false)
   const isAll = scope === ALL_GROUPS
   const activeGroup = GROUPS.find((group) => group.id === scope)
   const scopeLabel = isAll ? "All groups" : (activeGroup?.name ?? "")
@@ -312,6 +327,18 @@ function PostSessionPage() {
             onValueChange={setScope}
           />
           <div className="ml-auto flex items-center gap-2">
+            <Toggle
+              variant="outline"
+              size="lg"
+              pressed={qaVisible}
+              onPressedChange={setQaVisible}
+              aria-label="Toggle Q&A"
+              // Primary: Q&A is the most-used panel toggle on this page.
+              className="border-primary text-primary hover:bg-primary/10 hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:hover:bg-primary/80"
+            >
+              <MessagesSquareIcon data-icon="inline-start" />
+              Q&amp;A
+            </Toggle>
             {!isAll && (
               <Toggle
                 variant="outline"
@@ -357,12 +384,19 @@ function PostSessionPage() {
       <div className="min-h-0 flex-1 overflow-y-auto">
         {isAll ? (
           // Combined view: only Summary and Q&A make sense across groups.
-          <div className="grid gap-(--shell-gap) p-(--shell-gap) lg:h-full lg:grid-cols-2">
-            <SessionChatCard
-              className="h-[480px] lg:h-full"
-              scopeLabel={scopeLabel}
-              messages={chat}
-            />
+          <div
+            className={cn(
+              "grid gap-(--shell-gap) p-(--shell-gap) lg:h-full",
+              qaVisible && "lg:grid-cols-2"
+            )}
+          >
+            {qaVisible && (
+              <SessionChatCard
+                className="h-[480px] lg:h-full"
+                scopeLabel={scopeLabel}
+                messages={chat}
+              />
+            )}
             <SummaryCard
               className="lg:h-full"
               scopeLabel={scopeLabel}
@@ -379,31 +413,54 @@ function PostSessionPage() {
                 />
               )}
 
-              <div className="grid gap-(--shell-gap) lg:min-h-0 lg:flex-1 lg:grid-cols-2">
-                    <SessionChatCard
-                      className="h-[60svh] lg:h-full"
-                      scopeLabel={scopeLabel}
-                      messages={chat}
-                    />
+              <div
+                className={cn(
+                  "grid gap-(--shell-gap) lg:min-h-0 lg:flex-1",
+                  qaVisible && "lg:grid-cols-2"
+                )}
+              >
+                    {qaVisible && (
+                      <SessionChatCard
+                        className="h-[60svh] lg:h-full"
+                        scopeLabel={scopeLabel}
+                        messages={chat}
+                      />
+                    )}
 
                     <Tabs
-                      defaultValue="transcript"
+                      defaultValue="goals"
                       className="h-[60svh] min-h-0 lg:h-full"
                     >
                       <TabsList className="w-full">
+                        <TabsTrigger value="goals">Goals</TabsTrigger>
                         <TabsTrigger value="transcript">Transcript</TabsTrigger>
                         <TabsTrigger value="summary">Summary</TabsTrigger>
-                        <TabsTrigger value="participation">
-                          Participation
-                        </TabsTrigger>
+                        <TabsTrigger value="speakers">Speakers</TabsTrigger>
                         <TabsTrigger value="activity">Activity</TabsTrigger>
                       </TabsList>
+                      <TabsContent
+                        value="goals"
+                        className="min-h-0 overflow-y-auto rounded-2xl border border-border p-4"
+                      >
+                        <GoalsPanel
+                          standardLabel="CCSS"
+                          students={INSIGHTS}
+                          goal={{
+                            standardCode: "3.OA.A.2",
+                            languageObjective: "Explain equal sharing using \"each\".",
+                            standardDescription:
+                              "Interpret whole-number quotients as the number of objects in each share.",
+                          }}
+                        />
+                      </TabsContent>
                       <TabsContent value="transcript" className="min-h-0">
-                        <RecordedTranscriptCard
-                          key={scope}
+                        <TranscriptCard
                           className="h-full"
-                          speakers={activeGroup.speakers}
-                          entries={activeGroup.entries}
+                          title="Transcript"
+                          groups={TRANSCRIPT_GROUPS}
+                          scope={scope}
+                          status={activeGroup.status}
+                          autoScroll={false}
                         />
                       </TabsContent>
                       <TabsContent value="summary" className="min-h-0">
@@ -413,11 +470,20 @@ function PostSessionPage() {
                           summary={summary}
                         />
                       </TabsContent>
-                      <TabsContent value="participation" className="min-h-0">
+                      <TabsContent
+                        value="speakers"
+                        className="flex min-h-0 flex-col gap-(--shell-gap)"
+                      >
                         <ParticipationCard
-                          className="h-full"
+                          className="shrink-0"
                           scopeLabel={scopeLabel}
                           students={activeGroup.participation}
+                        />
+                        <RecordedTranscriptCard
+                          key={scope}
+                          className="min-h-80 flex-1"
+                          speakers={activeGroup.speakers}
+                          entries={activeGroup.entries}
                         />
                       </TabsContent>
                       <TabsContent value="activity" className="min-h-0">

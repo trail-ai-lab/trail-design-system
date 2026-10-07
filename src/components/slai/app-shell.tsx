@@ -40,11 +40,12 @@ function ThemeToggle() {
 }
 
 /** Command-palette-style search trigger. Presentational for now. */
-function SearchButton() {
+function SearchButton({ onClick }: { onClick?: () => void }) {
   return (
     <Button
       variant="outline"
       size="sm"
+      onClick={onClick}
       className="hidden font-normal text-muted-foreground sm:inline-flex"
     >
       <SearchIcon data-icon="inline-start" />
@@ -55,10 +56,10 @@ function SearchButton() {
 }
 
 /** The default right-aligned header cluster shared by every page. */
-function SiteHeaderActions() {
+function SiteHeaderActions({ onSearch }: { onSearch?: () => void }) {
   return (
     <div className="ml-auto flex items-center gap-1.5">
-      <SearchButton />
+      <SearchButton onClick={onSearch} />
       <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
         <a href={TRAIL_LAB_URL} target="_blank" rel="noreferrer">
           TRAIL Lab
@@ -83,7 +84,8 @@ function AppShell({
   sidebar,
   title,
   toolbar,
-  headerActions = <SiteHeaderActions />,
+  onSearch,
+  headerActions = <SiteHeaderActions onSearch={onSearch} />,
   children,
 }: {
   /** The sidebar element, e.g. <SlaiSidebar … />. */
@@ -92,6 +94,8 @@ function AppShell({
   title?: React.ReactNode
   /** Optional second row under the header (group switcher, page actions). */
   toolbar?: React.ReactNode
+  /** Called when the header search button is clicked; open your GlobalSearch. */
+  onSearch?: () => void
   /** Right-aligned header cluster. Defaults to the shared search / link / theme set. */
   headerActions?: React.ReactNode
   children: React.ReactNode

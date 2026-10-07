@@ -3,7 +3,6 @@
 import { LayersIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   statusDotClassName,
@@ -16,7 +15,6 @@ export const ALL_GROUPS = "all"
 export interface SwitcherGroup {
   id: string
   name: string
-  memberCount: number
   active?: boolean
   /** Audio state; colors the group's dot (red/amber/blue) */
   status?: SessionStatus
@@ -65,9 +63,6 @@ function GroupSwitcher({
               )}
             />
             {group.name}
-            <Badge variant="secondary" className="px-1.5">
-              {group.memberCount}
-            </Badge>
           </TabsTrigger>
         ))}
       </TabsList>

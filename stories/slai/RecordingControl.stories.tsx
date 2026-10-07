@@ -31,3 +31,11 @@ export const Recording: Story = {
 export const Paused: Story = {
   args: { defaultState: "paused" },
 }
+
+export const Connecting: Story = {
+  args: { pending: "connecting" },
+}
+
+export const Stopping: Story = {
+  args: { defaultState: "recording", pending: "stopping" },
+}

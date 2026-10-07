@@ -69,3 +69,11 @@ export const InSheet: Story = {
     </LanguageSettingsSheet>
   ),
 }
+
+export const ProfanityFilterOn: Story = {
+  render: () => (
+    <LanguageSettingsForm
+      value={{ ...defaultLanguageSettings, profanityFilter: true }}
+    />
+  ),
+}

@@ -72,14 +72,17 @@ function TranscriptRow({
   entry,
   groupName,
   translationLanguage,
+  highlighted,
 }: {
   entry: TranscriptEntry
   /** Set in the combined view to show which group the line came from */
   groupName?: string
   translationLanguage?: string
+  highlighted?: boolean
 }) {
   return (
     <TranscriptUtteranceRow
+      highlighted={highlighted}
       leading={
         <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted">
           <AudioLinesIcon className="size-3.5 text-muted-foreground" />
@@ -101,16 +104,21 @@ function TranscriptRow({
  * Hero card for the live session. Shows the active group's transcript — or
  * every group's, interleaved and badged — with translations stacked below
  * each utterance. The speaker is not identified; the detected language leads.
+ * Also used after a session (with `title="Transcript"`) to show the raw,
+ * speaker-unknown transcript alongside the diarized one.
  */
 function TranscriptCard({
+  title = "Live transcript",
   groups,
   scope = ALL_GROUPS,
   status = "recording",
   translationLanguage,
   allLabel = "All groups",
   autoScroll = true,
+  highlightedEntryId,
   className,
 }: {
+  title?: React.ReactNode
   groups: TranscriptGroup[]
   /** Active group id, or `ALL_GROUPS` for the combined view */
   scope?: string
@@ -121,6 +129,8 @@ function TranscriptCard({
   allLabel?: string
   /** Keep the newest entries in view as they arrive */
   autoScroll?: boolean
+  /** Entry to emphasize, e.g. the sentence a chat answer cites */
+  highlightedEntryId?: string
   className?: string
 }) {
   const isAll = scope === ALL_GROUPS
@@ -156,7 +166,7 @@ function TranscriptCard({
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2.5">
-          Live transcript
+          {title}
           <SessionStatusBadge status={status} />
         </CardTitle>
         <div className="col-start-1 row-start-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -208,6 +218,7 @@ function TranscriptCard({
                   entry={entry}
                   groupName={isAll ? group?.name : undefined}
                   translationLanguage={translationLanguage}
+                  highlighted={entry.id === highlightedEntryId}
                 />
               ))}
             </div>

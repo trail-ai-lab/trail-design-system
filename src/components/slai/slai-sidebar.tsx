@@ -5,6 +5,7 @@ import {
   AudioLinesIcon,
   ChevronRightIcon,
   EllipsisVerticalIcon,
+  FileTextIcon,
   FolderIcon,
   MicIcon,
   MoreHorizontalIcon,
@@ -40,6 +41,7 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSkeleton,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
@@ -55,6 +57,29 @@ export interface SidebarPeriod {
   name: string
   /** Marks this period as the one currently being viewed. */
   active?: boolean
+}
+
+/** A saved source (quick recording or uploaded document). */
+export interface SidebarSource {
+  name: string
+  /** Picks the row icon; defaults to audio */
+  type?: "audio" | "pdf"
+}
+
+/** The row a Rename / Delete menu action was triggered on. */
+export interface SidebarItemTarget {
+  kind: "session" | "period" | "source"
+  name: string
+  /** For a period, the session folder it belongs to */
+  parent?: string
+}
+
+/** A student listed in the sidebar's Students group. */
+export interface SidebarStudent {
+  id: string
+  name: string
+  /** Primary language, shown muted at the row's end, e.g. "Spanish" */
+  language?: string
 }
 
 export interface SidebarUser {
@@ -79,16 +104,24 @@ export type SlaiNavId = (typeof NAV_ITEMS)[number]["id"]
  * is the row's hover action button (a SidebarMenuAction for top-level rows or
  * a positioned button for sub-rows).
  */
-function RowMenu({ trigger }: { trigger: React.ReactNode }) {
+function RowMenu({
+  trigger,
+  onRename,
+  onDelete,
+}: {
+  trigger: React.ReactNode
+  onRename?: () => void
+  onDelete?: () => void
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent side="right" align="start">
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={onRename}>
           <PencilIcon />
           Rename
         </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive">
+        <DropdownMenuItem variant="destructive" onSelect={onDelete}>
           <Trash2Icon />
           Delete
         </DropdownMenuItem>
@@ -125,17 +158,36 @@ function SlaiSidebar({
   user,
   activeNav,
   activeSource,
+  students,
+  activeStudent,
   defaultOpenSession,
+  sessionsLoading = false,
+  sourcesLoading = false,
+  onRename,
+  onDelete,
 }: {
   sessions: SidebarSession[]
-  sources: string[]
+  /** Source names, or objects when a row needs a file-type icon */
+  sources: Array<string | SidebarSource>
   user: SidebarUser
   /** Which primary nav item is highlighted. */
   activeNav?: SlaiNavId
   /** Name of the source (quick recording) currently being viewed. */
   activeSource?: string
+  /** Students to list in a "Students" group (omit to hide the group) */
+  students?: SidebarStudent[]
+  /** Id of the student whose progress page is open */
+  activeStudent?: string
   /** Name of the session folder expanded on first render. */
   defaultOpenSession?: string
+  /** Show skeleton rows instead of the session tree */
+  sessionsLoading?: boolean
+  /** Show skeleton rows instead of the sources list */
+  sourcesLoading?: boolean
+  /** Rename menu item chosen; open your RenameDialog for `target` */
+  onRename?: (target: SidebarItemTarget) => void
+  /** Delete menu item chosen; open your DeleteConfirmDialog for `target` */
+  onDelete?: (target: SidebarItemTarget) => void
 }) {
   return (
     <Sidebar>
@@ -161,7 +213,14 @@ function SlaiSidebar({
         <SidebarGroup>
           <SidebarGroupLabel>Sessions</SidebarGroupLabel>
           <SidebarMenu>
-            {sessions.map((session) => (
+            {sessionsLoading &&
+              [0, 1, 2].map((i) => <SidebarMenuSkeleton key={i} showIcon />)}
+            {!sessionsLoading && sessions.length === 0 && (
+              <p className="px-2 py-1.5 text-xs text-sidebar-foreground/60">
+                No sessions found
+              </p>
+            )}
+            {!sessionsLoading && sessions.map((session) => (
               <Collapsible
                 key={session.name}
                 defaultOpen={session.name === defaultOpenSession}
@@ -176,6 +235,12 @@ function SlaiSidebar({
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <RowMenu
+                    onRename={() =>
+                      onRename?.({ kind: "session", name: session.name })
+                    }
+                    onDelete={() =>
+                      onDelete?.({ kind: "session", name: session.name })
+                    }
                     trigger={
                       <SidebarMenuAction
                         showOnHover
@@ -196,6 +261,20 @@ function SlaiSidebar({
                             <span className="truncate">{period.name}</span>
                           </SidebarMenuSubButton>
                           <RowMenu
+                            onRename={() =>
+                              onRename?.({
+                                kind: "period",
+                                name: period.name,
+                                parent: session.name,
+                              })
+                            }
+                            onDelete={() =>
+                              onDelete?.({
+                                kind: "period",
+                                name: period.name,
+                                parent: session.name,
+                              })
+                            }
                             trigger={
                               <SubRowAction label={`${period.name} options`} />
                             }
@@ -212,23 +291,68 @@ function SlaiSidebar({
         <SidebarGroup>
           <SidebarGroupLabel>Sources</SidebarGroupLabel>
           <SidebarMenu>
-            {sources.map((source) => (
-              <SidebarMenuItem key={source}>
-                <SidebarMenuButton isActive={source === activeSource}>
-                  <AudioLinesIcon />
-                  <span className="truncate">{source}</span>
-                </SidebarMenuButton>
-                <RowMenu
-                  trigger={
-                    <SidebarMenuAction showOnHover aria-label={`${source} options`}>
-                      <EllipsisVerticalIcon />
-                    </SidebarMenuAction>
-                  }
-                />
-              </SidebarMenuItem>
-            ))}
+            {sourcesLoading &&
+              [0, 1].map((i) => <SidebarMenuSkeleton key={i} showIcon />)}
+            {!sourcesLoading &&
+              sources.map((entry) => {
+                const source =
+                  typeof entry === "string" ? { name: entry } : entry
+                const SourceIcon =
+                  source.type === "pdf" ? FileTextIcon : AudioLinesIcon
+                return (
+                  <SidebarMenuItem key={source.name}>
+                    <SidebarMenuButton isActive={source.name === activeSource}>
+                      <SourceIcon />
+                      <span className="truncate">{source.name}</span>
+                    </SidebarMenuButton>
+                    <RowMenu
+                      onRename={() =>
+                        onRename?.({ kind: "source", name: source.name })
+                      }
+                      onDelete={() =>
+                        onDelete?.({ kind: "source", name: source.name })
+                      }
+                      trigger={
+                        <SidebarMenuAction
+                          showOnHover
+                          aria-label={`${source.name} options`}
+                        >
+                          <EllipsisVerticalIcon />
+                        </SidebarMenuAction>
+                      }
+                    />
+                  </SidebarMenuItem>
+                )
+              })}
           </SidebarMenu>
         </SidebarGroup>
+        {students && students.length > 0 && (
+          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel>Students</SidebarGroupLabel>
+            <SidebarMenu>
+              {students.map((student) => (
+                <SidebarMenuItem key={student.id}>
+                  <SidebarMenuButton isActive={student.id === activeStudent}>
+                    <span
+                      aria-hidden
+                      className={
+                        student.id === activeStudent
+                          ? "size-2 shrink-0 rounded-full bg-primary"
+                          : "size-2 shrink-0 rounded-full bg-muted-foreground/40"
+                      }
+                    />
+                    <span className="truncate">{student.name}</span>
+                    {student.language && (
+                      <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                        {student.language}
+                      </span>
+                    )}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <div className="flex items-center gap-2 px-2 py-1.5">

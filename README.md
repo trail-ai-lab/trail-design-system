@@ -1,33 +1,22 @@
 # @trail-ai-lab/trail-design-system
 
 Trail Lab's shared design system — Shadcn-based UI primitives plus components for the Trail
-Lab website and internal research tools (SLAI, and future tools). Published to GitHub
-Packages so other Trail Lab repos can install and share the same components, tokens, and
-visual language.
+Lab website and internal research tools (SLAI, and future tools). Other Trail Lab repos
+install it from a git release tag so they share the same components, tokens, and visual
+language.
 
 ## Consuming this package
 
-This package is published as **`@trail-ai-lab/trail-design-system`** on **GitHub
-Packages**, not the public npm registry. GitHub Packages is private by default: pulling
-the package into a consumer repo requires an authenticated `read:packages` token, the
-same as publishing does — an anonymous `pnpm install` will fail with a bare "package not
-found" even though the package exists.
-
-Add to your consuming repo's `.npmrc` (see [`.npmrc`](.npmrc) in this repo for the
-matching pattern used here):
+The package is **`@trail-ai-lab/trail-design-system`**. It is not published to a registry:
+consumers install it from a git release tag and bump the tag themselves when they want a
+newer version. No registry config or auth token is needed.
 
 ```
-@trail-ai-lab:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+pnpm add github:trail-ai-lab/trail-design-system#v2.1.1
 ```
 
-`NODE_AUTH_TOKEN` needs `read:packages` access to this repo (a GitHub PAT, or
-`GITHUB_TOKEN` in Actions — Actions' default token only has read access to packages in
-the same repo, so cross-repo consumers need a PAT). Then install:
-
-```
-pnpm add @trail-ai-lab/trail-design-system
-```
+(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v2.1.1"`
+entry in `package.json`). Installing runs this repo's `prepare` script, which builds `dist/`.
 
 `react`, `react-dom`, and `next` are peer dependencies — the consuming app supplies its own.
 
@@ -77,15 +66,12 @@ the published package.
 
 ## Versioning & releases
 
-This repo uses [changesets](https://github.com/changesets/changesets). Any PR that
-changes published behavior should include a changeset:
+Releases are git tags (`vX.Y.Z`). To cut one, bump `version` in `package.json`, add an entry
+to [`CHANGELOG.md`](CHANGELOG.md) describing what changed (move anything under "Unreleased"),
+merge to `main`, then tag the merge commit:
 
 ```
-pnpm changeset
+git tag vX.Y.Z && git push origin vX.Y.Z
 ```
 
-On merge to `main`, CI either opens/updates a "Version Packages" PR (if changesets are
-pending) or publishes to GitHub Packages (once that PR is merged and the version bump is
-on `main`). See [`CHANGELOG.md`](CHANGELOG.md) for release history and
-[`.github/workflows/publish.yml`](.github/workflows/publish.yml) for the release
-pipeline.
+Consumers pick up the change by updating the tag in their own `package.json`.

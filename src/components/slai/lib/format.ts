@@ -16,3 +16,17 @@ export function initials(name: string) {
     .slice(0, 2)
     .toUpperCase()
 }
+
+/** "mm:ss" — compact elapsed time for status badges and timers. */
+export function formatElapsed(totalSeconds: number) {
+  const m = Math.floor(totalSeconds / 60)
+  const s = Math.floor(totalSeconds % 60)
+  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
+}
+
+/** "1.4 MB" / "320 KB" — human file size. */
+export function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}

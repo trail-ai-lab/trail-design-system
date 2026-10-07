@@ -45,3 +45,53 @@ export const AllGroups: Story = {
 export const Loading: Story = {
   args: { scopeLabel: "Group 1", loading: true },
 }
+
+export const CheckingIn: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    summary: "Group 1 is comparing ramp angles.",
+    onCheckIn: () => {},
+    checkingIn: true,
+  },
+}
+
+export const SinceCheckin: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    since: "10:42 AM",
+    summary:
+      "- Compared three ramp angles\n- Connected steeper ramps to faster balls\n- Still deciding how to measure speed",
+    onCheckIn: () => {},
+  },
+}
+
+export const ThinSummary: Story = {
+  args: {
+    scopeLabel: "Group 2",
+    since: "10:55 AM",
+    thinSummaryTurns: 3,
+    summary: "Group 2 has only just started discussing friction.",
+    onCheckIn: () => {},
+  },
+}
+
+export const WithEarlierPhases: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    since: "10:55 AM",
+    summary: "- Moved on to graphing speed against angle",
+    onCheckIn: () => {},
+    earlierPhases: [
+      {
+        id: "p2",
+        checkinAt: "10:55 AM",
+        summary: "- Built the ramps\n- Agreed on three test angles",
+      },
+      {
+        id: "p1",
+        checkinAt: "10:42 AM",
+        summary: "Group 1 brainstormed what could affect ball speed.",
+      },
+    ],
+  },
+}

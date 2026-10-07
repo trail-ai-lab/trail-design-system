@@ -18,3 +18,7 @@ export const Spoken: Story = {
 export const Translation: Story = {
   args: { variant: "translation", languages: ["English (US)"] },
 }
+
+export const Detected: Story = {
+  args: { variant: "detected", languages: ["Marathi"] },
+}

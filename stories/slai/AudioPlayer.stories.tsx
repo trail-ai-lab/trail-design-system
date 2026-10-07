@@ -26,3 +26,11 @@ export const Default: Story = {
 export const ShortClip: Story = {
   args: { title: "Group 2 recording", durationSeconds: 312 },
 }
+
+export const Compact: Story = {
+  args: { durationSeconds: 312, compact: true },
+}
+
+export const Loading: Story = {
+  args: { loading: true },
+}

@@ -36,6 +36,8 @@ export const WithIcons: Story = {
       <SessionStatusBadge status="recording" showIcon />
       <SessionStatusBadge status="paused" showIcon />
       <SessionStatusBadge status="uploaded" showIcon />
+      <SessionStatusBadge status="stopped" showIcon />
+      <SessionStatusBadge status="idle" showIcon />
     </div>
   ),
 }
@@ -46,6 +48,22 @@ export const AllVariants: Story = {
       <SessionStatusBadge status="recording" />
       <SessionStatusBadge status="paused" />
       <SessionStatusBadge status="uploaded" />
+      <SessionStatusBadge status="stopped" />
+      <SessionStatusBadge status="idle" />
+    </div>
+  ),
+}
+
+export const Stopped: Story = { args: { status: "stopped" } }
+
+export const Idle: Story = { args: { status: "idle" } }
+
+/** `elapsedSeconds` appends a live mm:ss timer to recording and paused badges. */
+export const WithTimer: Story = {
+  render: () => (
+    <div className="flex items-center gap-2">
+      <SessionStatusBadge status="recording" elapsedSeconds={754} />
+      <SessionStatusBadge status="paused" elapsedSeconds={1310} />
     </div>
   ),
 }

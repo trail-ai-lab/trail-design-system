@@ -4,6 +4,7 @@ import * as React from "react"
 import { MicIcon, PauseIcon, PlayIcon, SquareIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
 import { formatDuration } from "@/components/slai/lib/format"
 
@@ -22,6 +23,7 @@ function RecordingControl({
     paused: "Paused — tap to resume",
   },
   defaultState = "idle",
+  pending,
   className,
 }: {
   captions?: { idle: string; recording: string; paused: string }
@@ -29,6 +31,9 @@ function RecordingControl({
    * recording/paused without a real interaction. Real usage always starts
    * idle. */
   defaultState?: RecordingState
+  /** Transitional state: the mic is connecting or the recording is being
+   * finalized. Disables both buttons and shows a spinner. */
+  pending?: "connecting" | "stopping"
   className?: string
 }) {
   const [state, setState] = React.useState<RecordingState>(defaultState)
@@ -67,6 +72,7 @@ function RecordingControl({
                 current === "recording" ? "paused" : "recording"
               )
             }
+            disabled={Boolean(pending)}
             aria-label={
               state === "recording" ? "Pause recording" : "Resume recording"
             }
@@ -84,11 +90,14 @@ function RecordingControl({
           type="button"
           size="icon"
           variant={state === "idle" ? "outline" : "destructive"}
+          disabled={Boolean(pending)}
           onClick={state === "idle" ? () => setState("recording") : stop}
           aria-label={state === "idle" ? "Start recording" : "Stop recording"}
           className="size-24 rounded-full"
         >
-          {state === "idle" ? (
+          {pending ? (
+            <Spinner className="size-8" />
+          ) : state === "idle" ? (
             <MicIcon className="size-8" />
           ) : (
             <SquareIcon className="size-8" />
@@ -97,7 +106,11 @@ function RecordingControl({
       </div>
 
       <p className="text-sm text-muted-foreground">
-        {state === "idle"
+        {pending
+          ? pending === "connecting"
+            ? "Connecting..."
+            : "Stopping..."
+          : state === "idle"
           ? captions.idle
           : state === "recording"
             ? captions.recording

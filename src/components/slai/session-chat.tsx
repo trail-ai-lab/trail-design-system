@@ -27,9 +27,19 @@ export interface ChatMessage {
   role: "user" | "assistant"
   content: string
   timestamp?: string
+  /** Transcript excerpts or groups the answer drew on, shown as chips */
+  sources?: string[]
+  /** Transcript entry id the answer points to; makes the row clickable */
+  highlight?: string
 }
 
-function ChatRow({ message }: { message: ChatMessage }) {
+function ChatRow({
+  message,
+  onMessageClick,
+}: {
+  message: ChatMessage
+  onMessageClick?: (message: ChatMessage) => void
+}) {
   if (message.role === "user") {
     return (
       <div className="flex justify-end">
@@ -39,14 +49,40 @@ function ChatRow({ message }: { message: ChatMessage }) {
       </div>
     )
   }
+  const clickable = Boolean(message.highlight && onMessageClick)
   return (
     <div className="flex gap-3">
       <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted">
         <SparklesIcon className="size-3 text-primary" />
       </div>
-      <p className="min-w-0 text-sm leading-relaxed text-foreground">
-        {message.content}
-      </p>
+      <div className="flex min-w-0 flex-col gap-2">
+        <p
+          {...(clickable && {
+            role: "button",
+            tabIndex: 0,
+            onClick: () => onMessageClick?.(message),
+            onKeyDown: (event: React.KeyboardEvent) => {
+              if (event.key === "Enter") onMessageClick?.(message)
+            },
+          })}
+          className={cn(
+            "text-sm leading-relaxed text-foreground",
+            clickable &&
+              "cursor-pointer underline-offset-4 outline-none hover:underline focus-visible:underline"
+          )}
+        >
+          {message.content}
+        </p>
+        {message.sources && message.sources.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {message.sources.map((source) => (
+              <Badge key={source} variant="outline" className="font-normal">
+                {source}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -62,6 +98,9 @@ function SessionChatCard({
   placeholder,
   loading = false,
   suggestions = [],
+  welcomeMessage,
+  onMessageClick,
+  showDisclaimer = false,
   className,
 }: {
   messages: ChatMessage[]
@@ -73,6 +112,12 @@ function SessionChatCard({
   loading?: boolean
   /** Suggested questions shown in the empty state */
   suggestions?: string[]
+  /** Assistant greeting pinned at the top of the thread */
+  welcomeMessage?: string
+  /** Called when an assistant message with a `highlight` is clicked */
+  onMessageClick?: (message: ChatMessage) => void
+  /** Footer reminding that AI answers can be wrong */
+  showDisclaimer?: boolean
   className?: string
 }) {
   const resolvedPlaceholder =
@@ -106,7 +151,7 @@ function SessionChatCard({
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
-          {messages.length === 0 && !loading ? (
+          {messages.length === 0 && !loading && !welcomeMessage ? (
             <div className="flex h-full flex-col items-center justify-center gap-3 px-(--card-spacing) py-8 text-center">
               <p className="text-sm text-muted-foreground">
                 Ask anything about what {scopeLabel ?? "your students"}{" "}
@@ -129,8 +174,21 @@ function SessionChatCard({
             </div>
           ) : (
             <div className="flex flex-col gap-4 px-(--card-spacing) py-1">
+              {welcomeMessage && (
+                <ChatRow
+                  message={{
+                    id: "welcome",
+                    role: "assistant",
+                    content: welcomeMessage,
+                  }}
+                />
+              )}
               {messages.map((message) => (
-                <ChatRow key={message.id} message={message} />
+                <ChatRow
+                  key={message.id}
+                  message={message}
+                  onMessageClick={onMessageClick}
+                />
               ))}
               {loading && (
                 <div className="flex items-center gap-3">
@@ -166,6 +224,11 @@ function SessionChatCard({
           </InputGroupAddon>
         </InputGroup>
       </CardFooter>
+      {showDisclaimer && (
+        <p className="px-(--card-spacing) text-center text-xs text-muted-foreground/70">
+          SLAI can make mistakes. Double-check important responses.
+        </p>
+      )}
     </Card>
   )
 }

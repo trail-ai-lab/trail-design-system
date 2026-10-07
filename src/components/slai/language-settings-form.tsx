@@ -13,14 +13,8 @@ import {
   FieldTitle,
 } from "@/components/ui/field"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { LanguageCombobox } from "@/components/slai/language-combobox"
 
 const DEFAULT_LANGUAGES = [
   "English (US)",
@@ -40,6 +34,8 @@ export interface LanguageSettingsValue {
   language2?: string
   translation: boolean
   translateTo: string
+  /** Mask profanity in transcripts and translations */
+  profanityFilter?: boolean
 }
 
 const defaultLanguageSettings: LanguageSettingsValue = {
@@ -49,35 +45,33 @@ const defaultLanguageSettings: LanguageSettingsValue = {
   language2: "English (US)",
   translation: true,
   translateTo: "English (US)",
+  profanityFilter: false,
 }
 
 function LanguageSelect({
   value,
   onValueChange,
   languages,
-  placeholder = "Select a language...",
+  placeholder,
   allowNone = false,
+  id,
 }: {
   value?: string
-  onValueChange: (value: string) => void
+  onValueChange: (value: string | undefined) => void
   languages: string[]
   placeholder?: string
   allowNone?: boolean
+  id?: string
 }) {
   return (
-    <Select value={value ?? ""} onValueChange={onValueChange}>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {allowNone && <SelectItem value="none">None</SelectItem>}
-        {languages.map((language) => (
-          <SelectItem key={language} value={language}>
-            {language}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <LanguageCombobox
+      id={id}
+      value={value}
+      onValueChange={onValueChange}
+      languages={languages}
+      placeholder={placeholder}
+      noneLabel={allowNone ? "None" : undefined}
+    />
   )
 }
 
@@ -169,8 +163,11 @@ function LanguageSettingsForm({
               <Field>
                 <FieldLabel htmlFor="slai-language-1">Language 1</FieldLabel>
                 <LanguageSelect
+                  id="slai-language-1"
                   value={value.language1}
-                  onValueChange={(language1) => update({ language1 })}
+                  onValueChange={(language1) =>
+                    language1 && update({ language1 })
+                  }
                   languages={languages}
                 />
               </Field>
@@ -182,12 +179,9 @@ function LanguageSettingsForm({
                   </span>
                 </FieldLabel>
                 <LanguageSelect
+                  id="slai-language-2"
                   value={value.language2}
-                  onValueChange={(language2) =>
-                    update({
-                      language2: language2 === "none" ? undefined : language2,
-                    })
-                  }
+                  onValueChange={(language2) => update({ language2 })}
                   languages={languages}
                   allowNone
                 />
@@ -221,12 +215,30 @@ function LanguageSettingsForm({
           <div className="sm:w-56">
             <LanguageSelect
               value={value.translateTo}
-              onValueChange={(translateTo) => update({ translateTo })}
+              onValueChange={(translateTo) =>
+                translateTo && update({ translateTo })
+              }
               languages={languages}
             />
           </div>
         </Field>
       )}
+
+      <FieldSeparator />
+
+      <Field orientation="horizontal">
+        <FieldContent>
+          <FieldTitle>Profanity filter</FieldTitle>
+          <FieldDescription>
+            Mask profanity in transcripts and translations.
+          </FieldDescription>
+        </FieldContent>
+        <Switch
+          checked={value.profanityFilter ?? false}
+          onCheckedChange={(checked) => update({ profanityFilter: checked })}
+          aria-label="Profanity filter"
+        />
+      </Field>
     </FieldGroup>
   )
 }

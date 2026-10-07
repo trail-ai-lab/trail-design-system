@@ -31,3 +31,11 @@ export const Default: Story = {}
 export const WithClassPreselected: Story = {
   args: { defaultClass: "Physics" },
 }
+
+export const Starting: Story = {
+  args: { defaultClass: "Physics", loading: true },
+}
+
+export const AllowNewClass: Story = {
+  args: { allowNewClass: true },
+}

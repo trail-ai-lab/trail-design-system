@@ -133,3 +133,28 @@ export const Paused: Story = {
     className: "h-full",
   },
 }
+
+/** After the session: the uploaded, speaker-unknown transcript with a static title. */
+export const PostSession: Story = {
+  args: {
+    title: "Transcript",
+    groups: GROUPS,
+    scope: "group-1",
+    status: "uploaded",
+    autoScroll: false,
+    translationLanguage: "English",
+    className: "h-full",
+  },
+}
+
+/** `highlightedEntryId` emphasizes the row a chat answer or search result cites. */
+export const HighlightedEntry: Story = {
+  args: {
+    groups: GROUPS,
+    scope: "group-1",
+    status: "recording",
+    translationLanguage: "English",
+    highlightedEntryId: GROUPS[0].entries[1]?.id,
+    className: "h-full",
+  },
+}
