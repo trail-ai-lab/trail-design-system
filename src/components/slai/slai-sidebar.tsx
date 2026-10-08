@@ -10,13 +10,13 @@ import {
   MicIcon,
   MoreHorizontalIcon,
   PencilIcon,
+  RadioIcon,
   ShapesIcon,
   Trash2Icon,
   UploadIcon,
-  UsersIcon,
 } from "lucide-react"
 
-import { Logo } from "@/components/trail"
+import { Logo } from "@/components/patterns/logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -47,15 +47,16 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 
-/** A class/session folder and the periods (sub-sessions) inside it. */
-export interface SidebarSession {
+/** A class folder (e.g. "Physics") and the sessions held in it. */
+export interface SidebarClass {
   name: string
-  periods: SidebarPeriod[]
+  sessions: SidebarSession[]
 }
 
-export interface SidebarPeriod {
+/** One class meeting, e.g. "Period 3 — Aug 21". */
+export interface SidebarSession {
   name: string
-  /** Marks this period as the one currently being viewed. */
+  /** Marks this session as the one currently being viewed. */
   active?: boolean
 }
 
@@ -68,9 +69,9 @@ export interface SidebarSource {
 
 /** The row a Rename / Delete menu action was triggered on. */
 export interface SidebarItemTarget {
-  kind: "session" | "period" | "source"
+  kind: "class" | "session" | "source"
   name: string
-  /** For a period, the session folder it belongs to */
+  /** For a session, the class it belongs to */
   parent?: string
 }
 
@@ -91,9 +92,9 @@ export interface SidebarUser {
 
 /** Top-level navigation items. `id` is matched against `activeNav`. */
 const NAV_ITEMS = [
-  { id: "manage", label: "Manage Session", icon: UsersIcon },
-  { id: "record", label: "Record Audio", icon: MicIcon },
-  { id: "source", label: "Add Source", icon: UploadIcon },
+  { id: "live", label: "Live", icon: RadioIcon },
+  { id: "record", label: "Record audio", icon: MicIcon },
+  { id: "source", label: "Add source", icon: UploadIcon },
   { id: "activities", label: "Activities", icon: ShapesIcon },
 ] as const
 
@@ -130,14 +131,14 @@ function RowMenu({
   )
 }
 
-/** Hover action trigger for a session sub-row (periods use a different
+/** Hover action trigger for a session sub-row (sub-rows use a different
  * group hook than SidebarMenuAction, so it gets its own positioned button). */
 function SubRowAction({ label }: { label: string }) {
   return (
     <button
       type="button"
       aria-label={label}
-      className="absolute top-1 right-1 flex aspect-square w-5 items-center justify-center rounded-md text-sidebar-foreground opacity-0 outline-hidden transition-opacity group-focus-within/menu-sub-item:opacity-100 group-hover/menu-sub-item:opacity-100 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:opacity-100 [&>svg]:size-4 [&>svg]:shrink-0"
+      className="absolute top-1 right-1 flex aspect-square w-5 items-center justify-center rounded-md text-sidebar-foreground opacity-0 outline-hidden transition-opacity group-focus-within/menu-sub-item:opacity-100 group-hover/menu-sub-item:opacity-100 after:absolute after:-inset-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:opacity-100 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0"
     >
       <EllipsisVerticalIcon />
     </button>
@@ -145,41 +146,46 @@ function SubRowAction({ label }: { label: string }) {
 }
 
 /**
- * The SLAI app sidebar: brand header, primary nav, the class/session tree,
- * the saved sources list, and the signed-in user footer.
+ * The SLAI app sidebar: brand header, primary nav ("Live" for the in-class
+ * view), the Sessions tree (classes → past sessions, opening a session's
+ * review), the saved sources list, and the signed-in user footer.
  *
- * Shared by every SLAI page (live session, post-session review, new session)
+ * Shared by every SLAI page (live session, session review, new session)
  * so the navigation never drifts between them — pass page-specific data and
  * active state through props rather than forking the markup.
  */
 function SlaiSidebar({
-  sessions,
+  classes,
   sources,
   user,
   activeNav,
+  liveSessionActive = false,
   activeSource,
   students,
   activeStudent,
-  defaultOpenSession,
+  defaultOpenClass,
   sessionsLoading = false,
   sourcesLoading = false,
   onRename,
   onDelete,
 }: {
-  sessions: SidebarSession[]
+  /** Classes, each holding its past sessions */
+  classes: SidebarClass[]
   /** Source names, or objects when a row needs a file-type icon */
   sources: Array<string | SidebarSource>
   user: SidebarUser
   /** Which primary nav item is highlighted. */
   activeNav?: SlaiNavId
+  /** A session is running now: shows a pulsing dot on the Live nav item */
+  liveSessionActive?: boolean
   /** Name of the source (quick recording) currently being viewed. */
   activeSource?: string
   /** Students to list in a "Students" group (omit to hide the group) */
   students?: SidebarStudent[]
   /** Id of the student whose progress page is open */
   activeStudent?: string
-  /** Name of the session folder expanded on first render. */
-  defaultOpenSession?: string
+  /** Name of the class folder expanded on first render. */
+  defaultOpenClass?: string
   /** Show skeleton rows instead of the session tree */
   sessionsLoading?: boolean
   /** Show skeleton rows instead of the sources list */
@@ -205,6 +211,15 @@ function SlaiSidebar({
                 <SidebarMenuButton isActive={item.id === activeNav}>
                   <item.icon />
                   {item.label}
+                  {item.id === "live" && liveSessionActive && (
+                    <span className="ml-auto flex items-center gap-1.5 text-xs text-status-recording">
+                      <span
+                        aria-hidden
+                        className="size-1.5 animate-pulse rounded-full bg-status-recording"
+                      />
+                      Now
+                    </span>
+                  )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -214,85 +229,106 @@ function SlaiSidebar({
           <SidebarGroupLabel>Sessions</SidebarGroupLabel>
           <SidebarMenu>
             {sessionsLoading &&
-              [0, 1, 2].map((i) => <SidebarMenuSkeleton key={i} showIcon />)}
-            {!sessionsLoading && sessions.length === 0 && (
-              <p className="px-2 py-1.5 text-xs text-sidebar-foreground/60">
-                No sessions found
-              </p>
-            )}
-            {!sessionsLoading && sessions.map((session) => (
-              <Collapsible
-                key={session.name}
-                defaultOpen={session.name === defaultOpenSession}
-                className="group/collapsible"
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton>
-                      <ChevronRightIcon className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      <FolderIcon />
-                      <span className="truncate">{session.name}</span>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <RowMenu
-                    onRename={() =>
-                      onRename?.({ kind: "session", name: session.name })
-                    }
-                    onDelete={() =>
-                      onDelete?.({ kind: "session", name: session.name })
-                    }
-                    trigger={
-                      <SidebarMenuAction
-                        showOnHover
-                        aria-label={`${session.name} options`}
-                      >
-                        <EllipsisVerticalIcon />
-                      </SidebarMenuAction>
-                    }
-                  />
-                  <CollapsibleContent>
-                    <SidebarMenuSub className="mr-0 pr-0">
-                      {session.periods.map((period) => (
-                        <SidebarMenuSubItem key={period.name}>
-                          <SidebarMenuSubButton
-                            isActive={period.active}
-                            className="pr-7"
-                          >
-                            <span className="truncate">{period.name}</span>
-                          </SidebarMenuSubButton>
-                          <RowMenu
-                            onRename={() =>
-                              onRename?.({
-                                kind: "period",
-                                name: period.name,
-                                parent: session.name,
-                              })
-                            }
-                            onDelete={() =>
-                              onDelete?.({
-                                kind: "period",
-                                name: period.name,
-                                parent: session.name,
-                              })
-                            }
-                            trigger={
-                              <SubRowAction label={`${period.name} options`} />
-                            }
-                          />
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
+              [0, 1, 2].map((i) => (
+                <SidebarMenuItem key={i}>
+                  <SidebarMenuSkeleton showIcon />
                 </SidebarMenuItem>
-              </Collapsible>
-            ))}
+              ))}
+            {!sessionsLoading && classes.length === 0 && (
+              <SidebarMenuItem>
+                <p className="px-2 py-1.5 text-xs text-muted-foreground">
+                  No sessions yet
+                </p>
+              </SidebarMenuItem>
+            )}
+            {!sessionsLoading &&
+              classes.map((klass) => (
+                <Collapsible
+                  key={klass.name}
+                  defaultOpen={klass.name === defaultOpenClass}
+                  className="group/collapsible"
+                  asChild
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton>
+                        <ChevronRightIcon className="transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                        <FolderIcon />
+                        <span className="truncate">{klass.name}</span>
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <RowMenu
+                      onRename={() =>
+                        onRename?.({ kind: "class", name: klass.name })
+                      }
+                      onDelete={() =>
+                        onDelete?.({ kind: "class", name: klass.name })
+                      }
+                      trigger={
+                        <SidebarMenuAction
+                          showOnHover
+                          aria-label={`${klass.name} options`}
+                        >
+                          <EllipsisVerticalIcon />
+                        </SidebarMenuAction>
+                      }
+                    />
+                    <CollapsibleContent>
+                      <SidebarMenuSub className="mr-0 pr-0">
+                        {klass.sessions.map((session) => (
+                          <SidebarMenuSubItem key={session.name}>
+                            <SidebarMenuSubButton
+                              isActive={session.active}
+                              className="pr-7"
+                            >
+                              <span className="truncate">{session.name}</span>
+                            </SidebarMenuSubButton>
+                            <RowMenu
+                              onRename={() =>
+                                onRename?.({
+                                  kind: "session",
+                                  name: session.name,
+                                  parent: klass.name,
+                                })
+                              }
+                              onDelete={() =>
+                                onDelete?.({
+                                  kind: "session",
+                                  name: session.name,
+                                  parent: klass.name,
+                                })
+                              }
+                              trigger={
+                                <SubRowAction
+                                  label={`${session.name} options`}
+                                />
+                              }
+                            />
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              ))}
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Sources</SidebarGroupLabel>
           <SidebarMenu>
             {sourcesLoading &&
-              [0, 1].map((i) => <SidebarMenuSkeleton key={i} showIcon />)}
+              [0, 1].map((i) => (
+                <SidebarMenuItem key={i}>
+                  <SidebarMenuSkeleton showIcon />
+                </SidebarMenuItem>
+              ))}
+            {!sourcesLoading && sources.length === 0 && (
+              <SidebarMenuItem>
+                <p className="px-2 py-1.5 text-xs text-muted-foreground">
+                  No sources yet
+                </p>
+              </SidebarMenuItem>
+            )}
             {!sourcesLoading &&
               sources.map((entry) => {
                 const source =

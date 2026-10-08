@@ -1,29 +1,28 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
 import { RenameDialog } from "@/components/slai/rename-dialog"
 import {
   SlaiSidebar,
   type SidebarItemTarget,
-  type SidebarSession,
+  type SidebarClass,
 } from "@/components/slai/slai-sidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 
-const SESSIONS: SidebarSession[] = [
+const CLASSES: SidebarClass[] = [
   {
     name: "Biology",
-    periods: [{ name: "Period 1" }, { name: "Period 6" }],
+    sessions: [{ name: "Period 1" }, { name: "Period 6" }],
   },
-  { name: "Gravity", periods: [{ name: "Period 1" }] },
   {
     name: "Physics",
-    periods: [
+    sessions: [
       { name: "Period 1" },
       { name: "Period 3 — Aug 21", active: true },
     ],
   },
-  { name: "Science", periods: [] },
+  { name: "Science", sessions: [] },
 ]
 
 const SOURCES = [
@@ -32,10 +31,15 @@ const SOURCES = [
   "Newton's Laws Review",
 ]
 
-const USER = { name: "Anurag Maravi", email: "amaravi@wisc.edu", initials: "AM" }
+const USER = {
+  name: "Anurag Maravi",
+  email: "amaravi@wisc.edu",
+  initials: "AM",
+}
 
 const meta: Meta<typeof SlaiSidebar> = {
   title: "SLAI/Shell/SlaiSidebar",
+  tags: ["autodocs"],
   component: SlaiSidebar,
   parameters: { layout: "fullscreen" },
   decorators: [
@@ -47,30 +51,30 @@ const meta: Meta<typeof SlaiSidebar> = {
     ),
   ],
   args: {
-    sessions: SESSIONS,
+    classes: CLASSES,
     sources: SOURCES,
     user: USER,
-    defaultOpenSession: "Physics",
+    defaultOpenClass: "Physics",
   },
 }
 
 export default meta
 type Story = StoryObj<typeof SlaiSidebar>
 
-/** Live-session context: "Manage Session" highlighted. */
-export const ManageSession: Story = {
-  args: { activeNav: "manage" },
+/** Live context: "Live" highlighted, with the "Now" marker while a session runs. */
+export const Live: Story = {
+  args: { activeNav: "live", liveSessionActive: true },
 }
 
-/** Post-session context: an active period highlighted instead of a nav item. */
-export const PostSession: Story = {}
+/** Session review: the session being viewed is highlighted in the tree instead of a nav item. */
+export const SessionReview: Story = {}
 
 export const Loading: Story = {
   args: { sessionsLoading: true, sourcesLoading: true },
 }
 
 export const Empty: Story = {
-  args: { sessions: [], sources: [] },
+  args: { classes: [], sources: [] },
 }
 
 /** Sources can be objects to pick a file-type icon (audio by default). */

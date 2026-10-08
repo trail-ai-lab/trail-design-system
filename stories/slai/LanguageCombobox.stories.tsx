@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { DEFAULT_LANGUAGES } from "@/components/slai/language-settings-form"
 import { LanguageCombobox } from "@/components/slai/language-combobox"
@@ -8,7 +8,7 @@ const meta: Meta<typeof LanguageCombobox> = {
   title: "SLAI/LanguageCombobox",
   component: LanguageCombobox,
   tags: ["autodocs"],
-  args: { languages: DEFAULT_LANGUAGES },
+  args: { languages: DEFAULT_LANGUAGES, "aria-label": "Language" },
   decorators: [
     (Story) => (
       <div className="w-72">

@@ -25,6 +25,7 @@ export function NewsArchive({
 }: NewsArchiveProps) {
   return (
     <ul
+      data-slot="news-archive"
       className={cn(className)}
       style={{ "--news-column-width": columnWidth } as React.CSSProperties}
     >
@@ -33,10 +34,12 @@ export function NewsArchive({
           key={i}
           className="grid grid-cols-1 gap-2 border-t border-border py-6 first:border-t-0 md:grid-cols-[var(--news-column-width)_1fr] md:gap-8 md:py-7"
         >
-          <time className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+          <time className="font-mono text-xs tracking-wider text-muted-foreground uppercase">
             {item.date}
           </time>
-          <p className="text-base leading-relaxed text-foreground">{item.text}</p>
+          <p className="text-base leading-relaxed text-foreground">
+            {item.text}
+          </p>
         </li>
       ))}
     </ul>

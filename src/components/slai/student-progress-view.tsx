@@ -3,12 +3,13 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { SectionLabel } from "@/components/patterns/section-label"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { InsightCallout } from "@/components/slai/insight-callout"
-import { initials } from "@/components/slai/lib/format"
+import { initials } from "@/lib/format"
 import { ProgressChart } from "@/components/slai/progress-chart"
 import { SessionEvidenceStrip } from "@/components/slai/session-evidence-strip"
 import { VerdictBadge } from "@/components/slai/verdict-badge"
@@ -21,12 +22,6 @@ import type {
   ProgressMetric,
   StudentProgressData,
 } from "@/components/slai/lib/student-progress"
-
-const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-    {children}
-  </p>
-)
 
 /**
  * A student's progress over time: header with their latest WIDA and
@@ -66,14 +61,17 @@ function StudentProgressView({
   const wida = latest.widaScore
 
   return (
-    <div className={cn("flex flex-col gap-5 overflow-y-auto p-6", className)}>
+    <div
+      data-slot="student-progress-view"
+      className={cn("flex flex-col gap-5 overflow-y-auto p-6", className)}
+    >
       <div className="flex items-start gap-3">
         <Avatar size="lg">
           <AvatarFallback>{initials(student.name)}</AvatarFallback>
         </Avatar>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="font-heading text-lg font-semibold">{student.name}</h2>
+            <h2 className="text-h3">{student.name}</h2>
             <span className="text-sm text-muted-foreground">
               {student.primaryLanguage}
             </span>
@@ -84,7 +82,10 @@ function StudentProgressView({
             ) : (
               <Badge variant="outline">Native English</Badge>
             )}
-            <VerdictBadge label={standardLabel} verdict={latest.standardVerdict} />
+            <VerdictBadge
+              label={standardLabel}
+              verdict={latest.standardVerdict}
+            />
           </div>
           <p className="text-xs text-muted-foreground">
             {student.sessions.length} sessions recorded
@@ -94,7 +95,9 @@ function StudentProgressView({
         </div>
       </div>
 
-      {insight && <InsightCallout variant={insightVariant}>{insight}</InsightCallout>}
+      {insight && (
+        <InsightCallout variant={insightVariant}>{insight}</InsightCallout>
+      )}
 
       <Separator />
 

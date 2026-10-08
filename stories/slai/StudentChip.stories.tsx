@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { StudentChip } from "@/components/slai/student-chip"
 
@@ -26,7 +26,14 @@ export const RosterChip: Story = {
     <div className="flex flex-wrap gap-2">
       <StudentChip name="Rosa" language="ES" grade={3} wida={4.1} />
       <StudentChip name="Liam" language="EN" grade={3} native />
-      <StudentChip name="Mei" language="ZH" grade={3} wida={3.4} selected onClick={() => {}} />
+      <StudentChip
+        name="Mei"
+        language="ZH"
+        grade={3}
+        wida={3.4}
+        isSelected
+        onClick={() => {}}
+      />
     </div>
   ),
 }

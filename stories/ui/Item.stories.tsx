@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ChevronRight, Mic } from "lucide-react"
 import {
   Item,
@@ -40,13 +40,16 @@ export const Default: Story = {
 
 export const List: Story = {
   render: () => (
-    <div className="w-80 rounded-xl border border-border divide-y divide-border">
+    <div
+      role="list"
+      className="w-80 divide-y divide-border rounded-xl border border-border"
+    >
       {[
         { title: "Town Hall Q2", desc: "Jun 10, 2026 · 47 min", badge: "Live" },
         { title: "Bias Review", desc: "Jun 8, 2026 · 32 min", badge: null },
         { title: "Casting Call", desc: "Jun 5, 2026 · 61 min", badge: null },
       ].map(({ title, desc, badge }) => (
-        <Item key={title}>
+        <Item key={title} role="listitem">
           <ItemMedia>
             <Mic className="size-4 text-muted-foreground" />
           </ItemMedia>
@@ -67,15 +70,21 @@ export const List: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <div className="flex flex-col gap-2 w-80">
+    <div className="flex w-80 flex-col gap-2">
       <Item variant="default">
-        <ItemContent><ItemTitle>Default</ItemTitle></ItemContent>
+        <ItemContent>
+          <ItemTitle>Default</ItemTitle>
+        </ItemContent>
       </Item>
       <Item variant="outline">
-        <ItemContent><ItemTitle>Outline</ItemTitle></ItemContent>
+        <ItemContent>
+          <ItemTitle>Outline</ItemTitle>
+        </ItemContent>
       </Item>
       <Item variant="muted">
-        <ItemContent><ItemTitle>Muted</ItemTitle></ItemContent>
+        <ItemContent>
+          <ItemTitle>Muted</ItemTitle>
+        </ItemContent>
       </Item>
     </div>
   ),
@@ -84,12 +93,16 @@ export const Variants: Story = {
 export const WithGroup: Story = {
   render: () => (
     <ItemGroup className="w-80">
-      <Item>
-        <ItemContent><ItemTitle>Session A</ItemTitle></ItemContent>
+      <Item role="listitem">
+        <ItemContent>
+          <ItemTitle>Session A</ItemTitle>
+        </ItemContent>
       </Item>
       <ItemSeparator />
-      <Item>
-        <ItemContent><ItemTitle>Session B</ItemTitle></ItemContent>
+      <Item role="listitem">
+        <ItemContent>
+          <ItemTitle>Session B</ItemTitle>
+        </ItemContent>
       </Item>
     </ItemGroup>
   ),

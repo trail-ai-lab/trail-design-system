@@ -20,7 +20,11 @@ export { JoinCta, type JoinCtaProps } from "./join-cta"
 export { RecentNews, type RecentNewsProps } from "./recent-news"
 
 // Research
-export { ResearchCard, type ResearchCardItem, type ResearchCardProps } from "./research-card"
+export {
+  ResearchCard,
+  type ResearchCardItem,
+  type ResearchCardProps,
+} from "./research-card"
 export {
   ResearchDetail,
   type ResearchDetailData,
@@ -34,20 +38,40 @@ export {
 } from "./research-intro"
 
 // Publications
-export { PublicationList, type Publication, type PublicationListProps } from "./publication-list"
+export {
+  PublicationList,
+  type Publication,
+  type PublicationListProps,
+} from "./publication-list"
 
 // Resources
-export { ResourceCard, type Resource, type ResourceCardProps } from "./resource-card"
+export {
+  ResourceCard,
+  type Resource,
+  type ResourceCardProps,
+} from "./resource-card"
 
 // People
 export { PersonCard, type Person, type PersonCardProps } from "./person-card"
-export { PersonProfile, type PersonProfileData, type PersonProfileProps } from "./person-profile"
+export {
+  PersonProfile,
+  type PersonProfileData,
+  type PersonProfileProps,
+} from "./person-profile"
 
 // News
-export { NewsArchive, type NewsEntry, type NewsArchiveProps } from "./news-archive"
+export {
+  NewsArchive,
+  type NewsEntry,
+  type NewsArchiveProps,
+} from "./news-archive"
 
 // Tutorials & workshops
-export { EventCard, type EventCardItem, type EventCardProps } from "./event-card"
+export {
+  EventCard,
+  type EventCardItem,
+  type EventCardProps,
+} from "./event-card"
 export {
   EventDetail,
   type EventDetailData,
@@ -59,3 +83,4 @@ export {
 
 // 404
 export { NotFound, type NotFoundProps } from "./not-found"
+export { EventStatusBadge, type EventStatus } from "./event-status-badge"

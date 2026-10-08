@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { InsightCallout } from "@/components/slai/insight-callout"
 
@@ -30,5 +30,15 @@ export const Warning: Story = {
     variant: "warning",
     children:
       "Rosa's participation has dropped sharply in the last 2 sessions. A check-in before the next session is recommended.",
+  },
+}
+
+/** `title` adds a bold first line, e.g. for system warnings like noisy audio. */
+export const WithTitle: Story = {
+  args: {
+    variant: "warning",
+    title: "Audio may be too noisy",
+    children:
+      "Transcription accuracy may suffer. Move to a quieter spot or closer to the microphone.",
   },
 }

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Button } from "@/components/ui/button"
 import { RenameDialog } from "@/components/slai/rename-dialog"

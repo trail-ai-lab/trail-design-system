@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 
@@ -20,19 +20,25 @@ export const Disabled: Story = {
 
 export const WithLabel: Story = {
   render: () => (
-    <div className="flex flex-col gap-1.5 w-72">
+    <div className="flex w-72 flex-col gap-1.5">
       <Label htmlFor="notes">Session notes</Label>
-      <Textarea id="notes" placeholder="Add observations about speaker patterns…" rows={4} />
+      <Textarea
+        id="notes"
+        placeholder="Add observations about speaker patterns…"
+        rows={4}
+      />
     </div>
   ),
 }
 
 export const WithError: Story = {
   render: () => (
-    <div className="flex flex-col gap-1.5 w-72">
+    <div className="flex w-72 flex-col gap-1.5">
       <Label htmlFor="notes-err">Notes</Label>
       <Textarea id="notes-err" aria-invalid="true" defaultValue="x" />
-      <p className="text-xs text-destructive">Notes must be at least 10 characters.</p>
+      <p className="text-xs text-destructive">
+        Notes must be at least 10 characters.
+      </p>
     </div>
   ),
 }

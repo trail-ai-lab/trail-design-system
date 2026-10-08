@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -19,10 +19,30 @@ export default meta
 type Story = StoryObj
 
 const sessions = [
-  { name: "Town Hall Q2", tool: "SLAI", duration: "47 min", status: "Complete" },
-  { name: "Bias Review", tool: "Bias Audit", duration: "32 min", status: "Flagged" },
-  { name: "Casting Call", tool: "Casting Lab", duration: "61 min", status: "Complete" },
-  { name: "AIBAT Demo", tool: "AIBAT", duration: "18 min", status: "Processing" },
+  {
+    name: "Town Hall Q2",
+    tool: "SLAI",
+    duration: "47 min",
+    status: "Complete",
+  },
+  {
+    name: "Bias Review",
+    tool: "Bias Audit",
+    duration: "32 min",
+    status: "Flagged",
+  },
+  {
+    name: "Casting Call",
+    tool: "Casting Lab",
+    duration: "61 min",
+    status: "Complete",
+  },
+  {
+    name: "AIBAT Demo",
+    tool: "AIBAT",
+    duration: "18 min",
+    status: "Processing",
+  },
 ]
 
 export const Default: Story = {
@@ -44,7 +64,15 @@ export const Default: Story = {
             <TableCell>{s.tool}</TableCell>
             <TableCell>{s.duration}</TableCell>
             <TableCell>
-              <Badge variant={s.status === "Flagged" ? "destructive" : s.status === "Processing" ? "secondary" : "default"}>
+              <Badge
+                variant={
+                  s.status === "Flagged"
+                    ? "destructive"
+                    : s.status === "Processing"
+                      ? "secondary"
+                      : "default"
+                }
+              >
                 {s.status}
               </Badge>
             </TableCell>
@@ -70,7 +98,10 @@ export const Empty: Story = {
       </TableHeader>
       <TableBody>
         <TableRow>
-          <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+          <TableCell
+            colSpan={4}
+            className="h-24 text-center text-muted-foreground"
+          >
             No sessions yet.
           </TableCell>
         </TableRow>
@@ -94,10 +125,18 @@ export const Loading: Story = {
       <TableBody>
         {Array.from({ length: 3 }, (_, i) => (
           <TableRow key={i}>
-            <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-            <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-            <TableCell><Skeleton className="h-4 w-14" /></TableCell>
-            <TableCell><Skeleton className="h-5 w-16 rounded-2xl" /></TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-32" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-20" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-4 w-14" />
+            </TableCell>
+            <TableCell>
+              <Skeleton className="h-5 w-16 rounded-2xl" />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

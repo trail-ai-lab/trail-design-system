@@ -1,21 +1,12 @@
 "use client"
 
-import { Spinner } from "@/components/ui/spinner"
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
 
 /**
- * Destructive confirmation for deleting a class, session, source or group.
- * `itemKind` is used in the copy ("Delete session"); keep `onConfirm` async
- * and drive `loading` from it so the dialog stays open while deleting.
+ * Destructive confirmation for deleting a class, session, recording, source
+ * or group. `itemKind` is used in the copy ("Delete session"); keep
+ * `onConfirm` async and drive `loading` from it so the dialog stays open
+ * while deleting.
  */
 function DeleteConfirmDialog({
   open,
@@ -26,8 +17,8 @@ function DeleteConfirmDialog({
   loading = false,
   onConfirm,
 }: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   itemKind: string
   itemName: string
   /** Overrides the default "cannot be undone" copy */
@@ -36,24 +27,19 @@ function DeleteConfirmDialog({
   onConfirm: () => void
 }) {
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete {itemKind}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {description ??
-              `"${itemName}" will be permanently deleted. This cannot be undone.`}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-          <Button variant="destructive" disabled={loading} onClick={onConfirm}>
-            {loading && <Spinner data-icon="inline-start" />}
-            {loading ? "Deleting..." : "Delete"}
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={`Delete ${itemKind}`}
+      description={
+        description ??
+        `"${itemName}" will be permanently deleted. This cannot be undone.`
+      }
+      confirmLabel="Delete"
+      loadingLabel="Deleting…"
+      loading={loading}
+      onConfirm={onConfirm}
+    />
   )
 }
 

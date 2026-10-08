@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { BarChart3, Bot, GraduationCap, Scale } from "lucide-react"
 
 import { Header } from "@/components/lab-website/header"
@@ -76,7 +76,8 @@ function ResearchPage() {
         eyebrow="§ What drives the work"
         title={
           <>
-            The lab takes the question <span className="italic">seriously</span>.
+            The lab takes the question <span className="italic">seriously</span>
+            .
           </>
         }
         description="Artificial intelligence (AI) exacerbates educational inequities by threatening heterogeneity and promoting cultural and linguistic hierarchies. When used in learners' contexts that differ from the majority, AI tends to perform significantly worse — leading to biased assessments, perpetuated cultural stereotypes, increased hallucinations, and a failure to capture linguistic and cultural nuance."
@@ -112,10 +113,10 @@ function ResearchPage() {
 
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-16 lg:px-8">
-          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
             § Research areas
           </p>
-          <h2 className="mt-4 font-heading text-3xl tracking-tight text-foreground md:text-4xl">
+          <h2 className="mt-4 text-h2 text-foreground md:text-h1">
             Active <span className="italic">lines of inquiry</span>.
           </h2>
           <div className="mt-12 grid gap-6 md:grid-cols-2">

@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview-02/cards/receiving-method.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ReceivingMethod } from "@/components/blocks/preview-02/cards/receiving-method"
 
 const meta: Meta<typeof ReceivingMethod> = {
-  title: "_Preview/Preview-02/ReceivingMethod",
+  title: "Preview/Blocks 02/ReceivingMethod",
   component: ReceivingMethod,
   parameters: { layout: "centered" },
 }

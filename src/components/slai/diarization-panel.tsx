@@ -13,7 +13,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Spinner } from "@/components/ui/spinner"
-import { formatElapsed } from "@/components/slai/lib/format"
+import { formatElapsed } from "@/lib/format"
 
 export type DiarizationState = "idle" | "loading" | "error" | "empty" | "ready"
 
@@ -42,7 +42,10 @@ function DiarizationPanel({
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div
+      data-slot="diarization-panel"
+      className={cn("flex flex-col gap-4", className)}
+    >
       {state !== "loading" && form}
 
       {state === "idle" && (
@@ -66,9 +69,11 @@ function DiarizationPanel({
             <EmptyMedia variant="icon">
               <Spinner />
             </EmptyMedia>
-            <EmptyTitle>Analyzing speakers...</EmptyTitle>
+            <EmptyTitle>Analyzing speakers…</EmptyTitle>
             <EmptyDescription>
-              <span className="tabular-nums">{formatElapsed(elapsedSeconds)}</span>{" "}
+              <span className="tabular-nums">
+                {formatElapsed(elapsedSeconds)}
+              </span>{" "}
               elapsed. It&apos;s safe to switch tabs while this runs.
             </EmptyDescription>
           </EmptyHeader>

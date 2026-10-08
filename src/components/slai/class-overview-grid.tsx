@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { initials } from "@/components/slai/lib/format"
+import { initials } from "@/lib/format"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -84,7 +84,7 @@ function ClassOverviewGrid({
               >
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <Avatar>
+                    <Avatar size="sm">
                       <AvatarFallback>{initials(student.name)}</AvatarFallback>
                     </Avatar>
                     <div className="flex min-w-0 flex-col">

@@ -1,6 +1,12 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { RecordingControl } from "@/components/slai/recording-control"
 
 /**
@@ -11,16 +17,18 @@ import { RecordingControl } from "@/components/slai/recording-control"
  */
 function RecordingCard({ className }: { className?: string }) {
   return (
-    <div
-      className={cn("flex w-full flex-col items-center gap-8", className)}
-    >
-      <RecordingControl />
-
-      <p className="text-center text-sm text-muted-foreground">
-        Optionally add an activity for students to interact with while
-        recording.
-      </p>
-    </div>
+    <Card data-slot="recording-card" className={className}>
+      <CardHeader>
+        <CardTitle>Record audio</CardTitle>
+        <CardDescription>
+          Optionally add an activity for students to interact with while
+          recording.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex justify-center py-4">
+        <RecordingControl />
+      </CardContent>
+    </Card>
   )
 }
 

@@ -1,10 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
 import { labFooterDemoProps } from "./lab-footer-demo-props"
 import { PageHeader } from "@/components/lab-website/page-header"
-import { ResourceCard, type Resource } from "@/components/lab-website/resource-card"
+import {
+  ResourceCard,
+  type Resource,
+} from "@/components/lab-website/resource-card"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
 const CATEGORIES: { category: string; items: Resource[] }[] = [
@@ -24,7 +27,8 @@ const CATEGORIES: { category: string; items: Resource[] }[] = [
         variant: "tool",
         id: "tool-6",
         title: "CLUE-AI: Critical Literacy for Uncovering Errors in AI",
-        description: "A classroom activity for teaching students to spot AI errors and bias.",
+        description:
+          "A classroom activity for teaching students to spot AI errors and bias.",
         image: "/images/tools/aibat.png",
         link: "",
         hideLink: true,
@@ -37,8 +41,10 @@ const CATEGORIES: { category: string; items: Resource[] }[] = [
       {
         variant: "tutorial",
         id: "tutorial-aibat-aied2026",
-        title: "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
-        description: "A hands-on tutorial on contextual LLM evaluation for education stakeholders.",
+        title:
+          "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
+        description:
+          "A hands-on tutorial on contextual LLM evaluation for education stakeholders.",
         conference: "AIED 2026",
         year: 2026,
         link: "/tutorials/tutorial-aibat-aied2026",
@@ -62,9 +68,7 @@ function ResourcesPage() {
       {CATEGORIES.map((group) => (
         <section key={group.category} className="border-b border-border">
           <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8">
-            <h2 className="font-heading text-xl tracking-tight text-foreground">
-              {group.category}
-            </h2>
+            <h2 className="text-h3 text-foreground">{group.category}</h2>
             <div className="mt-8 grid gap-6 md:grid-cols-2">
               {group.items.map((item) => (
                 <ResourceCard key={item.id} resource={item} />

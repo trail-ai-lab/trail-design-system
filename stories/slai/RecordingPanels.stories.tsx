@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { DEFAULT_LANGUAGES } from "@/components/slai/language-settings-form"

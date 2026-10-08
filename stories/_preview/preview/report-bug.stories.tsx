@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/report-bug.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ReportBug } from "@/components/blocks/preview/cards/report-bug"
 
 const meta: Meta<typeof ReportBug> = {
-  title: "_Preview/Preview/ReportBug",
+  title: "Preview/Blocks 01/ReportBug",
   component: ReportBug,
   parameters: { layout: "centered" },
 }

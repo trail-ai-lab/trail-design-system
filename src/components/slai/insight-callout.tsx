@@ -1,18 +1,21 @@
 import { InfoIcon, TriangleAlertIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 /**
  * Highlighted note for an auto-generated insight. `variant="warning"` flags
  * something needing the teacher's attention (amber); `info` is neutral (blue).
+ * Pass `title` for a bolded first line, e.g. a system warning banner.
  */
 function InsightCallout({
   variant = "info",
+  title,
   children,
   className,
 }: {
   variant?: "info" | "warning"
+  title?: React.ReactNode
   children: React.ReactNode
   className?: string
 }) {
@@ -22,15 +25,14 @@ function InsightCallout({
     <Alert
       className={cn(
         warning
-          ? "border-status-paused/40 bg-status-paused/10 text-status-paused"
-          : "border-status-uploaded/40 bg-status-uploaded/10 text-status-uploaded",
+          ? "border-warning/40 bg-warning/10 text-warning"
+          : "border-info/40 bg-info/10 text-info",
         className
       )}
     >
       <Icon />
-      <AlertDescription
-        className={warning ? "text-status-paused" : "text-status-uploaded"}
-      >
+      {title && <AlertTitle>{title}</AlertTitle>}
+      <AlertDescription className={warning ? "text-warning" : "text-info"}>
         {children}
       </AlertDescription>
     </Alert>

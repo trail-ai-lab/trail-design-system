@@ -4,7 +4,6 @@ import { ClockIcon, LogOutIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CardDescription, CardTitle } from "@/components/ui/card"
 import { RecordingControl } from "@/components/slai/recording-control"
 import { StudentChip } from "@/components/slai/student-chip"
 
@@ -31,12 +30,15 @@ function StudentRecordingScreen({
   className?: string
 }) {
   return (
-    <div className={cn("flex min-h-svh flex-col px-6 py-4", className)}>
+    <div
+      data-slot="student-recording-screen"
+      className={cn("flex min-h-svh flex-col px-6 py-4", className)}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <CardTitle>{groupName}</CardTitle>
+          <h1 className="text-h3">{groupName}</h1>
           {(sessionName || joinedAt) && (
-            <CardDescription className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-body-sm text-muted-foreground">
               {sessionName && <span>{sessionName}</span>}
               {joinedAt && (
                 <span className="flex items-center gap-1">
@@ -44,7 +46,7 @@ function StudentRecordingScreen({
                   Joined at {joinedAt}
                 </span>
               )}
-            </CardDescription>
+            </p>
           )}
           {students.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">

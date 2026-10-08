@@ -1,13 +1,17 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
 import { labFooterDemoProps } from "./lab-footer-demo-props"
-import { EventDetail, type EventDetailData } from "@/components/lab-website/event-detail"
+import {
+  EventDetail,
+  type EventDetailData,
+} from "@/components/lab-website/event-detail"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
 const TUTORIAL: EventDetailData = {
-  title: "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
+  title:
+    "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
   conference: "AIED 2026",
   year: 2026,
   status: "upcoming",
@@ -24,19 +28,33 @@ const TUTORIAL: EventDetailData = {
     "Reporting findings to non-technical audiences",
     "Limitations of benchmark-only evaluation",
   ],
-  importantDates: [
-    { label: "Tutorial session", date: "Jul 2026" },
-  ],
+  importantDates: [{ label: "Tutorial session", date: "Jul 2026" }],
   schedule: [
-    { duration: "0:00", title: "Welcome & framing", description: "Why standard benchmarks miss classroom context." },
-    { duration: "0:20", title: "Introducing AIBAT", description: "Walkthrough of the evaluation framework." },
+    {
+      duration: "0:00",
+      title: "Welcome & framing",
+      description: "Why standard benchmarks miss classroom context.",
+    },
+    {
+      duration: "0:20",
+      title: "Introducing AIBAT",
+      description: "Walkthrough of the evaluation framework.",
+    },
     { duration: "1:00", title: "Hands-on stakeholder elicitation" },
     { duration: "1:40", title: "Applying AIBAT to a live model" },
     { duration: "2:20", title: "Reporting & discussion" },
   ],
   organizers: [
-    { name: "Shamya Karumbaiah", affiliation: "UW–Madison", href: "/people/shamya-karumbaiah" },
-    { name: "Kaycie Barron", affiliation: "UW–Madison", href: "/people/kaycie-barron" },
+    {
+      name: "Shamya Karumbaiah",
+      affiliation: "UW–Madison",
+      href: "/people/shamya-karumbaiah",
+    },
+    {
+      name: "Kaycie Barron",
+      affiliation: "UW–Madison",
+      href: "/people/kaycie-barron",
+    },
   ],
   toolLink: { label: "Try AIBAT", href: "https://trail.wcer.wisc.edu/aibat" },
 }

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { AppShell } from "@/components/slai/app-shell"
 import {
@@ -8,6 +8,7 @@ import {
   type SearchResult,
 } from "@/components/slai/global-search"
 import { PageSidebar } from "./_page-fixtures"
+import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 
 const RESULTS: SearchResult[] = [
   {
@@ -29,7 +30,7 @@ function GlobalSearchPage() {
   return (
     <AppShell
       sidebar={<PageSidebar />}
-      title={<span className="font-medium">Search</span>}
+      title={<PageBreadcrumb items={[{ label: "Search" }]} />}
       onSearch={() => setOpen(true)}
     >
       <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">

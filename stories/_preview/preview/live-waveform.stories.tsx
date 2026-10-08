@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/live-waveform.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { LiveWaveformCard } from "@/components/blocks/preview/cards/live-waveform"
 
 const meta: Meta<typeof LiveWaveformCard> = {
-  title: "_Preview/Preview/LiveWaveformCard",
+  title: "Preview/Blocks 01/LiveWaveformCard",
   component: LiveWaveformCard,
   parameters: { layout: "centered" },
 }

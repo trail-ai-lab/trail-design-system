@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { DEFAULT_LANGUAGES } from "@/components/slai/language-settings-form"
 import { AddSourceForm } from "@/components/slai/add-source-form"

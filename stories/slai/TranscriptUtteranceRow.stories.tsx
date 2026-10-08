@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { AudioLinesIcon } from "lucide-react"
 
 import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
@@ -37,7 +37,9 @@ type Story = StoryObj<typeof TranscriptUtteranceRow>
 export const Default: Story = {}
 
 export const WithMeta: Story = {
-  args: { meta: <span className="font-medium text-foreground">Student 1</span> },
+  args: {
+    meta: <span className="font-medium text-foreground">Student 1</span>,
+  },
 }
 
 export const NoTranslation: Story = {

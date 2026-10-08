@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { ActivityViewer } from "@/components/slai/activity-viewer"
 
@@ -26,7 +26,9 @@ type Story = StoryObj<typeof ActivityViewer>
 export const Iframe: Story = { args: { srcDoc: DEMO_DOC } }
 
 /** The VidyaMap simulation is native to the app; the design system shows a placeholder. */
-export const VidyaMap: Story = { args: { variant: "vidyamap", title: "VidyaMap" } }
+export const VidyaMap: Story = {
+  args: { variant: "vidyamap", title: "VidyaMap" },
+}
 
 export const Blocked: Story = {
   args: { blocked: true, src: "https://example.com" },

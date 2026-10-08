@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   BookOpen,
   LineChart,
@@ -28,8 +28,8 @@ function HomePage() {
         eyebrow="The Responsible AI for Learning Lab · UW–Madison"
         title={
           <>
-            We ask <span className="text-primary">where and whether</span>{" "}
-            AI belongs in classrooms — not just how to put it there.
+            We ask <span className="text-primary">where and whether</span> AI
+            belongs in classrooms — not just how to put it there.
           </>
         }
         description="TRAIL Lab is an interdisciplinary research group at the University of Wisconsin–Madison studying the responsible use of AI in real-world classrooms. We work with teachers, students, researchers, engineers, and the complex contexts in which learning happens."
@@ -136,7 +136,10 @@ function HomePage() {
         title="Join the inquiry."
         description="We work with educators, students, scholars, and engineers — anyone willing to sit with hard questions about AI in learning and answer them with evidence. Whether you are a prospective PhD student, a teacher curious about co-designing tools, or a researcher looking to collaborate, we want to hear from you."
         primaryAction={{ label: "Meet the team", href: "/people" }}
-        secondaryAction={{ label: "Get in touch", href: "mailto:shamya.karumbaiah@wisc.edu" }}
+        secondaryAction={{
+          label: "Get in touch",
+          href: "mailto:shamya.karumbaiah@wisc.edu",
+        }}
       />
 
       <LabFooter {...labFooterDemoProps} />

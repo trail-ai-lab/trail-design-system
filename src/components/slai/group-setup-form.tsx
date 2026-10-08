@@ -5,6 +5,14 @@ import { ArrowRightIcon, PlusIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { StudentChip } from "@/components/slai/student-chip"
@@ -42,6 +50,7 @@ function GroupSetupForm({
   onContinue?: (group: { name: string; students: string[] }) => void
   className?: string
 }) {
+  const uid = React.useId()
   const [groupName, setGroupName] = React.useState("")
   const [students, setStudents] = React.useState<string[]>([])
   const [studentInput, setStudentInput] = React.useState("")
@@ -58,96 +67,100 @@ function GroupSetupForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-8", className)}>
-      <div className="flex flex-col gap-1">
-        <h1 className="font-heading text-2xl font-semibold">Group Setup</h1>
-        <p className="text-sm text-muted-foreground">
+    <Card data-slot="group-setup-form" className={className}>
+      <CardHeader>
+        <CardTitle>Group setup</CardTitle>
+        <CardDescription>
           Tell us a bit about your group before you start recording.
-        </p>
-      </div>
-
-      <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="slai-group-name" className="items-center gap-2">
-            <StepNumber isActive>1</StepNumber>
-            Group Name
-            <span className="text-destructive">*</span>
-          </FieldLabel>
-          <Input
-            id="slai-group-name"
-            placeholder="e.g., Team Alpha"
-            value={groupName}
-            onChange={(event) => setGroupName(event.target.value)}
-          />
-        </Field>
-
-        <Field>
-          <div className="flex items-center justify-between">
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <FieldGroup>
+          <Field>
             <FieldLabel
-              htmlFor="slai-student-name"
+              htmlFor={`${uid}-group-name`}
               className="items-center gap-2"
             >
-              <StepNumber>2</StepNumber>
-              Students
-              <span className="font-normal text-muted-foreground">
-                (optional)
-              </span>
+              <StepNumber isActive>1</StepNumber>
+              Group name
             </FieldLabel>
-            {students.length > 0 && (
-              <span className="text-sm text-muted-foreground">
-                {students.length} added
-              </span>
-            )}
-          </div>
-          <div className="flex gap-2">
             <Input
-              id="slai-student-name"
-              placeholder="Enter a student name"
-              value={studentInput}
-              onChange={(event) => setStudentInput(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault()
-                  addStudent()
-                }
-              }}
+              id={`${uid}-group-name`}
+              required
+              placeholder="e.g., Team Alpha"
+              value={groupName}
+              onChange={(event) => setGroupName(event.target.value)}
             />
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={addStudent}
-              disabled={!studentInput.trim()}
-              aria-label="Add student"
-            >
-              <PlusIcon />
-            </Button>
-          </div>
+          </Field>
 
-          {students.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {students.map((name, index) => (
-                <StudentChip
-                  key={`${name}-${index}`}
-                  name={name}
-                  onRemove={() => removeStudent(index)}
-                />
-              ))}
+          <Field>
+            <div className="flex items-center justify-between">
+              <FieldLabel
+                htmlFor={`${uid}-student-name`}
+                className="items-center gap-2"
+              >
+                <StepNumber>2</StepNumber>
+                Students
+                <span className="font-normal text-muted-foreground">
+                  — optional
+                </span>
+              </FieldLabel>
+              {students.length > 0 && (
+                <span className="text-sm text-muted-foreground">
+                  {students.length} added
+                </span>
+              )}
             </div>
-          )}
-        </Field>
-      </FieldGroup>
+            <div className="flex gap-2">
+              <Input
+                id={`${uid}-student-name`}
+                placeholder="Enter a student name"
+                value={studentInput}
+                onChange={(event) => setStudentInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault()
+                    addStudent()
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={addStudent}
+                disabled={!studentInput.trim()}
+                aria-label="Add student"
+              >
+                <PlusIcon />
+              </Button>
+            </div>
 
-      <Button
-        size="lg"
-        className="w-full"
-        disabled={!groupName.trim()}
-        onClick={() => onContinue?.({ name: groupName, students })}
-      >
-        Continue to Recording
-        <ArrowRightIcon data-icon="inline-end" />
-      </Button>
-    </div>
+            {students.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {students.map((name, index) => (
+                  <StudentChip
+                    key={`${name}-${index}`}
+                    name={name}
+                    onRemove={() => removeStudent(index)}
+                  />
+                ))}
+              </div>
+            )}
+          </Field>
+        </FieldGroup>
+      </CardContent>
+      <CardFooter>
+        <Button
+          className="w-full"
+          disabled={!groupName.trim()}
+          onClick={() => onContinue?.({ name: groupName, students })}
+        >
+          Continue to recording
+          <ArrowRightIcon data-icon="inline-end" />
+        </Button>
+      </CardFooter>
+    </Card>
   )
 }
 

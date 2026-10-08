@@ -19,6 +19,7 @@ export interface PullQuoteProps {
 export function PullQuote({ eyebrow, quote, cite, className }: PullQuoteProps) {
   return (
     <section
+      data-slot="pull-quote"
       className={cn(
         "relative overflow-hidden border-b border-border bg-primary text-primary-foreground",
         className
@@ -26,20 +27,24 @@ export function PullQuote({ eyebrow, quote, cite, className }: PullQuoteProps) {
     >
       <Quote
         aria-hidden="true"
-        className="pointer-events-none absolute -right-10 top-1/2 hidden size-[22rem] -translate-y-1/2 opacity-10 md:block"
+        className="pointer-events-none absolute top-1/2 -right-10 hidden size-[22rem] -translate-y-1/2 opacity-10 md:block"
         strokeWidth={0.75}
       />
       <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28 lg:px-8">
-        <p className="text-xs font-medium uppercase tracking-wider text-current opacity-70">
+        <p className="text-xs font-medium tracking-wider text-current uppercase">
           {eyebrow}
         </p>
         <blockquote className="mt-8">
+          {/* eslint-disable-next-line trail/no-arbitrary-values -- Lab Website brand size kept as-is; decide whether it maps to the type scale */}
           <p className="font-heading text-[clamp(1.5rem,2.5vw+1rem,2.5rem)] leading-[1.2] tracking-tight text-current">
             {quote}
           </p>
           <footer className="mt-8 flex items-center gap-4">
-            <span aria-hidden="true" className="h-px w-10 bg-current opacity-40" />
-            <cite className="font-mono text-xs not-italic uppercase tracking-wider text-current opacity-80">
+            <span
+              aria-hidden="true"
+              className="h-px w-10 bg-current opacity-40"
+            />
+            <cite className="font-mono text-xs tracking-wider text-current uppercase not-italic">
               {cite}
             </cite>
           </footer>

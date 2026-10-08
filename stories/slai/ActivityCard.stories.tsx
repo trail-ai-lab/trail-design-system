@@ -1,9 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { ActivityCard } from "@/components/slai/activity-card"
 
 const meta: Meta<typeof ActivityCard> = {
   title: "SLAI/ActivityCard",
+  tags: ["autodocs"],
   component: ActivityCard,
   parameters: { layout: "centered" },
 }
@@ -42,7 +43,8 @@ export const NoTags: Story = {
     activity: {
       id: "compost",
       name: "Compost",
-      description: "Interactive composting simulation for environmental science discussions",
+      description:
+        "Interactive composting simulation for environmental science discussions",
     },
     className: "w-80",
   },

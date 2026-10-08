@@ -28,10 +28,11 @@ function LanguageCombobox({
   value,
   onValueChange,
   languages,
-  placeholder = "Select a language...",
+  placeholder = "Select a language…",
   noneLabel,
   disabled = false,
   id,
+  "aria-label": ariaLabel,
   className,
 }: {
   value?: string
@@ -42,10 +43,13 @@ function LanguageCombobox({
   noneLabel?: string
   disabled?: boolean
   id?: string
+  /** Accessible name when there's no visible <label htmlFor={id}> */
+  "aria-label"?: string
   className?: string
 }) {
   const [open, setOpen] = React.useState(false)
-  const label = value ?? (noneLabel && value === undefined ? noneLabel : undefined)
+  const label =
+    value ?? (noneLabel && value === undefined ? noneLabel : undefined)
 
   const choose = (next: string | undefined) => {
     onValueChange(next)
@@ -60,6 +64,7 @@ function LanguageCombobox({
           type="button"
           variant="outline"
           role="combobox"
+          aria-label={ariaLabel}
           aria-expanded={open}
           disabled={disabled}
           className={cn("w-full justify-between font-normal", className)}
@@ -81,12 +86,15 @@ function LanguageCombobox({
         className="w-(--radix-popover-trigger-width) min-w-56 p-0"
       >
         <Command>
-          <CommandInput placeholder="Search languages..." />
+          <CommandInput placeholder="Search languages…" />
           <CommandList>
             <CommandEmpty>No language found.</CommandEmpty>
             <CommandGroup>
               {noneLabel && (
-                <CommandItem value={noneLabel} onSelect={() => choose(undefined)}>
+                <CommandItem
+                  value={noneLabel}
+                  onSelect={() => choose(undefined)}
+                >
                   {noneLabel}
                   {value === undefined && <CheckIcon className="ml-auto" />}
                 </CommandItem>

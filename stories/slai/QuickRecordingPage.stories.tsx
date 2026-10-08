@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   DownloadIcon,
   FolderInputIcon,
@@ -26,25 +26,10 @@ import {
 import { AppShell } from "@/components/slai/app-shell"
 import { LanguageSettingsSheet } from "@/components/slai/language-settings-sheet"
 import { RecordingCard } from "@/components/slai/recording-card"
-import { SlaiSidebar, type SidebarSession } from "@/components/slai/slai-sidebar"
-
-const SESSIONS: SidebarSession[] = [
-  { name: "Biology", periods: [{ name: "Period 1" }, { name: "Period 6" }] },
-  { name: "Physics", periods: [{ name: "Period 1" }, { name: "Period 3 — Aug 21" }] },
-  { name: "Science", periods: [] },
-]
-
-const SOURCES = [
-  "Inclined Plane Lab",
-  "Photosynthesis Discussion",
-  "Newton's Laws Review",
-]
-
-const SIDEBAR_USER = {
-  name: "Anurag Maravi",
-  email: "amaravi@wisc.edu",
-  initials: "AM",
-}
+import { PageSidebar } from "./_page-fixtures"
+import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
+import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
+import { RenameDialog } from "@/components/slai/rename-dialog"
 
 const ACTIVITIES: SessionActivity[] = [
   {
@@ -71,31 +56,20 @@ const RECORDING = {
   name: "Inclined Plane Lab",
 }
 
-const SLAI_SIDEBAR = (
-  <SlaiSidebar
-    sessions={SESSIONS}
-    sources={SOURCES}
-    user={SIDEBAR_USER}
-    activeSource={RECORDING.name}
-    defaultOpenSession="Physics"
-  />
-)
+const SLAI_SIDEBAR = <PageSidebar activeSource={RECORDING.name} />
 
 function QuickRecordingPage() {
-  const [sheet, setSheet] = React.useState<"language" | "activity" | null>(
-    null
-  )
+  const [sheet, setSheet] = React.useState<"language" | "activity" | null>(null)
   const [activity, setActivity] = React.useState("none")
+  const [dialog, setDialog] = React.useState<"rename" | "delete" | null>(null)
 
   return (
     <AppShell
       sidebar={SLAI_SIDEBAR}
       title={
-        <>
-          <span className="text-muted-foreground">Sources</span>
-          <span className="text-muted-foreground">/</span>
-          <span className="font-medium">{RECORDING.name}</span>
-        </>
+        <PageBreadcrumb
+          items={[{ label: "Sources" }, { label: RECORDING.name }]}
+        />
       }
       toolbar={
         <div className="ml-auto flex items-center gap-2">
@@ -128,12 +102,15 @@ function QuickRecordingPage() {
                 <DownloadIcon />
                 Export
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setDialog("rename")}>
                 <PencilIcon />
                 Rename recording
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive">
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => setDialog("delete")}
+              >
                 <Trash2Icon />
                 Delete recording
               </DropdownMenuItem>
@@ -142,8 +119,8 @@ function QuickRecordingPage() {
         </div>
       }
     >
-      <div className="flex flex-1 items-center justify-center overflow-y-auto p-(--shell-px)">
-        <RecordingCard className="w-full max-w-md" />
+      <div className="flex flex-1 items-start justify-center overflow-y-auto p-(--shell-gap) pt-8">
+        <RecordingCard className="w-full max-w-lg" />
       </div>
 
       <LanguageSettingsSheet
@@ -156,6 +133,20 @@ function QuickRecordingPage() {
         activities={ACTIVITIES}
         value={activity}
         onValueChange={setActivity}
+      />
+      <RenameDialog
+        open={dialog === "rename"}
+        onOpenChange={(open) => !open && setDialog(null)}
+        title="Rename recording"
+        currentName={RECORDING.name}
+        onSubmit={() => setDialog(null)}
+      />
+      <DeleteConfirmDialog
+        open={dialog === "delete"}
+        onOpenChange={(open) => !open && setDialog(null)}
+        itemKind="recording"
+        itemName={RECORDING.name}
+        onConfirm={() => setDialog(null)}
       />
     </AppShell>
   )

@@ -1,0 +1,127 @@
+import { Meta } from "@storybook/addon-docs/blocks"
+
+<Meta title="Getting Started" />
+
+# TRAIL Design System
+
+The shared design system for every TRAIL lab tool. Tools look and behave consistently
+because they build from the same tokens, primitives and patterns; each tool adds only what is
+specific to it. Current consumers: the **Lab Website** and **SLAI**.
+
+## How it's organized
+
+<table>
+  <thead>
+    <tr>
+      <th>Layer</th>
+      <th>Where</th>
+      <th>What it is</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <strong>Foundations</strong>
+      </td>
+      <td>
+        <code>src/tokens/</code>
+      </td>
+      <td>
+        Design tokens: color, typography, spacing, radius, elevation, motion.
+        Everything else is styled with these.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>UI</strong>
+      </td>
+      <td>
+        <code>src/components/ui/</code>
+      </td>
+      <td>
+        shadcn primitives (Button, Card, Dialog, …). Installed and updated with
+        the shadcn CLI only.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Patterns</strong>
+      </td>
+      <td>
+        <code>src/components/patterns/</code>
+      </td>
+      <td>
+        Shared compositions every tool can use: SectionLabel, PageBreadcrumb,
+        PersonRow, StatusBadge, ConfirmDialog, auth screens.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Tools</strong>
+      </td>
+      <td>
+        <code>{"src/components/{tool}/"}</code>
+      </td>
+      <td>
+        Components specific to one tool (SLAI, LabWebsite), with full page
+        examples under each tool's <strong>Pages</strong>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Preview</strong>
+      </td>
+      <td>
+        <code>src/components/blocks/</code>
+      </td>
+      <td>
+        shadcn example blocks kept as the visual bar. Inspiration only — never
+        imported or edited.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+The sidebar follows the same order.
+
+## Using it in an app
+
+```bash
+pnpm add github:trail-ai-lab/trail-design-system#v3.0.0
+```
+
+```css
+/* your app's main CSS file */
+@import "@trail-ai-lab/trail-design-system/styles.css";
+```
+
+```tsx
+import { Button, ConfirmDialog } from "@trail-ai-lab/trail-design-system"
+import { AppShell } from "@trail-ai-lab/trail-design-system/slai"
+```
+
+Requires React 19, Tailwind CSS v4 and `next-themes`. Load Inter, Montserrat and Geist Mono
+(next/font recommended) — see the README for the exact setup.
+
+## Principles
+
+- **Tokens, not values.** Use semantic classes (`bg-primary`, `text-muted-foreground`,
+  `border-border`). Never raw palette colors, hex or rgba.
+- **One hue, one meaning.** Red is the brand (`primary`): main actions, active states, focus,
+  links. `success`, `warning`, `info` and `destructive` carry meaning; `status-*` is only for
+  recording state.
+- **Compose before you build.** Check UI and Patterns first. Something used in two places
+  becomes a pattern.
+- **Ask before destroying.** Irreversible actions go through `ConfirmDialog`.
+- **Sentence case** for every label, title, button and tab.
+
+## Contributing
+
+1. Build from tokens and existing components; match the Preview blocks' hierarchy and spacing.
+2. Add a story that shows every variant and state (loading, empty, error, disabled).
+3. Run `pnpm check` — formatting, lint (including the token rules), unit tests, every story in
+   a real browser with accessibility checks, and the build. CI runs the same on every push.
+4. Record the change in `CHANGELOG.md` under **Unreleased**. Breaking changes need a major
+   version and migration notes.
+
+The full rule set lives in `CLAUDE.md` at the repo root.

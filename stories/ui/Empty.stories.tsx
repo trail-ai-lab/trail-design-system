@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { FileSearch } from "lucide-react"
 import {
   Empty,
@@ -26,7 +26,8 @@ export const Default: Story = {
         </EmptyMedia>
         <EmptyTitle>No sessions found</EmptyTitle>
         <EmptyDescription>
-          No SLAI sessions match your current filters. Try adjusting the date range.
+          No SLAI sessions match your current filters. Try adjusting the date
+          range.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
@@ -41,7 +42,9 @@ export const Simple: Story = {
     <Empty className="w-80">
       <EmptyHeader>
         <EmptyTitle>No results</EmptyTitle>
-        <EmptyDescription>Start by uploading a session recording.</EmptyDescription>
+        <EmptyDescription>
+          Start by uploading a session recording.
+        </EmptyDescription>
       </EmptyHeader>
     </Empty>
   ),

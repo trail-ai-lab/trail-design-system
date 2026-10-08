@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview-02/cards/account-access.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { AccountAccess } from "@/components/blocks/preview-02/cards/account-access"
 
 const meta: Meta<typeof AccountAccess> = {
-  title: "_Preview/Preview-02/AccountAccess",
+  title: "Preview/Blocks 02/AccountAccess",
   component: AccountAccess,
   parameters: { layout: "centered" },
 }

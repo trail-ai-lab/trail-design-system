@@ -5,11 +5,13 @@ import { ExternalLinkIcon, XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
+  EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -46,12 +48,7 @@ function ActivityViewer({
   const [loaded, setLoaded] = React.useState(false)
 
   return (
-    <div
-      className={cn(
-        "relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-card",
-        className
-      )}
-    >
+    <Card className={cn("relative min-h-0 flex-1 gap-0 py-0", className)}>
       {onClose && (
         <Button
           variant="ghost"
@@ -66,11 +63,14 @@ function ActivityViewer({
 
       {variant === "vidyamap" ? (
         <div className="flex flex-1 items-center justify-center p-6">
-          <VidyaMapPlaceholder />
+          <VidyaMapPlaceholder variant="embedded" />
         </div>
       ) : blocked ? (
         <Empty>
           <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <ExternalLinkIcon />
+            </EmptyMedia>
             <EmptyTitle>This activity can&apos;t be embedded</EmptyTitle>
             <EmptyDescription>
               The site doesn&apos;t allow being shown inside SLAI. Open it in a
@@ -103,7 +103,7 @@ function ActivityViewer({
           />
         </>
       )}
-    </div>
+    </Card>
   )
 }
 

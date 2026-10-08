@@ -14,9 +14,17 @@ import {
 } from "@/components/ui/card"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
 import { Spinner } from "@/components/ui/spinner"
-import { Dropzone } from "@/components/trail/dropzone"
-import { formatBytes } from "@/components/slai/lib/format"
+import { Dropzone } from "@/components/patterns/dropzone"
+import { formatBytes } from "@/lib/format"
 import { LanguageMultiSelect } from "@/components/slai/language-multi-select"
 
 /**
@@ -34,9 +42,13 @@ function AddSourceForm({
   accept?: string
   uploading?: boolean
   /** `name` is empty when the user kept the original file name */
-  onUpload?: (file: File, options: { name: string; languages: string[] }) => void
+  onUpload?: (
+    file: File,
+    options: { name: string; languages: string[] }
+  ) => void
   className?: string
 }) {
+  const uid = React.useId()
   const [file, setFile] = React.useState<File | null>(null)
   const [name, setName] = React.useState("")
   const [languages, setLanguages] = React.useState<string[]>([])
@@ -52,33 +64,37 @@ function AddSourceForm({
       <CardContent>
         {file ? (
           <FieldGroup>
-            <div className="flex items-center gap-3 rounded-2xl border border-border p-3">
-              <FileIcon className="size-5 shrink-0 text-muted-foreground" />
-              <div className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-sm font-medium">{file.name}</span>
-                <span className="text-xs text-muted-foreground tabular-nums">
+            <Item variant="outline" size="sm">
+              <ItemMedia variant="icon">
+                <FileIcon className="text-muted-foreground" />
+              </ItemMedia>
+              <ItemContent className="min-w-0">
+                <ItemTitle className="w-full truncate">{file.name}</ItemTitle>
+                <ItemDescription className="tabular-nums">
                   {formatBytes(file.size)}
-                </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Remove file"
-                disabled={uploading}
-                onClick={() => setFile(null)}
-              >
-                <XIcon />
-              </Button>
-            </div>
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label="Remove file"
+                  disabled={uploading}
+                  onClick={() => setFile(null)}
+                >
+                  <XIcon />
+                </Button>
+              </ItemActions>
+            </Item>
             <Field>
-              <FieldLabel htmlFor="slai-source-name">
-                Rename
+              <FieldLabel htmlFor={`${uid}-source-name`}>
+                Name
                 <span className="font-normal text-muted-foreground">
                   — optional
                 </span>
               </FieldLabel>
               <Input
-                id="slai-source-name"
+                id={`${uid}-source-name`}
                 placeholder={file.name}
                 value={name}
                 disabled={uploading}
@@ -86,17 +102,17 @@ function AddSourceForm({
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="slai-source-languages">
+              <FieldLabel htmlFor={`${uid}-source-languages`}>
                 Languages spoken
                 <span className="font-normal text-muted-foreground">
                   — optional
                 </span>
               </FieldLabel>
               <LanguageMultiSelect
-                id="slai-source-languages"
+                id={`${uid}-source-languages`}
                 options={languageOptions}
                 value={languages}
-                onChange={setLanguages}
+                onValueChange={setLanguages}
                 disabled={uploading}
                 helperText="Helps transcription accuracy."
               />
@@ -114,14 +130,16 @@ function AddSourceForm({
         <Button
           className="w-full"
           disabled={!file || uploading}
-          onClick={() => file && onUpload?.(file, { name: name.trim(), languages })}
+          onClick={() =>
+            file && onUpload?.(file, { name: name.trim(), languages })
+          }
         >
           {uploading ? (
             <Spinner data-icon="inline-start" />
           ) : (
             <UploadIcon data-icon="inline-start" />
           )}
-          {uploading ? "Uploading..." : file ? "Upload" : "No file selected"}
+          {uploading ? "Uploading…" : "Upload"}
         </Button>
       </CardFooter>
     </Card>

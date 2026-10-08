@@ -38,8 +38,8 @@ function SaveRecordingDialog({
   onNewRecording,
   onRetryUpload,
 }: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   phase: SaveRecordingPhase
   durationSeconds: number
   sizeBytes: number

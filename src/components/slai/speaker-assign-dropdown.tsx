@@ -32,6 +32,7 @@ function SpeakerAssignDropdown({
   onAddStudent,
   placeholder = "Unassigned",
   disabled = false,
+  "aria-label": ariaLabel,
   className,
 }: {
   students: string[]
@@ -42,6 +43,8 @@ function SpeakerAssignDropdown({
   onAddStudent?: (name: string) => void
   placeholder?: string
   disabled?: boolean
+  /** Accessible name when there's no visible <label htmlFor={id}> */
+  "aria-label"?: string
   className?: string
 }) {
   const [open, setOpen] = React.useState(false)
@@ -71,6 +74,7 @@ function SpeakerAssignDropdown({
           variant="outline"
           size="sm"
           role="combobox"
+          aria-label={ariaLabel}
           aria-expanded={open}
           disabled={disabled}
           className={cn("w-40 justify-between font-normal", className)}
@@ -84,16 +88,21 @@ function SpeakerAssignDropdown({
       <PopoverContent align="end" className="w-56 p-0">
         <Command>
           <CommandInput
-            placeholder="Search or add student..."
+            placeholder="Search or add student…"
             value={search}
             onValueChange={setSearch}
           />
           <CommandList>
             <CommandEmpty>
-              {onAddStudent ? "Type a name to add a student." : "No student found."}
+              {onAddStudent
+                ? "Type a name to add a student."
+                : "No student found."}
             </CommandEmpty>
             <CommandGroup>
-              <CommandItem value="__unassigned__" onSelect={() => choose(undefined)}>
+              <CommandItem
+                value="__unassigned__"
+                onSelect={() => choose(undefined)}
+              >
                 <span className="text-muted-foreground">Unassigned</span>
                 {!value && <CheckIcon className="ml-auto" />}
               </CommandItem>

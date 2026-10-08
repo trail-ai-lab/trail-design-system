@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { ProgressChart } from "@/components/slai/progress-chart"
 import { LIAM, MEI, SESSION_LABELS } from "./_student-fixtures"

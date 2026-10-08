@@ -4,6 +4,10 @@ import { AlertTriangleIcon, CheckCircle2Icon, XCircleIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
+  StatusBadge,
+  type StatusTone,
+} from "@/components/patterns/status-badge"
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -13,24 +17,27 @@ import { VERDICT_LABELS, type Verdict } from "@/components/slai/lib/verdict"
 
 const verdictConfig: Record<
   Verdict,
-  // `text` alone colors the bare icon; badges add the tinted `bg`.
-  { icon: typeof CheckCircle2Icon; text: string; bg: string }
+  // `text` colors the bare icon (VerdictIcon); badges get their tint from StatusBadge.
+  { icon: typeof CheckCircle2Icon; text: string }
 > = {
   met: {
     icon: CheckCircle2Icon,
-    text: "text-status-uploaded",
-    bg: "bg-status-uploaded/10",
+    text: "text-success",
   },
   partial: {
     icon: AlertTriangleIcon,
-    text: "text-status-paused",
-    bg: "bg-status-paused/10",
+    text: "text-warning",
   },
   "not-yet": {
     icon: XCircleIcon,
     text: "text-destructive",
-    bg: "bg-destructive/10",
   },
+}
+
+const verdictTone: Record<Verdict, StatusTone> = {
+  met: "success",
+  partial: "warning",
+  "not-yet": "destructive",
 }
 
 /** Icon alone, for compact grids. Color and shape both carry the verdict. */
@@ -73,27 +80,24 @@ function VerdictBadge({
   reasoning?: string
   className?: string
 }) {
-  const { icon: Icon, text, bg } = verdictConfig[verdict]
+  const { icon: Icon } = verdictConfig[verdict]
   const badge = (
-    <span
-      className={cn(
-        "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-        text,
-        bg,
-        className
-      )}
+    <StatusBadge
+      tone={verdictTone[verdict]}
+      icon={Icon}
+      data-slot="verdict-badge"
+      className={className}
     >
-      <Icon className="size-3.5" />
-      <span className="uppercase tracking-wide">{label}</span>
+      <span className="tracking-wide uppercase">{label}</span>
       <span aria-hidden className="opacity-50">
         ·
       </span>
       <span>{VERDICT_LABELS[verdict]}</span>
       {score !== undefined && (
-        <span className="tabular-nums opacity-70">{score.toFixed(1)}</span>
+        <span className="font-normal tabular-nums">{score.toFixed(1)}</span>
       )}
-      {note && <span className="italic opacity-70">({note})</span>}
-    </span>
+      {note && <span className="font-normal italic">({note})</span>}
+    </StatusBadge>
   )
 
   if (!reasoning) return badge
@@ -115,6 +119,7 @@ function VerdictBadge({
 function VerdictLegend({ className }: { className?: string }) {
   return (
     <div
+      data-slot="verdict-legend"
       className={cn(
         "flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground",
         className

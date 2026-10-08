@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 /**
  * Renders generated summary text: lines starting with "-", "*" or "•"
  * become a bullet list, everything else a paragraph. Shared by the live
- * summary, earlier phases and the post-session summary.
+ * summary, earlier phases and the session review summary.
  */
 function SummaryText({
   text,
@@ -28,6 +28,7 @@ function SummaryText({
 
   return (
     <div
+      data-slot="summary-text"
       className={cn(
         "flex flex-col gap-2 text-sm leading-relaxed text-foreground",
         className

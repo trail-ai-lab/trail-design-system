@@ -3,13 +3,18 @@
 import * as React from "react"
 import { ChevronDownIcon, GlobeIcon, LightbulbIcon } from "lucide-react"
 
+import { initials } from "@/lib/format"
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Card } from "@/components/ui/card"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Progress } from "@/components/ui/progress"
+import { InsightItem, TranscriptQuote } from "@/components/slai/insight-blocks"
 import { VerdictBadge } from "@/components/slai/verdict-badge"
 import { weakestVerdict, type Verdict } from "@/components/slai/lib/verdict"
 
@@ -64,116 +69,116 @@ function StudentInsightCard({
   ]
   const needsAttention = weakestVerdict(verdicts) === "not-yet"
 
+  const talkShare =
+    maxTalkTimePct > 0 ? (student.talkTimePct / maxTalkTimePct) * 100 : 0
+
   return (
     <Collapsible
       open={open}
       onOpenChange={setOpen}
       id={`student-card-${student.id}`}
-      className={cn(
-        "rounded-2xl border bg-card",
-        needsAttention ? "border-destructive/40" : "border-border",
-        className
-      )}
+      asChild
     >
-      <CollapsibleTrigger className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl px-4 py-3 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/30">
-        <span className="text-sm font-semibold">{student.name}</span>
-        <span className="text-xs text-muted-foreground">
-          {student.primaryLanguage}
-        </span>
-        <span
-          className="h-1.5 w-20 overflow-hidden rounded-full bg-muted"
-          title={`${student.talkTimePct}% of group talk time`}
-        >
-          <span
-            className="block h-full rounded-full bg-primary/60"
-            style={{
-              width: `${maxTalkTimePct > 0 ? (student.talkTimePct / maxTalkTimePct) * 100 : 0}%`,
-            }}
+      <Card
+        size="sm"
+        className={cn(
+          "gap-0 py-0",
+          needsAttention && "ring-destructive/40 dark:ring-destructive/40",
+          className
+        )}
+      >
+        <CollapsibleTrigger className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 px-(--card-spacing) py-3 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/30">
+          <Avatar size="sm">
+            <AvatarFallback>{initials(student.name)}</AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium">{student.name}</span>
+          <span className="text-xs text-muted-foreground">
+            {student.primaryLanguage}
+          </span>
+          <Progress
+            value={talkShare}
+            aria-label={`${student.talkTimePct}% of group talk time`}
+            title={`${student.talkTimePct}% of group talk time`}
+            className="h-1.5 w-20"
           />
-        </span>
-        <span className="ml-auto flex flex-wrap items-center gap-1.5">
-          {student.wida ? (
-            <VerdictBadge
-              label="WIDA"
-              verdict={student.wida.verdict}
-              score={student.wida.score}
-              reasoning={student.wida.reasoning}
-            />
-          ) : (
-            <Badge variant="outline">Native English</Badge>
-          )}
-          <VerdictBadge
-            label={standardLabel}
-            verdict={student.standard.verdict}
-            reasoning={student.standard.reasoning}
-          />
-          <ChevronDownIcon
-            className={cn(
-              "size-4 text-muted-foreground transition-transform",
-              open && "rotate-180"
+          <span className="ml-auto flex flex-wrap items-center gap-1.5">
+            {student.wida ? (
+              <VerdictBadge
+                label="WIDA"
+                verdict={student.wida.verdict}
+                score={student.wida.score}
+                reasoning={student.wida.reasoning}
+              />
+            ) : (
+              <Badge variant="outline">Native English</Badge>
             )}
-          />
-        </span>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="flex flex-col gap-3 border-t border-border px-4 py-3">
-        {student.culturalContext && (
-          <div className="flex gap-2 rounded-xl bg-muted p-3 text-sm">
-            <GlobeIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">
-                Cultural connection
-              </p>
-              <p>{student.culturalContext}</p>
-            </div>
-          </div>
-        )}
+            <VerdictBadge
+              label={standardLabel}
+              verdict={student.standard.verdict}
+              reasoning={student.standard.reasoning}
+            />
+            <ChevronDownIcon
+              className={cn(
+                "size-4 text-muted-foreground transition-transform",
+                open && "rotate-180"
+              )}
+            />
+          </span>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="flex flex-col gap-3 border-t border-border px-(--card-spacing) py-3">
+          {student.culturalContext && (
+            <InsightItem
+              icon={<GlobeIcon className="text-muted-foreground" />}
+              label="Cultural connection"
+            >
+              {student.culturalContext}
+            </InsightItem>
+          )}
 
-        <div className="flex flex-col gap-1.5">
-          <p className="text-xs font-medium text-muted-foreground">
-            Academic language used
-          </p>
-          {student.academicTerms && student.academicTerms.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5">
-              {student.academicTerms.map(({ term, language }) => (
-                <Badge key={term} variant="outline" className="font-mono">
-                  &ldquo;{term}&rdquo;
-                  {language && (
-                    <span className="text-muted-foreground">· {language}</span>
-                  )}
-                </Badge>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground italic">
-              No academic language detected this session.
+          <div className="flex flex-col gap-1.5">
+            <p className="text-xs font-medium text-muted-foreground">
+              Academic language used
+            </p>
+            {student.academicTerms && student.academicTerms.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {student.academicTerms.map(({ term, language }) => (
+                  <Badge key={term} variant="outline" className="font-mono">
+                    &ldquo;{term}&rdquo;
+                    {language && (
+                      <span className="text-muted-foreground">
+                        · {language}
+                      </span>
+                    )}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">
+                No academic language detected this session.
+              </p>
+            )}
+          </div>
+
+          {student.transcriptQuote && (
+            <TranscriptQuote
+              label={`${student.name} said`}
+              quote={student.transcriptQuote}
+            />
+          )}
+
+          {student.note && (
+            <p className="border-t border-border pt-3 text-xs text-muted-foreground">
+              {student.note}
             </p>
           )}
-        </div>
 
-        {student.transcriptQuote && (
-          <blockquote className="border-l-2 border-border pl-3">
-            <p className="text-xs font-medium text-muted-foreground">
-              {student.name} said
-            </p>
-            <p className="text-sm italic">
-              &ldquo;{student.transcriptQuote}&rdquo;
-            </p>
-          </blockquote>
-        )}
-
-        {student.note && (
-          <p className="border-t border-border pt-3 text-xs text-muted-foreground">
-            {student.note}
-          </p>
-        )}
-
-        {student.actionPrompt && (
-          <div className="flex gap-2 rounded-xl bg-muted p-3 text-sm font-medium">
-            <LightbulbIcon className="mt-0.5 size-4 shrink-0 text-status-paused" />
-            {student.actionPrompt}
-          </div>
-        )}
-      </CollapsibleContent>
+          {student.actionPrompt && (
+            <InsightItem icon={<LightbulbIcon className="text-info" />}>
+              <span className="font-medium">{student.actionPrompt}</span>
+            </InsightItem>
+          )}
+        </CollapsibleContent>
+      </Card>
     </Collapsible>
   )
 }

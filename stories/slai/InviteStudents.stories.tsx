@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { QrCodeIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,8 @@ import {
   InviteStudentsSheet,
 } from "@/components/slai/invite-students-sheet"
 
-const JOIN_URL = "https://trail.wcer.wisc.edu/slai/student-view?token=mn1pCSGtJnd0ZWC0"
+const JOIN_URL =
+  "https://trail.wcer.wisc.edu/slai/student-view?token=mn1pCSGtJnd0ZWC0"
 
 const meta: Meta<typeof InvitePanel> = {
   title: "SLAI/InviteStudents",

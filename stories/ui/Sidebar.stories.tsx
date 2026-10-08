@@ -1,5 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
-import { BarChart2, ChevronRight, Home, Plus, Settings, Users } from "lucide-react"
+import type { Meta, StoryObj } from "@storybook/react-vite"
+import {
+  BarChart2,
+  ChevronRight,
+  Home,
+  Plus,
+  Settings,
+  Users,
+} from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -46,17 +53,20 @@ export const Default: Story = {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
-                    <Home />Dashboard
+                    <Home />
+                    Dashboard
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton isActive>
-                    <BarChart2 />SLAI
+                    <BarChart2 />
+                    SLAI
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
-                    <Users />Casting Lab
+                    <Users />
+                    Casting Lab
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -66,7 +76,8 @@ export const Default: Story = {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton>
-                  <Settings />Settings
+                  <Settings />
+                  Settings
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -126,7 +137,8 @@ export const WithSubmenu: Story = {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
-                    <Home />Period 3 Physics
+                    <Home />
+                    Period 3 Physics
                   </SidebarMenuButton>
                   <SidebarMenuSub>
                     <SidebarMenuSubItem>
@@ -148,7 +160,8 @@ export const WithSubmenu: Story = {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
-                    <BarChart2 />Period 5 Chemistry
+                    <BarChart2 />
+                    Period 5 Chemistry
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -177,13 +190,15 @@ export const WithActionsAndBadges: Story = {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
-                    <Users />Group 1
+                    <Users />
+                    Group 1
                   </SidebarMenuButton>
                   <SidebarMenuBadge>3</SidebarMenuBadge>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
-                    <Users />Group 2
+                    <Users />
+                    Group 2
                   </SidebarMenuButton>
                   <SidebarMenuAction title="Add student">
                     <Plus />
@@ -213,12 +228,14 @@ export const OutlineVariant: Story = {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton variant="outline">
-                    <Home />Dashboard
+                    <Home />
+                    Dashboard
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton variant="outline" isActive>
-                    <ChevronRight />New tool
+                    <ChevronRight />
+                    New tool
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -252,17 +269,20 @@ export const CollapsedIcon: Story = {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton tooltip="Dashboard">
-                      <Home />Dashboard
+                      <Home />
+                      Dashboard
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton tooltip="SLAI" isActive>
-                      <BarChart2 />SLAI
+                      <BarChart2 />
+                      SLAI
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton tooltip="Casting Lab">
-                      <Users />Casting Lab
+                      <Users />
+                      Casting Lab
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>

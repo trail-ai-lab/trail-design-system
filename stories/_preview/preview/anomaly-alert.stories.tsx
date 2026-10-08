@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/anomaly-alert.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { AnomalyAlert } from "@/components/blocks/preview/cards/anomaly-alert"
 
 const meta: Meta<typeof AnomalyAlert> = {
-  title: "_Preview/Preview/AnomalyAlert",
+  title: "Preview/Blocks 01/AnomalyAlert",
   component: AnomalyAlert,
   parameters: { layout: "centered" },
 }

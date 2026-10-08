@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 
@@ -15,7 +15,10 @@ export const Default: Story = {
     <RadioGroup defaultValue="slai">
       {["SLAI", "AIBAT", "Bias Audit"].map((tool) => (
         <div key={tool} className="flex items-center gap-2">
-          <RadioGroupItem value={tool.toLowerCase().replace(" ", "-")} id={tool} />
+          <RadioGroupItem
+            value={tool.toLowerCase().replace(" ", "-")}
+            id={tool}
+          />
           <Label htmlFor={tool}>{tool}</Label>
         </div>
       ))}

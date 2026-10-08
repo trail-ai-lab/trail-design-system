@@ -6,7 +6,9 @@ import { CheckIcon, LightbulbIcon, StarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { InsightItem, TranscriptQuote } from "@/components/slai/insight-blocks"
 import { VerdictBadge } from "@/components/slai/verdict-badge"
 import { widaVerdict } from "@/components/slai/lib/verdict"
 import type { StudentSessionData } from "@/components/slai/lib/student-progress"
@@ -37,19 +39,20 @@ function SessionEvidenceCard({
       : (session.widaVerdictOverride ?? widaVerdict(session.widaScore))
 
   return (
-    <div
+    <Card
+      size="sm"
       className={cn(
-        "flex w-72 shrink-0 flex-col gap-3 rounded-2xl border bg-card p-3",
-        isLatest ? "border-primary/40 ring-1 ring-primary/20" : "border-border",
+        "w-72 shrink-0",
+        isLatest && "ring-primary/40 dark:ring-primary/40",
         className
       )}
     >
-      <div className="flex flex-col gap-1.5">
-        <p className="text-sm font-semibold">{session.sessionLabel}</p>
+      <CardHeader className="gap-1.5">
+        <CardTitle className="text-body-sm">{session.sessionLabel}</CardTitle>
         {(session.isMilestone || isLatest) && (
           <div className="flex flex-wrap gap-1">
             {session.isMilestone && (
-              <Badge variant="secondary" className="bg-status-paused/10 text-status-paused">
+              <Badge variant="secondary" className="bg-info/10 text-info">
                 <StarIcon data-icon="inline-start" />
                 {session.milestoneLabel ?? "Milestone"}
               </Badge>
@@ -61,52 +64,52 @@ function SessionEvidenceCard({
             )}
           </div>
         )}
-      </div>
+      </CardHeader>
 
-      <div className="flex flex-wrap gap-1">
-        {wida ? (
+      <CardContent className="flex flex-1 flex-col gap-3">
+        <div className="flex flex-wrap gap-1">
+          {wida ? (
+            <VerdictBadge
+              label="WIDA"
+              verdict={wida}
+              score={session.widaScore ?? undefined}
+              note={session.widaNote}
+            />
+          ) : (
+            <Badge variant="outline">Native English</Badge>
+          )}
           <VerdictBadge
-            label="WIDA"
-            verdict={wida}
-            score={session.widaScore ?? undefined}
-            note={session.widaNote}
+            label={standardLabel}
+            verdict={session.standardVerdict}
           />
-        ) : (
-          <Badge variant="outline">Native EN</Badge>
-        )}
-        <VerdictBadge label={standardLabel} verdict={session.standardVerdict} />
-      </div>
+        </div>
 
-      <Separator />
+        <Separator />
 
-      <blockquote className="border-l-2 border-border pl-2">
-        <p className="text-xs font-medium text-muted-foreground">Said</p>
-        <p className="text-sm italic">&ldquo;{session.transcriptQuote}&rdquo;</p>
-        {session.quoteTranslation && (
-          <p className="mt-1 text-xs text-muted-foreground italic">
-            {session.quoteTranslation}
-          </p>
-        )}
-      </blockquote>
+        <TranscriptQuote
+          label="Said"
+          quote={session.transcriptQuote}
+          translation={session.quoteTranslation}
+        />
 
-      <div className="flex gap-2 rounded-xl bg-muted p-2.5 text-sm font-medium">
-        <LightbulbIcon className="mt-0.5 size-4 shrink-0 text-status-paused" />
-        {session.actionPrompt}
-      </div>
+        <InsightItem icon={<LightbulbIcon className="text-info" />}>
+          <span className="font-medium">{session.actionPrompt}</span>
+        </InsightItem>
 
-      <Button
-        variant={done ? "secondary" : "outline"}
-        size="sm"
-        aria-pressed={done}
-        onClick={() => {
-          setDone(!done)
-          onActionDoneChange?.(!done)
-        }}
-      >
-        <CheckIcon data-icon="inline-start" />
-        {done ? "Follow-up done" : "Mark follow-up done"}
-      </Button>
-    </div>
+        <Button
+          variant={done ? "secondary" : "outline"}
+          size="sm"
+          aria-pressed={done}
+          onClick={() => {
+            setDone(!done)
+            onActionDoneChange?.(!done)
+          }}
+        >
+          <CheckIcon data-icon="inline-start" />
+          {done ? "Follow-up done" : "Mark follow-up done"}
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -121,7 +124,10 @@ function SessionEvidenceStrip({
   className?: string
 }) {
   return (
-    <div className={cn("flex gap-3 overflow-x-auto px-px pb-3", className)}>
+    <div
+      data-slot="session-evidence-strip"
+      className={cn("flex gap-3 overflow-x-auto px-px pb-3", className)}
+    >
       {sessions.map((session, i) => (
         <SessionEvidenceCard
           key={session.sessionId}

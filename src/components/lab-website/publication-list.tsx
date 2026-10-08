@@ -33,13 +33,18 @@ export function PublicationList({ items, className }: PublicationListProps) {
   const groups = groupByYear(items)
 
   return (
-    <div className={cn("flex flex-col", className)}>
+    <div
+      data-slot="publication-list"
+      className={cn("flex flex-col", className)}
+    >
       {groups.map((group) => (
         <div
           key={group.year}
           className="grid grid-cols-1 gap-3 border-t border-border py-8 first:border-t-0 md:grid-cols-[8rem_1fr] md:gap-10"
         >
-          <p className="font-mono text-sm text-muted-foreground">{group.year}</p>
+          <p className="font-mono text-sm text-muted-foreground">
+            {group.year}
+          </p>
           <ul className="flex flex-col gap-6">
             {group.items.map((pub) => (
               <li key={pub.id}>
@@ -53,9 +58,13 @@ export function PublicationList({ items, className }: PublicationListProps) {
                     {pub.title}
                   </a>
                 ) : (
-                  <p className="text-base font-medium text-foreground">{pub.title}</p>
+                  <p className="text-base font-medium text-foreground">
+                    {pub.title}
+                  </p>
                 )}
-                <p className="mt-1 text-sm text-muted-foreground">{pub.authors}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {pub.authors}
+                </p>
                 <p className="mt-1 text-sm text-muted-foreground italic">
                   {pub.publisher}
                 </p>

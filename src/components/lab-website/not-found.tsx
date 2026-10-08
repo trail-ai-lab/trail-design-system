@@ -26,10 +26,10 @@ export function NotFound({ homeHref = "/", className }: NotFoundProps) {
         <EmptyMedia variant="icon">
           <Frown />
         </EmptyMedia>
-        <EmptyTitle className="text-3xl">Oops, page not found!</EmptyTitle>
+        <EmptyTitle className="text-h2">Oops, page not found!</EmptyTitle>
         <EmptyDescription className="text-lg">
-          I apologize for any inconvenience caused. It seems that you are trying to access a
-          page that has either been deleted or never existed.
+          I apologize for any inconvenience caused. It seems that you are trying
+          to access a page that has either been deleted or never existed.
         </EmptyDescription>
       </EmptyHeader>
       <Button size="lg" className="mt-4" asChild>

@@ -1,8 +1,17 @@
 "use client"
 
 import * as React from "react"
+import { TargetIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
+import { SectionLabel } from "@/components/patterns/section-label"
 import { ClassOverviewGrid } from "@/components/slai/class-overview-grid"
 import { InsightCallout } from "@/components/slai/insight-callout"
 import { SessionGoalCard } from "@/components/slai/session-goal-card"
@@ -11,12 +20,6 @@ import {
   type StudentInsight,
 } from "@/components/slai/student-insight-card"
 import { weakestVerdict } from "@/components/slai/lib/verdict"
-
-const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-    {children}
-  </h3>
-)
 
 /**
  * The Goals tab of a session recording: class overview matrix, the session
@@ -53,9 +56,17 @@ function GoalsPanel({
 
   if (students.length === 0) {
     return (
-      <p className="p-6 text-sm text-muted-foreground italic">
-        No goals data available for this recording.
-      </p>
+      <Empty className={className}>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <TargetIcon />
+          </EmptyMedia>
+          <EmptyTitle>No goals yet</EmptyTitle>
+          <EmptyDescription>
+            Goal results appear here once this recording has been analyzed.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 
@@ -73,7 +84,10 @@ function GoalsPanel({
       ?.scrollIntoView({ behavior: "smooth", block: "nearest" })
 
   return (
-    <div className={cn("flex flex-col gap-5", className)}>
+    <div
+      data-slot="goals-panel"
+      className={cn("flex flex-col gap-5", className)}
+    >
       {callout && <InsightCallout variant="info">{callout}</InsightCallout>}
 
       <section className="flex flex-col gap-3">

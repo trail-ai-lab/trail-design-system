@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const meta: Meta<typeof Avatar> = {
@@ -20,7 +20,7 @@ export const WithImage: Story = {
 
 export const Fallback: Story = {
   render: () => (
-    <div className="flex gap-3 items-center">
+    <div className="flex items-center gap-3">
       <Avatar>
         <AvatarFallback>SC</AvatarFallback>
       </Avatar>

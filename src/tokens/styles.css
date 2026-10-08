@@ -1,0 +1,17 @@
+/**
+ * Trail design system — single stylesheet entry for apps.
+ *
+ *   @import "@trail-ai-lab/trail-design-system/styles.css";
+ *
+ * Order matters: the generated theme first (globals.css: Tailwind, preset colors,
+ * radius), then Trail's hand-maintained layers on top — semantic colors and
+ * contrast fixes, scales (type, elevation, motion, stacking), page-chrome layout
+ * and fonts. Finally tells Tailwind to scan the package's compiled components.
+ */
+@import "./globals.css";
+@import "./semantic.css";
+@import "./scales.css";
+@import "./layout.css";
+@import "./fonts.css";
+
+@source "../../dist";

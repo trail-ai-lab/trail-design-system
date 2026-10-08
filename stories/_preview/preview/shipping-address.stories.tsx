@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/shipping-address.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ShippingAddress } from "@/components/blocks/preview/cards/shipping-address"
 
 const meta: Meta<typeof ShippingAddress> = {
-  title: "_Preview/Preview/ShippingAddress",
+  title: "Preview/Blocks 01/ShippingAddress",
   component: ShippingAddress,
   parameters: { layout: "centered" },
 }

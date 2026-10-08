@@ -1,6 +1,155 @@
-# @trail/ui
+# @trail-ai-lab/trail-design-system
 
 ## Unreleased
+
+## 3.0.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
+
+### Major Changes
+
+- **Platform: React 19 only.** `peerDependencies` are now `react`/`react-dom` `^19.0.0`; React 18
+  and the unused `next` peer are dropped. Built against Next.js 16, Tailwind CSS 4, Storybook 10,
+  TypeScript 6. Requires Node 20.9+.
+- **`trail/` is now `patterns/`.** The shared layer is renamed to match standard design-system
+  terminology. Root (`.`) exports are unchanged. _Migrate:_ nothing, unless you imported the
+  short-lived `./trail` subpath — use `./patterns` instead.
+- **Placeholder tool subpaths removed:** `./aibat`, `./bias-audit`, `./casting-lab`,
+  `./murder-mystery`, `./trail-console` (they exported nothing). They return when a tool ships
+  its first component.
+- **SLAI exports removed** (unused by any SLAI screen): `CheckinDivider`, `ConversationTimeline`,
+  `FileList`, `GroupBuilder`, `GroupCard`, `LanguageChip`, `LiveGroupCard`, `LiveWaveform`,
+  `RetranscribeToolbar`, `ScopeToggle`, `SessionGroupList`, `SessionSetupForm`, `SourceMetaCard`
+  (and their types `RosterStudent`, `SessionGroup`, `GroupPreset`, `UploadedFile`,
+  `SessionSetupValues`, `TimelineSegment`, `InsightScope`, `SessionGroupListItem`).
+- **`SlaiSidebar` follows the Class → Session model.** _Migrate:_ `sessions` → `classes`,
+  `defaultOpenSession` → `defaultOpenClass`, type `SidebarSession { periods }` →
+  `SidebarClass { sessions }`, type `SidebarPeriod` → `SidebarSession`,
+  `SidebarItemTarget.kind` `"session" | "period"` → `"class" | "session"`, nav id `"manage"` →
+  `"live"`. New `liveSessionActive` prop shows a "Now" marker on the **Live** nav item.
+- **`GroupSwitcher`:** `SwitcherGroup.memberCount` and `chunkCount` removed; tabs show the name only.
+- **SLAI formatters moved:** `@/components/slai/lib/format` → `@/lib/format` (`initials`,
+  `formatDuration`, `formatElapsed`, `formatBytes`).
+- **Status color tokens are aliases now:** `--status-recording/paused/uploaded` =
+  `var(--destructive/--warning/--info)`. Paused amber is slightly deeper (`--warning` meets 4.5:1
+  as text). "Stopped" status renders neutral instead of blue.
+
+### Foundations
+
+- **Token layers.** Hand-maintained tokens moved out of the generated `globals.css` into
+  `semantic.css`, so regenerating the preset no longer drops them. Both new files are included in
+  `styles.css`; `./semantic.css` and `./scales.css` are also exported. _Migrate:_ import `styles.css`
+  instead of `globals.css` (or add `semantic.css` + `scales.css` after it).
+- **Contrast fixes (WCAG AA):** dark-mode `--primary` is lighter (L 0.65) with dark
+  `--primary-foreground` — 5.5:1 as text, was 2.35:1. Light `--muted-foreground` darkened to
+  4.5:1 on `--muted`. `--ring` is now the brand primary and every focus ring is drawn at full
+  strength (was 2.4:1 at best).
+- **New scales** (`scales.css`): type `text-display|h1|h2|h3|title|body|body-sm|label|caption`,
+  elevation `shadow-raised|overlay|modal`, motion `duration-fast|base|slow` and
+  `ease-standard|emphasized`, stacking `z-raised|sticky|overlay|toast`.
+- **Reduced motion:** all animation and transitions collapse when the OS setting is on.
+- Removed the unused `--overlay` token.
+- Foundations docs: new Radius, Elevation, Motion, Focus and Stacking pages; Typography documents
+  the new scale. `SectionLabel` uses `text-label`.
+
+### Primitives
+
+- **All shadcn primitives updated** to the latest registry (`radix-rhea` style) via the new
+  `pnpm ui:update` script: React 19 function components (no more `forwardRef`), improved focus
+  styling for checkboxes and field labels, dropdown menus match their trigger width, calendar
+  class handling fixes.
+- **`cn` replaces `clsx` + `tailwind-merge`** (shadcn's compiled merge engine, same output).
+  `cn` is now configured with Trail's scales, fixing a bug where `cn("text-label",
+  "text-muted-foreground")` dropped the size (any `text-<scale>` combined with a text color).
+
+### Quality gates
+
+- **CI** (`.github/workflows/ci.yml`): format check, TypeScript, ESLint, unit tests, package and
+  Storybook builds, and every story rendered in Chromium with axe accessibility checks — on every
+  push and PR. Version tags must equal `package.json` `version`. Run it all locally with
+  `pnpm check`.
+- **ESLint** with Trail token rules: `trail/no-raw-colors` (palette colors, hex/rgb/hsl/oklch in
+  class strings) and `trail/no-arbitrary-values` (`text-[…]`, `z-[…]`, `shadow-[…]`, …).
+- **Prettier** with Tailwind class sorting; the repo is formatted once.
+- **Storybook moved to Vite** (`@storybook/react-vite`) so stories run as Vitest browser tests;
+  `next` is no longer a dev dependency. Chromatic (never configured) removed.
+- **Accessibility fixes found by the new checks:** contrast of meaning colors on their own tints
+  (`--warning`, `--destructive`, `--success`, `--info`, `--muted-foreground` darkened), faded
+  text (opacity / `/70`) replaced, `SlaiSidebar` list structure, labels for language/speaker
+  pickers and progress bars, `LanguageSettingsForm` duplicate IDs (now `useId`), `Dropzone`
+  nested controls, footer heading order. Remaining upstream issues are disabled per rule, per
+  story, with the reason.
+- **Bug fixes:** `EventDetail` crashed when it had related papers (a duplicated heading inside
+  `SectionLabel`); `RenameDialog` no longer resets its draft from an effect; the search
+  shortcut label no longer sets state in an effect; `TranscriptCard` now shows its
+  `translationLanguage`.
+- _Migrate:_ wrap your app root in `TooltipProvider` (shadcn's Tooltip now requires it).
+
+### Component conventions
+
+- **API conventions** (CLAUDE.md "Component API Conventions"): `value`/`defaultValue`/
+  `onValueChange`, `open`/`defaultOpen`/`onOpenChange` (all optional), `loading` vs a `status`
+  union, `isX` booleans, `data-slot` on every component root, accessibility as part of the API.
+  New `useControllableState` helper (`src/lib`).
+- _Migrate:_
+  - `LanguageMultiSelect`, `LanguageSettingsForm`, `LanguageSettingsSheet`: `onChange` →
+    `onValueChange` (all now also accept `defaultValue`; the sheet accepts `defaultOpen`).
+  - `StudentChip`: `selected` → `isSelected`.
+  - `RecordingControl`: `pending` → `status`.
+  - `RenameDialog`, `DeleteConfirmDialog`, `SaveRecordingDialog`, `GlobalSearch`: `open` and
+    `onOpenChange` are optional; `RenameDialog` gains `trigger` + `defaultOpen`.
+- **New pattern `StatusBadge`** (tone + icon or dot): `SessionStatusBadge`, `VerdictBadge` and
+  `EventStatusBadge` are built on it. `EventStatusBadge` "Upcoming" is now a tinted primary pill
+  (was solid), matching the other status pills.
+- **`GroupSwitcher`** is a single-select toggle group (radio semantics) instead of tabs without
+  panels; same look. Accepts `defaultValue`.
+- **Accessibility:** live regions on the live transcript, chat and summary; `StudentChip` is
+  keyboard-operable (`aria-pressed`); chat citations are real buttons; lab header links set
+  `aria-current="page"`; pickers accept `aria-label`.
+- **New primitives:** `pagination`, `navigation-menu`, `drawer`. `collapsible` and `scroll-area`
+  are now exported (they were installed but missing from the package).
+- **`formatClock`** (m:ss) added to `lib/format`, replacing the audio player's private copy;
+  formatters have unit tests.
+
+### Composition consistency
+
+- **Summary on the right in both modes:** new `SummaryQaPanel` (Summary + Q&A tabs) is the right
+  column on Live and Session review. Session review's left tabs are Goals, Transcript, Speakers,
+  Activity; its primary toggle is now "Summary & Q&A". The All-groups view shows the panel full width.
+- **Forms share one shape:** `GroupSetupForm` and `RecordingCard` are now Cards with a footer
+  action; `NewSessionForm`'s description moved below its title; primary actions are default size.
+  Task pages share one frame (top-aligned, `max-w-lg`; student screens `max-w-sm`).
+- **Type scale in use:** headings across patterns, SLAI and the Lab Website use
+  `text-h1|h2|h3` / `md:text-display`; new `text-hero` step for the home hero. Lab `h3`s now
+  share one size (FocusAreas 24→20px, Pillars 18→20px).
+- **Empty and error states:** transcript, chat, summary and search use `Empty`; search states
+  render outside the result listbox; the sidebar gets "No sources yet". Blocking errors use one
+  tinted `EmptyMedia`; inline errors use `Alert`; `IconTile` gains a `success` variant.
+- **No nested cards / duplicated titles:** `VidyaMapPlaceholder` has `variant="embedded"`;
+  recording panels no longer repeat the dialog title (_migrate:_ `RecordingUploadingPanel`'s
+  `title` prop is removed).
+- People rows use small avatars; `StudentInsightCard` shows one.
+- All form IDs come from `React.useId()` (auth forms, new session, add source, recording,
+  invite, VidyaMap). Field labels "Rename"/"File name" → "Name"; typographic ellipses (…).
+
+### Minor Changes
+
+- **Stylesheet entry `styles.css`** (recommended): imports the theme, layout tokens and font
+  tokens, and adds the Tailwind `@source` for the package — no manual `@source` needed. Also
+  exported individually: `./globals.css`, `./layout.css` (page-chrome spacing used by
+  `AppShell`, previously not shipped), `./fonts.css` (default font families).
+- **Meaning color tokens:** `--success`, `--warning`, `--info` (+ `-foreground`), contrast-checked
+  in both themes. Rule: one hue, one meaning.
+- **New shared patterns:** `SectionLabel`, `PageBreadcrumb`, `PersonRow`, `IconTile`, `CardLink`,
+  `ConfirmDialog`. `ModeToggle` gains `size`.
+- **New SLAI pieces:** `InsightItem`, `TranscriptQuote`; `InsightCallout` gains `title`;
+  `TranscriptCard` gains `title`; `statusLabel()` helper.
+- **New lab-website piece:** `EventStatusBadge`.
+- SLAI cards, rows and badges rebuilt on `Card` / `Item` / `Badge` / `Progress`; lab-website cards
+  use `CardHeader`/`CardAction` and default `CardTitle` sizing; section labels unified.
+- End session, discard recording and generate-new-link now ask for confirmation.
+- Accessibility: keyboard-operable chat suggestions and activity picker (arrow keys), screen-reader
+  status for group tabs, larger hit areas for small icon buttons.
 
 - Switch the color preset from teal/green to red: new `--primary`, `--sidebar-primary`, `--chart-1..5`, and neutral ramp (`--muted`, `--accent`, `--border`, `--input`, `--ring`, `--foreground`) values in `src/tokens/globals.css` for both light and dark. Hand-added tokens (`--status-*`, `--overlay`, `--radius-card`) are unchanged.
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { RecordingControl } from "@/components/slai/recording-control"
 
@@ -33,9 +33,9 @@ export const Paused: Story = {
 }
 
 export const Connecting: Story = {
-  args: { pending: "connecting" },
+  args: { status: "connecting" },
 }
 
 export const Stopping: Story = {
-  args: { defaultState: "recording", pending: "stopping" },
+  args: { defaultState: "recording", status: "stopping" },
 }

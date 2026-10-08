@@ -1,19 +1,20 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { AddSourceForm } from "@/components/slai/add-source-form"
 import { AppShell } from "@/components/slai/app-shell"
 import { DEFAULT_LANGUAGES } from "@/components/slai/language-settings-form"
 import { PageSidebar } from "./_page-fixtures"
+import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 
 function AddSourcePage({ uploading = false }: { uploading?: boolean }) {
   return (
     <AppShell
       sidebar={<PageSidebar activeNav="source" />}
-      title={<span className="font-medium">Add Source</span>}
+      title={<PageBreadcrumb items={[{ label: "Add Source" }]} />}
     >
-      <div className="flex flex-1 items-center justify-center overflow-y-auto p-(--shell-px)">
+      <div className="flex flex-1 items-start justify-center overflow-y-auto p-(--shell-gap) pt-8">
         <AddSourceForm
-          className="w-full max-w-md"
+          className="w-full max-w-lg"
           languageOptions={DEFAULT_LANGUAGES}
           uploading={uploading}
         />

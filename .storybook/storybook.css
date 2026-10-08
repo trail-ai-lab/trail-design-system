@@ -1,0 +1,9 @@
+/* Storybook's single stylesheet: the same layers as src/tokens/styles.css, in
+   the same order, compiled as ONE Tailwind graph so every @theme/@utility
+   (semantic.css, scales.css) generates its utilities. Fonts load from Google
+   here instead of next/font. */
+@import "../src/tokens/globals.css";
+@import "../src/tokens/semantic.css";
+@import "../src/tokens/scales.css";
+@import "../src/tokens/layout.css";
+@import "../src/tokens/storybook-fonts.css";

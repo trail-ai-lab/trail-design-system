@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview-02/cards/payments.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Payments } from "@/components/blocks/preview-02/cards/payments"
 
 const meta: Meta<typeof Payments> = {
-  title: "_Preview/Preview-02/Payments",
+  title: "Preview/Blocks 02/Payments",
   component: Payments,
   parameters: { layout: "centered" },
 }

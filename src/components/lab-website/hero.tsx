@@ -3,6 +3,7 @@ import { ArrowRight, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 export interface HeroProps {
   eyebrow: string
@@ -37,7 +38,13 @@ export function Hero({
   visual,
 }: HeroProps) {
   return (
-    <section className={cn("relative overflow-hidden border-b border-border", className)}>
+    <section
+      data-slot="hero"
+      className={cn(
+        "relative overflow-hidden border-b border-border",
+        className
+      )}
+    >
       {backdrop}
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:py-24 lg:grid-cols-12 lg:items-center lg:px-8">
         <div className="lg:col-span-7">
@@ -46,7 +53,7 @@ export function Hero({
             {eyebrow}
           </Badge>
 
-          <h1 className="mt-6 font-heading text-4xl leading-[1.1] tracking-tight text-foreground md:text-5xl lg:text-6xl">
+          <h1 className="mt-6 text-h1 text-foreground md:text-display lg:text-hero">
             {title}
           </h1>
 
@@ -69,9 +76,9 @@ export function Hero({
           <dl className="mt-12 grid max-w-md grid-cols-2 gap-8">
             {meta.map((item) => (
               <div key={item.label} className="border-t border-border pt-4">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {item.label}
-                </dt>
+                <SectionLabel asChild>
+                  <dt>{item.label}</dt>
+                </SectionLabel>
                 <dd className="mt-2 font-heading text-lg text-foreground">
                   {item.value}
                 </dd>
@@ -82,13 +89,13 @@ export function Hero({
 
         <div className="lg:col-span-5">
           {visual ?? (
-            <div className="relative aspect-[4/5] overflow-hidden rounded-4xl bg-card ring-1 ring-foreground/5">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-card ring-1 ring-foreground/5">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,var(--color-border)_1px,transparent_0)] bg-[length:24px_24px] opacity-60" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/15 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 rounded-2xl bg-background/80 p-4 backdrop-blur ring-1 ring-foreground/5">
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Fig. 01
-                </p>
+              <div className="absolute right-6 bottom-6 left-6 rounded-2xl bg-background/80 p-4 ring-1 ring-foreground/5 backdrop-blur">
+                <SectionLabel asChild>
+                  <p>Fig. 01</p>
+                </SectionLabel>
                 <p className="mt-1 text-sm text-foreground">
                   A classroom moment, studied closely.
                 </p>

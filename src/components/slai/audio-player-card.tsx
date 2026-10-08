@@ -3,6 +3,7 @@
 import * as React from "react"
 import { DownloadIcon, PauseIcon, PlayIcon, RotateCcwIcon } from "lucide-react"
 
+import { formatClock } from "@/lib/format"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -15,12 +16,6 @@ const BARS = Array.from({ length: 72 }, (_, i) => {
     Math.abs(Math.sin(i * 0.5)) * 0.55 + Math.abs(Math.sin(i * 0.17)) * 0.45
   return 0.2 + wave * 0.8
 })
-
-function formatTime(seconds: number) {
-  const m = Math.floor(seconds / 60)
-  const s = Math.floor(seconds % 60)
-  return `${m}:${s.toString().padStart(2, "0")}`
-}
 
 function Waveform({ progress }: { progress: number }) {
   return (
@@ -114,13 +109,7 @@ function AudioPlayerCard({
             setPlaying((value) => !value)
           }}
         >
-          {playing ? (
-            <PauseIcon />
-          ) : atEnd ? (
-            <RotateCcwIcon />
-          ) : (
-            <PlayIcon />
-          )}
+          {playing ? <PauseIcon /> : atEnd ? <RotateCcwIcon /> : <PlayIcon />}
         </Button>
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           {!compact && <Waveform progress={progress} />}
@@ -132,8 +121,8 @@ function AudioPlayerCard({
             aria-label="Seek"
           />
           <div className="flex justify-between text-xs text-muted-foreground tabular-nums">
-            <span>{formatTime(current)}</span>
-            <span>{formatTime(durationSeconds)}</span>
+            <span>{formatClock(current)}</span>
+            <span>{formatClock(durationSeconds)}</span>
           </div>
         </div>
         {!compact && (

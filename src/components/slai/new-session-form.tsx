@@ -61,6 +61,7 @@ function NewSessionForm({
   allowNewClass?: boolean
   className?: string
 }) {
+  const uid = React.useId()
   const [klass, setKlass] = React.useState(defaultClass ?? "")
   const [session, setSession] = React.useState("")
   const [newClass, setNewClass] = React.useState("")
@@ -73,8 +74,11 @@ function NewSessionForm({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardDescription>New session</CardDescription>
-        <CardTitle className="font-heading">Start a new session</CardTitle>
+        <CardTitle>Start a new session</CardTitle>
+        <CardDescription>
+          Pick the class and name this session. Groups join with the invite link
+          once it starts.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <FieldGroup>
@@ -82,15 +86,15 @@ function NewSessionForm({
             <FieldLegend variant="label">Session details</FieldLegend>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="slai-new-session-class">
-                  Class / Year
+                <FieldLabel htmlFor={`${uid}-new-session-class`}>
+                  Class
                 </FieldLabel>
                 <Select value={klass} onValueChange={setKlass}>
                   <SelectTrigger
-                    id="slai-new-session-class"
+                    id={`${uid}-new-session-class`}
                     className="w-full"
                   >
-                    <SelectValue placeholder="Select a class..." />
+                    <SelectValue placeholder="Select a class…" />
                   </SelectTrigger>
                   <SelectContent>
                     {classes.map((name) => (
@@ -113,11 +117,11 @@ function NewSessionForm({
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="slai-new-session-name">
-                  Session / Period
+                <FieldLabel htmlFor={`${uid}-new-session-name`}>
+                  Session
                 </FieldLabel>
                 <Input
-                  id="slai-new-session-name"
+                  id={`${uid}-new-session-name`}
                   placeholder="e.g., Period 3 — Aug 21"
                   value={session}
                   onChange={(event) => setSession(event.target.value)}
@@ -129,7 +133,7 @@ function NewSessionForm({
           <FieldSet>
             <FieldLegend variant="label">Languages</FieldLegend>
             <LanguageSettingsForm
-              onChange={(value) => {
+              onValueChange={(value) => {
                 languagesRef.current = value
               }}
             />
@@ -138,7 +142,6 @@ function NewSessionForm({
       </CardContent>
       <CardFooter>
         <Button
-          size="lg"
           className="w-full"
           disabled={!resolvedClass || loading}
           onClick={() =>
@@ -154,7 +157,7 @@ function NewSessionForm({
           ) : (
             <PlayIcon data-icon="inline-start" />
           )}
-          {loading ? "Starting..." : "Start session"}
+          {loading ? "Starting…" : "Start session"}
         </Button>
       </CardFooter>
     </Card>

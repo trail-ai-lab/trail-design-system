@@ -1,30 +1,50 @@
-import type { Preview } from "@storybook/nextjs"
+import type { Preview } from "@storybook/react-vite"
 import React from "react"
-import "../src/tokens/globals.css"
-import "../src/tokens/layout.css"
-import "../src/tokens/storybook-fonts.css"
+import { ThemeProvider, useTheme } from "next-themes"
+import "./storybook.css"
 
-// Toolbar control for switching the design-system theme. The cards project uses
-// next-themes with `attribute="class"`, which toggles `class="dark"` on <html>.
-// Storybook has no next-themes provider, so we replicate that here: the decorator
-// below adds/removes the `dark` class on the iframe's <html> element so the
-// class-based `dark:` variants and `.dark {}` token overrides in globals.css apply.
-const THEMES = ["light", "dark"] as const
-type Theme = (typeof THEMES)[number]
+import { TooltipProvider } from "../src/components/ui/tooltip"
 
-function ThemedStory({ Story, theme }: { Story: React.ComponentType; theme: Theme }) {
+// Toolbar control for switching the design-system theme. Apps use next-themes
+// with `attribute="class"`, which toggles `class="dark"` on <html>. Stories get
+// the same provider so theme-aware components (e.g. ModeToggle) work here too;
+// the toolbar drives it via setTheme, and an in-story toggle can still change it.
+type Theme = "light" | "dark"
+
+function SyncTheme({ theme }: { theme: Theme }) {
+  const { setTheme } = useTheme()
   React.useEffect(() => {
-    const root = document.documentElement
-    root.classList.toggle("dark", theme === "dark")
+    setTheme(theme)
+  }, [theme, setTheme])
+  React.useEffect(() => {
     // Mirror the page background so the canvas matches the active theme.
     document.body.style.backgroundColor = "var(--background)"
     return () => {
-      root.classList.remove("dark")
       document.body.style.backgroundColor = ""
     }
-  }, [theme])
+  }, [])
+  return null
+}
 
-  return React.createElement(Story)
+function ThemedStory({
+  Story,
+  theme,
+}: {
+  Story: React.ComponentType
+  theme: Theme
+}) {
+  return React.createElement(
+    ThemeProvider,
+    {
+      attribute: "class",
+      defaultTheme: theme,
+      enableSystem: true,
+      disableTransitionOnChange: true,
+    },
+    React.createElement(SyncTheme, { theme }),
+    // Apps wrap their root in TooltipProvider (shadcn's Tooltip requires it).
+    React.createElement(TooltipProvider, null, React.createElement(Story))
+  )
 }
 
 const preview: Preview = {
@@ -50,24 +70,59 @@ const preview: Preview = {
         Story: Story as React.ComponentType,
         theme: (context.globals.theme as Theme) ?? "light",
       }),
-    // Reference cards (_Preview/*) have no intrinsic width and would otherwise
+    // Reference cards (Preview/Blocks */*) have no intrinsic width and would otherwise
     // collapse to min-content under the "centered" layout. Give them a fixed
     // column width that matches the well-designed cards (max-w-sm = 24rem).
     (Story, context) =>
-      context.title.startsWith("_Preview/")
+      context.title.startsWith("Preview/Blocks")
         ? React.createElement(
             "div",
             { className: "w-96" },
-            React.createElement(Story),
+            React.createElement(Story)
           )
         : React.createElement(Story),
   ],
   parameters: {
+    options: {
+      // Foundations (tokens) → primitives (UI) → shared patterns → tools,
+      // with the shadcn inspiration blocks last.
+      storySort: {
+        order: [
+          "Getting Started",
+          "Foundations",
+          [
+            "Colors",
+            "Typography",
+            "Spacing",
+            "Radius",
+            "Elevation",
+            "Motion",
+            "Focus",
+            "Stacking",
+          ],
+          "UI",
+          "Patterns",
+          "SLAI",
+          ["Pages", "Shell"],
+          "LabWebsite",
+          "Preview",
+          ["Showcase 01", "Showcase 02", "Blocks 01", "Blocks 02"],
+        ],
+      },
+    },
+
     controls: {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
+    },
+
+    a11y: {
+      // 'todo' - show a11y violations in the test UI only
+      // 'error' - fail CI on a11y violations
+      // 'off' - skip a11y checks entirely
+      test: "error",
     },
   },
 }

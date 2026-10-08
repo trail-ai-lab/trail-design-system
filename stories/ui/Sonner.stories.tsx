@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -25,16 +25,25 @@ type Story = StoryObj<typeof Toaster>
 export const Variants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <Button variant="outline" onClick={() => toast.success("Session started")}>
+      <Button
+        variant="outline"
+        onClick={() => toast.success("Session started")}
+      >
         Success
       </Button>
-      <Button variant="outline" onClick={() => toast.error("Couldn't upload recording")}>
+      <Button
+        variant="outline"
+        onClick={() => toast.error("Couldn't upload recording")}
+      >
         Error
       </Button>
       <Button variant="outline" onClick={() => toast.info("Link copied")}>
         Info
       </Button>
-      <Button variant="outline" onClick={() => toast.warning("Audio may be too noisy")}>
+      <Button
+        variant="outline"
+        onClick={() => toast.warning("Audio may be too noisy")}
+      >
         Warning
       </Button>
       <Button

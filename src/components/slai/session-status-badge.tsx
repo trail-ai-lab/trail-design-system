@@ -1,8 +1,12 @@
 import { CheckIcon, MicIcon, MicOffIcon, PauseIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { formatElapsed } from "@/components/slai/lib/format"
+import {
+  StatusBadge,
+  statusToneDotClassName,
+  type StatusTone,
+} from "@/components/patterns/status-badge"
+import { formatElapsed } from "@/lib/format"
 
 /**
  * Per-group audio state:
@@ -13,51 +17,30 @@ import { formatElapsed } from "@/components/slai/lib/format"
  * - `idle` — the group joined but has not started recording (muted)
  */
 export type SessionStatus =
-  | "recording"
-  | "paused"
-  | "uploaded"
-  | "stopped"
-  | "idle"
+  "recording" | "paused" | "uploaded" | "stopped" | "idle"
 
 const statusConfig: Record<
   SessionStatus,
-  { label: string; icon: typeof MicIcon; className: string; dotClassName: string }
+  { label: string; icon: typeof MicIcon; tone: StatusTone }
 > = {
-  recording: {
-    label: "Recording",
-    icon: MicIcon,
-    className: "bg-status-recording/10 text-status-recording",
-    dotClassName: "bg-status-recording animate-pulse",
-  },
-  paused: {
-    label: "Paused",
-    icon: PauseIcon,
-    className: "bg-status-paused/10 text-status-paused",
-    dotClassName: "bg-status-paused",
-  },
-  uploaded: {
-    label: "Uploaded",
-    icon: CheckIcon,
-    className: "bg-status-uploaded/10 text-status-uploaded",
-    dotClassName: "bg-status-uploaded",
-  },
-  stopped: {
-    label: "Stopped",
-    icon: MicOffIcon,
-    className: "bg-status-uploaded/10 text-status-uploaded",
-    dotClassName: "bg-status-uploaded",
-  },
-  idle: {
-    label: "Idle",
-    icon: MicOffIcon,
-    className: "bg-muted text-muted-foreground",
-    dotClassName: "bg-muted-foreground/40",
-  },
+  recording: { label: "Recording", icon: MicIcon, tone: "recording" },
+  paused: { label: "Paused", icon: PauseIcon, tone: "paused" },
+  uploaded: { label: "Uploaded", icon: CheckIcon, tone: "uploaded" },
+  stopped: { label: "Stopped", icon: MicOffIcon, tone: "neutral" },
+  idle: { label: "Idle", icon: MicOffIcon, tone: "muted" },
 }
 
-/** Dot color (with pulse for recording) for a status, reused by the group tabs. */
+/** Display label for a status, e.g. "Paused"; pairs with `statusDotClassName`. */
+export function statusLabel(status: SessionStatus) {
+  return statusConfig[status].label
+}
+
+/** Dot color (with pulse for recording) for a status, reused by the group switcher. */
 export function statusDotClassName(status: SessionStatus) {
-  return statusConfig[status].dotClassName
+  return cn(
+    statusToneDotClassName(statusConfig[status].tone),
+    status === "recording" && "motion-safe:animate-pulse"
+  )
 }
 
 function SessionStatusBadge({
@@ -73,20 +56,21 @@ function SessionStatusBadge({
   className?: string
 }) {
   const config = statusConfig[status]
-  const Icon = config.icon
   return (
-    <Badge variant="secondary" className={cn(config.className, className)}>
-      {showIcon ? (
-        <Icon data-icon="inline-start" />
-      ) : (
-        <span className={cn("size-1.5 rounded-full", config.dotClassName)} />
-      )}
+    <StatusBadge
+      tone={config.tone}
+      icon={showIcon ? config.icon : undefined}
+      dot={!showIcon}
+      pulse={status === "recording"}
+      data-slot="session-status-badge"
+      className={className}
+    >
       {config.label}
       {elapsedSeconds !== undefined &&
         (status === "recording" || status === "paused") && (
           <span className="tabular-nums">{formatElapsed(elapsedSeconds)}</span>
         )}
-    </Badge>
+    </StatusBadge>
   )
 }
 

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { LanguagesIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -36,7 +36,7 @@ export const AutoDetectMode: Story = {
     })
     return (
       <div className="w-full max-w-md">
-        <LanguageSettingsForm value={value} onChange={setValue} />
+        <LanguageSettingsForm value={value} onValueChange={setValue} />
       </div>
     )
   },
@@ -51,7 +51,7 @@ export const TranscriptionDisabled: Story = {
     })
     return (
       <div className="w-full max-w-md">
-        <LanguageSettingsForm value={value} onChange={setValue} />
+        <LanguageSettingsForm value={value} onValueChange={setValue} />
       </div>
     )
   },

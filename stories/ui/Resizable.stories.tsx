@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import {
   ResizableHandle,
@@ -6,8 +6,16 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 
+// a11y: scrollable-region-focusable disabled. Upstream: react-resizable-panels' panel scroll containers aren't keyboard-focusable.
+const A11Y = {
+  config: {
+    rules: [{ id: "scrollable-region-focusable", enabled: false }],
+  },
+}
+
 const meta: Meta<typeof ResizablePanelGroup> = {
   title: "UI/Resizable",
+  parameters: { a11y: A11Y },
   component: ResizablePanelGroup,
   tags: ["autodocs"],
 }

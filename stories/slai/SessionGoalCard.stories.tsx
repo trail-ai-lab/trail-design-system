@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { SessionGoalCard } from "@/components/slai/session-goal-card"
 
@@ -8,7 +8,8 @@ const meta: Meta<typeof SessionGoalCard> = {
   tags: ["autodocs"],
   args: {
     standardCode: "3.OA.A.2",
-    languageObjective: "Explain how to share items equally using \"each\" and \"the same\".",
+    languageObjective:
+      'Explain how to share items equally using "each" and "the same".',
     standardDescription:
       "Interpret whole-number quotients as the number of objects in each share.",
     counts: { met: 2, partial: 1, notYet: 1, total: 4 },

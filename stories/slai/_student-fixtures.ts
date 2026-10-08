@@ -1,12 +1,7 @@
 import type { StudentInsight } from "@/components/slai/student-insight-card"
 import type { StudentProgressData } from "@/components/slai/lib/student-progress"
-import type {
-  RosterStudent,
-  SessionGroup,
-} from "@/components/slai/group-card"
-import type { GroupPreset } from "@/components/slai/group-builder"
 
-/** Sample classroom shared by the student-progress and session-setup stories. */
+/** Sample classroom shared by the student-progress and goals stories. */
 export const SESSION_LABELS = [
   "Equal groups",
   "Equal sharing",
@@ -21,8 +16,15 @@ export const INSIGHTS: StudentInsight[] = [
     name: "Mei",
     primaryLanguage: "Mandarin",
     talkTimePct: 18,
-    wida: { verdict: "partial", score: 3.2, reasoning: "Uses short sentences with some prompting." },
-    standard: { verdict: "not-yet", reasoning: "Has not yet shown equal grouping independently." },
+    wida: {
+      verdict: "partial",
+      score: 3.2,
+      reasoning: "Uses short sentences with some prompting.",
+    },
+    standard: {
+      verdict: "not-yet",
+      reasoning: "Has not yet shown equal grouping independently.",
+    },
     culturalContext: "Compared sharing dumplings to equal groups.",
     academicTerms: [{ term: "equal groups" }, { term: "每组", language: "ZH" }],
     transcriptQuote: "Each group has the same number, four and four.",
@@ -53,7 +55,9 @@ export const INSIGHTS: StudentInsight[] = [
 ]
 
 const sessions = (
-  base: Array<[string, number | null, "met" | "partial" | "not-yet", number, number]>
+  base: Array<
+    [string, number | null, "met" | "partial" | "not-yet", number, number]
+  >
 ) =>
   base.map(([label, wida, verdict, participation, terms], i) => ({
     sessionId: `s${i + 1}`,
@@ -94,37 +98,3 @@ export const LIAM: StudentProgressData = {
     [SESSION_LABELS[2], null, "met", 50, 6],
   ]),
 }
-
-export const ROSTER: RosterStudent[] = [
-  { id: "mei", name: "Mei", language: "ZH", grade: 3, wida: 3.4 },
-  { id: "liam", name: "Liam", language: "EN", grade: 3, wida: null },
-  { id: "rosa", name: "Rosa", language: "ES", grade: 3, wida: 4.1 },
-  { id: "diego", name: "Diego", language: "ES", grade: 4, wida: 2.9 },
-  { id: "sofia", name: "Sofia", language: "ES", grade: 4, wida: 3.8 },
-  { id: "kevin", name: "Kevin", language: "EN", grade: 4, wida: null },
-]
-
-const byLanguage = (): SessionGroup[] =>
-  ["ES", "ZH", "EN"].map((code, i) => ({
-    id: `g${i + 1}`,
-    name: `Group ${i + 1}`,
-    studentIds: ROSTER.filter((s) => s.language === code).map((s) => s.id),
-  }))
-
-export const PRESETS: GroupPreset[] = [
-  {
-    id: "language",
-    label: "Language",
-    description: "Groups students who share a home language so they can discuss in it first.",
-    build: byLanguage,
-  },
-  {
-    id: "wida",
-    label: "WIDA level",
-    description: "Mixes proficiency levels so stronger speakers can support developing ones.",
-    build: () => [
-      { id: "g1", name: "Group 1", studentIds: ["rosa", "mei", "kevin"] },
-      { id: "g2", name: "Group 2", studentIds: ["sofia", "diego", "liam"] },
-    ],
-  },
-]

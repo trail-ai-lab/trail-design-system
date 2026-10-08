@@ -4,6 +4,7 @@ import * as React from "react"
 import { CornerDownLeftIcon, SparklesIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -19,6 +20,14 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Spinner } from "@/components/ui/spinner"
 
@@ -52,27 +61,25 @@ function ChatRow({
   const clickable = Boolean(message.highlight && onMessageClick)
   return (
     <div className="flex gap-3">
-      <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted">
-        <SparklesIcon className="size-3 text-primary" />
-      </div>
+      <Avatar size="sm" aria-hidden>
+        <AvatarFallback>
+          <SparklesIcon className="size-3 text-primary" />
+        </AvatarFallback>
+      </Avatar>
       <div className="flex min-w-0 flex-col gap-2">
-        <p
-          {...(clickable && {
-            role: "button",
-            tabIndex: 0,
-            onClick: () => onMessageClick?.(message),
-            onKeyDown: (event: React.KeyboardEvent) => {
-              if (event.key === "Enter") onMessageClick?.(message)
-            },
-          })}
-          className={cn(
-            "text-sm leading-relaxed text-foreground",
-            clickable &&
-              "cursor-pointer underline-offset-4 outline-none hover:underline focus-visible:underline"
-          )}
-        >
-          {message.content}
-        </p>
+        {clickable ? (
+          <button
+            type="button"
+            onClick={() => onMessageClick?.(message)}
+            className="cursor-pointer rounded-md text-left text-sm leading-relaxed text-foreground underline-offset-4 outline-none hover:underline focus-visible:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            {message.content}
+          </button>
+        ) : (
+          <p className="text-sm leading-relaxed text-foreground">
+            {message.content}
+          </p>
+        )}
         {message.sources && message.sources.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {message.sources.map((source) => (
@@ -122,7 +129,7 @@ function SessionChatCard({
 }) {
   const resolvedPlaceholder =
     placeholder ??
-    (scopeLabel ? `Ask about ${scopeLabel}...` : "Ask about the session...")
+    (scopeLabel ? `Ask about ${scopeLabel}...` : "Ask about the session…")
   const [question, setQuestion] = React.useState("")
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
@@ -142,7 +149,7 @@ function SessionChatCard({
   return (
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
-        <CardTitle>Ask a question</CardTitle>
+        <CardTitle>Q&amp;A</CardTitle>
         {scopeLabel && (
           <CardAction>
             <Badge variant="secondary">{scopeLabel}</Badge>
@@ -152,28 +159,42 @@ function SessionChatCard({
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
           {messages.length === 0 && !loading && !welcomeMessage ? (
-            <div className="flex h-full flex-col items-center justify-center gap-3 px-(--card-spacing) py-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                Ask anything about what {scopeLabel ?? "your students"}{" "}
-                {scopeLabel ? "is" : "are"} discussing.
-              </p>
+            <Empty className="h-full">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <SparklesIcon />
+                </EmptyMedia>
+                <EmptyTitle>Ask about this session</EmptyTitle>
+                <EmptyDescription>
+                  Ask anything about what {scopeLabel ?? "your students"}{" "}
+                  {scopeLabel ? "is" : "are"} discussing.
+                </EmptyDescription>
+              </EmptyHeader>
               {suggestions.length > 0 && (
-                <div className="flex flex-wrap justify-center gap-1.5">
+                <EmptyContent className="flex-row flex-wrap justify-center gap-1.5">
                   {suggestions.map((suggestion) => (
                     <Badge
                       key={suggestion}
                       variant="outline"
-                      className="h-auto cursor-pointer py-1 font-normal whitespace-normal hover:bg-muted"
-                      onClick={() => submit(suggestion)}
+                      className="h-auto py-1 font-normal whitespace-normal hover:bg-muted"
+                      asChild
                     >
-                      {suggestion}
+                      <button type="button" onClick={() => submit(suggestion)}>
+                        {suggestion}
+                      </button>
                     </Badge>
                   ))}
-                </div>
+                </EmptyContent>
               )}
-            </div>
+            </Empty>
           ) : (
-            <div className="flex flex-col gap-4 px-(--card-spacing) py-1">
+            <div
+              role="log"
+              aria-live="polite"
+              aria-label="Conversation"
+              aria-busy={loading}
+              className="flex flex-col gap-4 px-(--card-spacing) py-1"
+            >
               {welcomeMessage && (
                 <ChatRow
                   message={{
@@ -192,9 +213,11 @@ function SessionChatCard({
               ))}
               {loading && (
                 <div className="flex items-center gap-3">
-                  <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted">
-                    <SparklesIcon className="size-3 text-primary" />
-                  </div>
+                  <Avatar size="sm" aria-hidden>
+                    <AvatarFallback>
+                      <SparklesIcon className="size-3 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
                   <Spinner className="size-3.5 text-muted-foreground" />
                 </div>
               )}
@@ -225,7 +248,7 @@ function SessionChatCard({
         </InputGroup>
       </CardFooter>
       {showDisclaimer && (
-        <p className="px-(--card-spacing) text-center text-xs text-muted-foreground/70">
+        <p className="px-(--card-spacing) text-center text-xs text-muted-foreground">
           SLAI can make mistakes. Double-check important responses.
         </p>
       )}

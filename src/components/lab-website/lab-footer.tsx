@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
-import { Logo } from "@/components/trail"
+import { Logo } from "@/components/patterns/logo"
 import { UwCrest } from "./uw-crest"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 export interface LabFooterContactLink {
   icon: React.ReactNode
@@ -49,7 +50,13 @@ export function LabFooter({
   const hasAffiliations = Boolean(affiliations?.length)
 
   return (
-    <section className={cn("relative overflow-hidden border-t border-border bg-background text-foreground", className)}>
+    <section
+      data-slot="lab-footer"
+      className={cn(
+        "relative overflow-hidden border-t border-border bg-background text-foreground",
+        className
+      )}
+    >
       {backdrop}
       <div className="relative mx-auto max-w-6xl px-6 py-16 md:py-20 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-12">
@@ -58,10 +65,17 @@ export function LabFooter({
                 items-center centers the narrower crest over that text while the
                 group as a whole stays flush left in the column. */}
             <div className="flex flex-col items-center gap-4">
-              <a href="https://www.wisc.edu" aria-label="University of Wisconsin–Madison" className="text-foreground hover:text-primary">
+              <a
+                href="https://www.wisc.edu"
+                aria-label="University of Wisconsin–Madison"
+                className="text-foreground hover:text-primary"
+              >
                 <UwCrest className="h-28 w-auto" />
               </a>
-              <a href="https://www.wisconsin.edu" className="text-sm text-muted-foreground hover:text-foreground">
+              <a
+                href="https://www.wisconsin.edu"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
                 Part of the Universities of Wisconsin
               </a>
             </div>
@@ -69,14 +83,19 @@ export function LabFooter({
 
           {hasContact ? (
             <div className="lg:col-span-3">
-              <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Contact</h3>
-              <address className="mt-5 text-[0.95rem] not-italic leading-relaxed text-foreground">
-                {address?.map((line) => <p key={line}>{line}</p>)}
+              <SectionLabel asChild>
+                <h2>Contact</h2>
+              </SectionLabel>
+              {/* eslint-disable-next-line trail/no-arbitrary-values -- Lab Website brand size kept as-is; decide whether it maps to the type scale */}
+              <address className="mt-5 text-[0.95rem] leading-relaxed text-foreground not-italic">
+                {address?.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
                 {email ? (
                   <p className="mt-3">
                     <a
                       href={`mailto:${email}`}
-                      className="inline-flex items-center gap-1.5 font-medium text-foreground underline decoration-from-font underline-offset-[5px] decoration-border transition-colors hover:decoration-foreground"
+                      className="inline-flex items-center gap-1.5 font-medium text-foreground underline decoration-border decoration-from-font underline-offset-4 transition-colors hover:decoration-foreground"
                     >
                       {email}
                     </a>
@@ -88,7 +107,7 @@ export function LabFooter({
                       href={mapLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted-foreground underline decoration-from-font underline-offset-[3px] hover:text-foreground"
+                      className="text-muted-foreground underline decoration-from-font underline-offset-4 hover:text-foreground"
                     >
                       View on Google Maps →
                     </a>
@@ -117,7 +136,9 @@ export function LabFooter({
 
           {hasAffiliations ? (
             <div className="lg:col-span-4">
-              <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Affiliations</h3>
+              <SectionLabel asChild>
+                <h2>Affiliations</h2>
+              </SectionLabel>
               <ul className="mt-5 flex flex-col gap-3">
                 {affiliations?.map((affiliation) => (
                   <li key={affiliation.label}>
@@ -130,7 +151,7 @@ export function LabFooter({
                       <span className="font-mono text-xs text-muted-foreground transition-colors group-hover:text-foreground">
                         ↗
                       </span>
-                      <span className="underline decoration-border decoration-from-font underline-offset-[5px] transition-colors group-hover:decoration-foreground">
+                      <span className="underline decoration-border decoration-from-font underline-offset-4 transition-colors group-hover:decoration-foreground">
                         {affiliation.label}
                       </span>
                     </a>
@@ -141,13 +162,14 @@ export function LabFooter({
           ) : null}
         </div>
 
+        {/* eslint-disable-next-line trail/no-arbitrary-values -- Lab Website brand size kept as-is; decide whether it maps to the type scale */}
         <div className="mt-14 flex flex-col gap-3 border-t border-border pt-6 text-[0.825rem] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           {feedbackEmail ? (
             <p className="font-mono">
               Feedback or accessibility issues?{" "}
               <a
                 href={`mailto:${feedbackEmail}`}
-                className="text-foreground underline decoration-from-font underline-offset-[3px] hover:decoration-2"
+                className="text-foreground underline decoration-from-font underline-offset-4 hover:decoration-2"
               >
                 {feedbackEmail}
               </a>
@@ -156,8 +178,8 @@ export function LabFooter({
             <span />
           )}
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Logo className="h-3.5 text-muted-foreground" />© {year} {labName} · UW–Madison · All
-            Rights Reserved
+            <Logo className="h-3.5 text-muted-foreground" />© {year} {labName} ·
+            UW–Madison · All Rights Reserved
           </p>
         </div>
       </div>

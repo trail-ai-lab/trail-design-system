@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/shortcuts.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Shortcuts } from "@/components/blocks/preview/cards/shortcuts"
 
 const meta: Meta<typeof Shortcuts> = {
-  title: "_Preview/Preview/Shortcuts",
+  title: "Preview/Blocks 01/Shortcuts",
   component: Shortcuts,
   parameters: { layout: "centered" },
 }

@@ -1,11 +1,8 @@
-import { TriangleAlertIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { InsightCallout } from "@/components/slai/insight-callout"
 
 /**
- * Amber warning shown when the audio quality check detects heavy background
- * noise, so the transcript may be unreliable.
+ * Warning shown when the audio quality check detects heavy background noise,
+ * so the transcript may be unreliable. A preset `InsightCallout`.
  */
 function NoisyAudioBanner({
   title = "Audio may be too noisy",
@@ -17,18 +14,9 @@ function NoisyAudioBanner({
   className?: string
 }) {
   return (
-    <Alert
-      className={cn(
-        "border-status-paused/40 bg-status-paused/10 text-status-paused",
-        className
-      )}
-    >
-      <TriangleAlertIcon />
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription className="text-status-paused/90">
-        {description}
-      </AlertDescription>
-    </Alert>
+    <InsightCallout variant="warning" title={title} className={className}>
+      {description}
+    </InsightCallout>
   )
 }
 

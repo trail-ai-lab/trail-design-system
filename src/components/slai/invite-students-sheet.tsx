@@ -1,7 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, CopyIcon, ExternalLinkIcon, RefreshCwIcon } from "lucide-react"
+import {
+  CheckIcon,
+  CopyIcon,
+  ExternalLinkIcon,
+  RefreshCwIcon,
+} from "lucide-react"
 import QRCode from "react-qr-code"
 
 import { Button } from "@/components/ui/button"
@@ -19,6 +24,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
+import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
 
 /**
  * QR code + join link for students to enter the session.
@@ -33,6 +39,7 @@ function InvitePanel({
   onGenerateNewLink?: () => void
   className?: string
 }) {
+  const uid = React.useId()
   const [copied, setCopied] = React.useState(false)
 
   const copyLink = async () => {
@@ -46,11 +53,16 @@ function InvitePanel({
   }
 
   return (
-    <div className={className}>
+    <div data-slot="invite-panel" className={className}>
       <div className="flex flex-col items-center gap-3">
         {/* QR quiet zone must stay white in both themes or scanners fail */}
+        {/* eslint-disable-next-line trail/no-raw-colors -- QR codes need a white background to scan */}
         <div className="rounded-3xl border border-border bg-white p-6">
-          <QRCode value={joinUrl} size={192} aria-label="Session join QR code" />
+          <QRCode
+            value={joinUrl}
+            size={192}
+            aria-label="Session join QR code"
+          />
         </div>
         <p className="text-sm text-muted-foreground">
           Scan with a mobile device to join
@@ -58,10 +70,10 @@ function InvitePanel({
       </div>
 
       <div className="mt-6 flex flex-col gap-2">
-        <FieldLabel htmlFor="slai-join-link">Join link</FieldLabel>
+        <FieldLabel htmlFor={`${uid}-join-link`}>Join link</FieldLabel>
         <InputGroup>
           <InputGroupInput
-            id="slai-join-link"
+            id={`${uid}-join-link`}
             readOnly
             value={joinUrl}
             className="font-mono text-xs"
@@ -74,7 +86,11 @@ function InvitePanel({
             >
               {copied ? <CheckIcon className="text-primary" /> : <CopyIcon />}
             </InputGroupButton>
-            <InputGroupButton size="icon-xs" aria-label="Open join link" asChild>
+            <InputGroupButton
+              size="icon-xs"
+              aria-label="Open join link"
+              asChild
+            >
               <a href={joinUrl} target="_blank" rel="noreferrer">
                 <ExternalLinkIcon />
               </a>
@@ -83,14 +99,19 @@ function InvitePanel({
         </InputGroup>
       </div>
 
-      <Button
-        variant="outline"
-        className="mt-4 w-full"
-        onClick={onGenerateNewLink}
-      >
-        <RefreshCwIcon data-icon="inline-start" />
-        Generate new link
-      </Button>
+      <ConfirmDialog
+        trigger={
+          <Button variant="outline" className="mt-4 w-full">
+            <RefreshCwIcon data-icon="inline-start" />
+            Generate new link
+          </Button>
+        }
+        variant="default"
+        title="Generate a new link?"
+        description="The current link and QR code will stop working. Students who haven't joined yet will need the new one."
+        confirmLabel="Generate new link"
+        onConfirm={() => onGenerateNewLink?.()}
+      />
     </div>
   )
 }
@@ -123,7 +144,10 @@ function InviteStudentsSheet({
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-6 pb-6">
-          <InvitePanel joinUrl={joinUrl} onGenerateNewLink={onGenerateNewLink} />
+          <InvitePanel
+            joinUrl={joinUrl}
+            onGenerateNewLink={onGenerateNewLink}
+          />
         </div>
       </SheetContent>
     </Sheet>

@@ -38,13 +38,18 @@ function SpeakerForm({
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-wrap items-center gap-3", className)}>
+    <div
+      data-slot="speaker-form"
+      className={cn("flex flex-wrap items-center gap-3", className)}
+    >
       <ToggleGroup
         type="single"
         variant="outline"
         size="sm"
         value={mode}
-        onValueChange={(next) => next && onModeChange?.(next as SpeakerCountMode)}
+        onValueChange={(next) =>
+          next && onModeChange?.(next as SpeakerCountMode)
+        }
         aria-label="Speaker count mode"
         disabled={loading}
       >
@@ -95,7 +100,7 @@ function SpeakerForm({
         ) : (
           analyzed && <RefreshCwIcon data-icon="inline-start" />
         )}
-        {loading ? "Analyzing..." : analyzed ? "Re-analyze" : "Analyze speakers"}
+        {loading ? "Analyzing…" : analyzed ? "Re-analyze" : "Analyze speakers"}
       </Button>
     </div>
   )

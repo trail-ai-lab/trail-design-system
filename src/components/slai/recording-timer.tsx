@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { formatDuration, formatElapsed } from "@/components/slai/lib/format"
+import { formatDuration, formatElapsed } from "@/lib/format"
 
 /**
  * Elapsed recording time. Pass the seconds from your own clock; the

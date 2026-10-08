@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { AuthAside, AuthLayout } from "@/components/trail/auth-layout"
-import { ForgotPasswordForm } from "@/components/trail/forgot-password-form"
-import { LoginForm } from "@/components/trail/login-form"
-import { ResetPasswordCard } from "@/components/trail/reset-password-card"
-import { SignupForm } from "@/components/trail/signup-form"
-import { VerifyEmailCard } from "@/components/trail/verify-email-card"
+import { AuthAside, AuthLayout } from "@/components/patterns/auth-layout"
+import { ForgotPasswordForm } from "@/components/patterns/forgot-password-form"
+import { LoginForm } from "@/components/patterns/login-form"
+import { ResetPasswordCard } from "@/components/patterns/reset-password-card"
+import { SignupForm } from "@/components/patterns/signup-form"
+import { VerifyEmailCard } from "@/components/patterns/verify-email-card"
 
 const ASIDE = (
   <AuthAside
@@ -31,7 +31,12 @@ type Story = StoryObj
 export const Login: Story = {
   render: () => (
     <AuthLayout aside={ASIDE}>
-      <LoginForm onSubmit={() => {}} onGoogle={() => {}} forgotPasswordHref="#" signupHref="#" />
+      <LoginForm
+        onSubmit={() => {}}
+        onGoogle={() => {}}
+        forgotPasswordHref="#"
+        signupHref="#"
+      />
     </AuthLayout>
   ),
 }
@@ -63,7 +68,11 @@ export const ResetPassword: Story = {
 export const VerifyEmail: Story = {
   render: () => (
     <AuthLayout aside={ASIDE}>
-      <VerifyEmailCard email="teacher@school.edu" sentOnce cooldownSeconds={24} />
+      <VerifyEmailCard
+        email="teacher@school.edu"
+        sentOnce
+        cooldownSeconds={24}
+      />
     </AuthLayout>
   ),
 }

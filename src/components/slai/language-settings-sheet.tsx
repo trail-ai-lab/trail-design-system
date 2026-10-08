@@ -17,19 +17,24 @@ import {
  */
 function LanguageSettingsSheet({
   open,
+  defaultOpen,
   onOpenChange,
   value,
-  onChange,
+  defaultValue,
+  onValueChange,
   children,
 }: {
   open?: boolean
+  defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   value?: LanguageSettingsValue
-  onChange?: (value: LanguageSettingsValue) => void
+  defaultValue?: LanguageSettingsValue
+  onValueChange?: (value: LanguageSettingsValue) => void
+  /** Optional trigger, e.g. <SheetTrigger asChild><Button/></SheetTrigger> */
   children?: React.ReactNode
 }) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       {children}
       <SheetContent className="flex w-full flex-col gap-0 sm:max-w-md">
         <SheetHeader>
@@ -39,7 +44,11 @@ function LanguageSettingsSheet({
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-6 pb-6">
-          <LanguageSettingsForm value={value} onChange={onChange} />
+          <LanguageSettingsForm
+            value={value}
+            defaultValue={defaultValue}
+            onValueChange={onValueChange}
+          />
         </div>
       </SheetContent>
     </Sheet>

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { StudentInsightCard } from "@/components/slai/student-insight-card"
 import { INSIGHTS } from "./_student-fixtures"

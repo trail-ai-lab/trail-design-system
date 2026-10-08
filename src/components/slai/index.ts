@@ -6,7 +6,7 @@ export {
   type SidebarSource,
   type SidebarStudent,
   type SidebarItemTarget,
-  type SidebarPeriod,
+  type SidebarClass,
   type SidebarUser,
   type SlaiNavId,
 } from "./slai-sidebar"
@@ -14,7 +14,6 @@ export { SessionActions } from "./session-actions"
 
 // SLAI-specific components
 export { SessionStatusBadge, type SessionStatus } from "./session-status-badge"
-export { LanguageChip } from "./language-chip"
 export {
   LanguageSettingsForm,
   DEFAULT_LANGUAGES,
@@ -23,7 +22,6 @@ export {
 } from "./language-settings-form"
 export { LanguageSettingsSheet } from "./language-settings-sheet"
 export { NewSessionForm } from "./new-session-form"
-export { LiveWaveform } from "./live-waveform"
 export { RecordingControl } from "./recording-control"
 export { RecordingCard } from "./recording-card"
 export { GroupSetupForm } from "./group-setup-form"
@@ -66,10 +64,8 @@ export { ActivityLogCard, type ActivityLogEvent } from "./activity-log-card"
 
 // Live-session building blocks
 export { RecordingTimer } from "./recording-timer"
-export { CheckinDivider } from "./checkin-divider"
 export { NoisyAudioBanner } from "./noisy-audio-banner"
 export { SummaryText } from "./summary-text"
-export { ScopeToggle, type InsightScope } from "./scope-toggle"
 
 // Search, row actions, language pickers
 export {
@@ -79,10 +75,6 @@ export {
 } from "./global-search"
 export { RenameDialog } from "./rename-dialog"
 export { DeleteConfirmDialog } from "./delete-confirm-dialog"
-export {
-  SessionGroupList,
-  type SessionGroupListItem,
-} from "./session-group-list"
 export { LanguageCombobox } from "./language-combobox"
 export { LanguageMultiSelect } from "./language-multi-select"
 
@@ -95,8 +87,6 @@ export {
   type ContributionSpeaker,
 } from "./contribution-panel"
 export { DiarizationPanel, type DiarizationState } from "./diarization-panel"
-export { SourceMetaCard } from "./source-meta-card"
-export { RetranscribeToolbar } from "./retranscribe-toolbar"
 export {
   RecordingReadyPanel,
   RecordingUploadingPanel,
@@ -130,6 +120,7 @@ export type {
   StudentSessionData,
 } from "./lib/student-progress"
 export { InsightCallout } from "./insight-callout"
+export { InsightItem, TranscriptQuote } from "./insight-blocks"
 export { ClassOverviewGrid, type OverviewStudent } from "./class-overview-grid"
 export {
   StudentInsightCard,
@@ -139,16 +130,9 @@ export {
 export { SessionGoalCard } from "./session-goal-card"
 export { GoalsPanel } from "./goals-panel"
 export { ProgressChart } from "./progress-chart"
-export { SessionEvidenceCard, SessionEvidenceStrip } from "./session-evidence-strip"
-export { StudentProgressView } from "./student-progress-view"
 export {
-  ConversationTimeline,
-  type TimelineSegment,
-} from "./conversation-timeline"
-export { LiveGroupCard } from "./live-group-card"
-
-// Session setup (rosters, groups, files)
-export { GroupCard, type RosterStudent, type SessionGroup } from "./group-card"
-export { GroupBuilder, type GroupPreset } from "./group-builder"
-export { FileList, type UploadedFile } from "./file-list"
-export { SessionSetupForm, type SessionSetupValues } from "./session-setup-form"
+  SessionEvidenceCard,
+  SessionEvidenceStrip,
+} from "./session-evidence-strip"
+export { StudentProgressView } from "./student-progress-view"
+export { SummaryQaPanel, type SummaryQaTab } from "./summary-qa-panel"

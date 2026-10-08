@@ -1,9 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { MapIcon, PlayIcon } from "lucide-react"
+import { MapIcon, PlayIcon, TriangleAlertIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -22,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
+import { IconTile } from "@/components/patterns/icon-tile"
 
 /**
  * Stand-in for the VidyaMap simulation (concept map and word cloud). The real
@@ -36,6 +38,7 @@ function VidyaMapPlaceholder({
   onStart,
   loading = false,
   error,
+  variant = "card",
   className,
 }: {
   subjects?: string[]
@@ -44,15 +47,25 @@ function VidyaMapPlaceholder({
   onStart?: () => void
   loading?: boolean
   error?: string
+  /** `embedded` drops the card chrome when shown inside another card (ActivityViewer) */
+  variant?: "card" | "embedded"
   className?: string
 }) {
+  const uid = React.useId()
   return (
-    <Card className={cn("w-full max-w-md", className)}>
+    <Card
+      data-variant={variant}
+      className={cn(
+        "w-full max-w-md",
+        variant === "embedded" && "bg-transparent shadow-none ring-0",
+        className
+      )}
+    >
       <CardHeader className="items-center text-center">
-        <div className="mb-2 flex size-12 items-center justify-center rounded-full bg-muted">
-          <MapIcon className="size-6 text-muted-foreground" />
-        </div>
-        <CardTitle className="font-heading text-xl">VidyaMap</CardTitle>
+        <IconTile size="lg" className="mb-2">
+          <MapIcon className="text-muted-foreground" />
+        </IconTile>
+        <CardTitle>VidyaMap</CardTitle>
         <CardDescription>
           Explore a concept map of the subject. The interactive map appears here
           once you start.
@@ -60,14 +73,14 @@ function VidyaMapPlaceholder({
       </CardHeader>
       <CardContent>
         <Field>
-          <FieldLabel htmlFor="vidyamap-subject">Subject</FieldLabel>
+          <FieldLabel htmlFor={`${uid}-subject`}>Subject</FieldLabel>
           <Select
             value={subject}
             onValueChange={onSubjectChange}
             disabled={loading}
           >
-            <SelectTrigger id="vidyamap-subject" className="w-full">
-              <SelectValue placeholder="Select a subject..." />
+            <SelectTrigger id={`${uid}-subject`} className="w-full">
+              <SelectValue placeholder="Select a subject…" />
             </SelectTrigger>
             <SelectContent>
               {subjects.map((name) => (
@@ -79,9 +92,10 @@ function VidyaMapPlaceholder({
           </Select>
         </Field>
         {error && (
-          <p role="alert" className="mt-3 text-sm text-destructive">
-            {error}
-          </p>
+          <Alert variant="destructive" className="mt-3">
+            <TriangleAlertIcon />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
       </CardContent>
       <CardFooter>
@@ -95,7 +109,7 @@ function VidyaMapPlaceholder({
           ) : (
             <PlayIcon data-icon="inline-start" />
           )}
-          {loading ? "Loading..." : "Start"}
+          {loading ? "Loading…" : "Start"}
         </Button>
       </CardFooter>
     </Card>

@@ -1,0 +1,14 @@
+/**
+ * Trail font tokens.
+ *
+ * Default families for the variables globals.css reads (`font-sans`,
+ * `font-heading`, `font-mono`). Declared on `:where(:root)` (zero specificity)
+ * so an app that loads fonts with next/font and sets these variables on <html>
+ * or <body> always wins. Font files themselves are not bundled: load Inter,
+ * Montserrat and Geist Mono in the app (next/font recommended).
+ */
+:where(:root) {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+}

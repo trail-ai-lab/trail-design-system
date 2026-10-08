@@ -1,9 +1,24 @@
-import { ArrowUpRight, CalendarDays, Clock, ExternalLink, Hash, MapPin } from "lucide-react"
+import {
+  ArrowUpRight,
+  CalendarDays,
+  Clock,
+  ExternalLink,
+  Hash,
+  MapPin,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
+} from "@/components/ui/item"
+import { PersonRow } from "@/components/patterns/person-row"
+import { SectionLabel } from "@/components/patterns/section-label"
+import { EventStatusBadge, type EventStatus } from "./event-status-badge"
 
 export interface EventOrganizer {
   name: string
@@ -65,7 +80,7 @@ export interface EventDetailData {
   title: string
   conference: string
   year: number
-  status: "upcoming" | "past"
+  status: EventStatus
   about: string[]
   topics?: string[]
   importantDates?: EventImportantDate[]
@@ -94,22 +109,26 @@ export interface EventDetailProps {
 export function EventDetail({ event, className, actions }: EventDetailProps) {
   const hasSession = Boolean(
     event.session &&
-      (event.session.code || event.session.location || event.session.date || event.session.time)
+    (event.session.code ||
+      event.session.location ||
+      event.session.date ||
+      event.session.time)
   )
 
   return (
-    <section className={cn("border-b border-border", className)}>
+    <section
+      data-slot="event-detail"
+      className={cn("border-b border-border", className)}
+    >
       <div className="mx-auto max-w-3xl px-6 py-16 lg:px-8">
         <div className="flex items-center gap-3">
-          <Badge variant={event.status === "upcoming" ? "default" : "secondary"}>
-            {event.status === "upcoming" ? "Upcoming" : "Past"}
-          </Badge>
-          <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+          <EventStatusBadge status={event.status} />
+          <span className="font-mono text-xs tracking-wider text-muted-foreground uppercase">
             {event.conference} · {event.year}
           </span>
         </div>
 
-        <h1 className="mt-4 font-heading text-3xl tracking-tight text-foreground md:text-4xl">
+        <h1 className="mt-4 text-h2 text-foreground md:text-h1">
           {event.title}
         </h1>
 
@@ -128,7 +147,7 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
         ) : null}
 
         {event.conferenceInfo ? (
-          <div className="mt-10 flex flex-col gap-3 rounded-2xl border border-border bg-muted/40 px-6 py-5">
+          <Item variant="muted" className="mt-10 flex-col items-stretch gap-3">
             <a
               href={event.conferenceInfo.link}
               target="_blank"
@@ -141,7 +160,8 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <MapPin className="size-4 shrink-0" />
-                {event.conferenceInfo.venue}, {event.conferenceInfo.city}, {event.conferenceInfo.country}
+                {event.conferenceInfo.venue}, {event.conferenceInfo.city},{" "}
+                {event.conferenceInfo.country}
               </span>
               <span className="flex items-center gap-1.5">
                 <CalendarDays className="size-4 shrink-0" />
@@ -149,7 +169,7 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
               </span>
             </div>
             {event.conferenceInfo.theme ? (
-              <p className="text-xs italic text-muted-foreground">
+              <p className="text-xs text-muted-foreground italic">
                 Theme: &ldquo;{event.conferenceInfo.theme}&rdquo;
               </p>
             ) : null}
@@ -182,7 +202,7 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
                 ) : null}
               </div>
             ) : null}
-          </div>
+          </Item>
         ) : null}
 
         <div className="mt-10 flex flex-col gap-4">
@@ -195,9 +215,9 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
 
         {event.callForParticipation && event.callForParticipation.length > 0 ? (
           <div className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Call for participation
-            </h2>
+            <SectionLabel asChild>
+              <h2>Call for participation</h2>
+            </SectionLabel>
             <div className="mt-3 flex flex-col gap-4">
               {event.callForParticipation.map((paragraph, i) => (
                 <p key={i} className="leading-relaxed text-foreground">
@@ -210,17 +230,14 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
 
         {event.topics && event.topics.length > 0 ? (
           <div className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Topics
-            </h2>
+            <SectionLabel asChild>
+              <h2>Topics</h2>
+            </SectionLabel>
             <ul className="mt-3 grid gap-2 sm:grid-cols-2">
               {event.topics.map((topic) => (
-                <li
-                  key={topic}
-                  className="rounded-xl border border-border px-3 py-2 text-sm text-foreground"
-                >
-                  {topic}
-                </li>
+                <Item key={topic} variant="outline" size="xs" asChild>
+                  <li>{topic}</li>
+                </Item>
               ))}
             </ul>
           </div>
@@ -228,9 +245,9 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
 
         {event.importantDates && event.importantDates.length > 0 ? (
           <div className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Important dates
-            </h2>
+            <SectionLabel asChild>
+              <h2>Important dates</h2>
+            </SectionLabel>
             <ul className="mt-3 flex flex-col gap-2">
               {event.importantDates.map((item) => (
                 <li
@@ -238,7 +255,9 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
                   className="flex items-center justify-between border-t border-border py-2.5 text-sm first:border-t-0"
                 >
                   <span className="text-foreground">{item.label}</span>
-                  <span className="font-mono text-muted-foreground">{item.date}</span>
+                  <span className="font-mono text-muted-foreground">
+                    {item.date}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -247,26 +266,41 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
 
         {event.submissionGuidelines ? (
           <div className="mt-10 flex flex-col gap-4">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Submission guidelines
-            </h2>
+            <SectionLabel asChild>
+              <h2>Submission guidelines</h2>
+            </SectionLabel>
             {event.submissionGuidelines.intro ? (
-              <p className="leading-relaxed text-foreground">{event.submissionGuidelines.intro}</p>
+              <p className="leading-relaxed text-foreground">
+                {event.submissionGuidelines.intro}
+              </p>
             ) : null}
-            {event.submissionGuidelines.types && event.submissionGuidelines.types.length > 0 ? (
+            {event.submissionGuidelines.types &&
+            event.submissionGuidelines.types.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-2">
                 {event.submissionGuidelines.types.map((type) => (
-                  <div key={type.title} className="rounded-xl border border-border p-4">
-                    <p className="text-sm font-medium text-foreground">{type.title}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{type.description}</p>
-                  </div>
+                  <Item
+                    key={type.title}
+                    variant="outline"
+                    className="items-start"
+                  >
+                    <ItemContent>
+                      <ItemTitle>{type.title}</ItemTitle>
+                      <ItemDescription className="line-clamp-none">
+                        {type.description}
+                      </ItemDescription>
+                    </ItemContent>
+                  </Item>
                 ))}
               </div>
             ) : null}
-            {event.submissionGuidelines.format && event.submissionGuidelines.format.length > 0 ? (
+            {event.submissionGuidelines.format &&
+            event.submissionGuidelines.format.length > 0 ? (
               <ul className="flex flex-col gap-1.5">
                 {event.submissionGuidelines.format.map((line, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-sm text-muted-foreground"
+                  >
                     <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
                     {line}
                   </li>
@@ -275,8 +309,13 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
             ) : null}
             {event.submissionGuidelines.portalLink ? (
               <Button variant="outline" className="w-fit" asChild>
-                <a href={event.submissionGuidelines.portalLink} target="_blank" rel="noopener noreferrer">
-                  {event.submissionGuidelines.portalLabel ?? "Submission portal"}
+                <a
+                  href={event.submissionGuidelines.portalLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {event.submissionGuidelines.portalLabel ??
+                    "Submission portal"}
                   <ArrowUpRight />
                 </a>
               </Button>
@@ -286,17 +325,23 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
 
         {event.schedule && event.schedule.length > 0 ? (
           <div className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Schedule
-            </h2>
+            <SectionLabel asChild>
+              <h2>Schedule</h2>
+            </SectionLabel>
             <ol className="mt-3 flex flex-col gap-4 border-t border-border pt-4">
               {event.schedule.map((item, i) => (
                 <li key={i} className="grid grid-cols-[5rem_1fr] gap-4">
-                  <span className="font-mono text-xs text-muted-foreground">{item.duration}</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {item.duration}
+                  </span>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{item.title}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {item.title}
+                    </p>
                     {item.description ? (
-                      <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {item.description}
+                      </p>
                     ) : null}
                   </div>
                 </li>
@@ -307,59 +352,65 @@ export function EventDetail({ event, className, actions }: EventDetailProps) {
 
         {event.relatedPapers && event.relatedPapers.length > 0 ? (
           <div className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {event.relatedPapers.length === 1 ? "Related paper" : "Related papers"}
-            </h2>
+            <SectionLabel asChild>
+              <h2>
+                {event.relatedPapers.length === 1
+                  ? "Related paper"
+                  : "Related papers"}
+              </h2>
+            </SectionLabel>
             <ul className="mt-3 flex flex-col gap-3">
               {event.relatedPapers.map((paper) => (
-                <li key={paper.id} className="rounded-xl border border-border px-4 py-3">
-                  <p className="text-sm font-medium leading-snug text-foreground">{paper.title}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {paper.publisher} · {paper.year}
-                  </p>
-                  {paper.link ? (
-                    <a
-                      href={paper.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                    >
-                      View paper <ExternalLink className="size-3" />
-                    </a>
-                  ) : null}
-                </li>
+                <Item key={paper.id} variant="outline" asChild>
+                  <li>
+                    <ItemContent>
+                      <ItemTitle className="line-clamp-none">
+                        {paper.title}
+                      </ItemTitle>
+                      <ItemDescription>
+                        {paper.publisher} · {paper.year}
+                      </ItemDescription>
+                    </ItemContent>
+                    {paper.link ? (
+                      <ItemActions>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="h-auto px-0"
+                          asChild
+                        >
+                          <a
+                            href={paper.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View paper
+                            <ExternalLink data-icon="inline-end" />
+                          </a>
+                        </Button>
+                      </ItemActions>
+                    ) : null}
+                  </li>
+                </Item>
               ))}
             </ul>
           </div>
         ) : null}
 
         <div className="mt-10">
-          <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Organizers
-          </h2>
+          <SectionLabel asChild>
+            <h2>Organizers</h2>
+          </SectionLabel>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {event.organizers.map((organizer) => (
-              <div
+              <PersonRow
                 key={organizer.name}
-                className="flex items-center gap-3 rounded-2xl border border-border p-4"
-              >
-                <Avatar size="lg">
-                  <AvatarImage src={organizer.image} alt={organizer.name} />
-                  <AvatarFallback>{organizer.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  {organizer.href ? (
-                    <a href={organizer.href} className="text-sm font-medium text-foreground hover:text-primary">
-                      {organizer.name}
-                    </a>
-                  ) : (
-                    <p className="text-sm font-medium text-foreground">{organizer.name}</p>
-                  )}
-                  {organizer.affiliation ? (
-                    <p className="mt-0.5 text-xs text-muted-foreground">{organizer.affiliation}</p>
-                  ) : null}
-                </div>
-              </div>
+                variant="outline"
+                name={organizer.name}
+                description={organizer.affiliation}
+                image={organizer.image}
+                href={organizer.href}
+              />
             ))}
           </div>
         </div>

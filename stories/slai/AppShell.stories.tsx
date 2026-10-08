@@ -1,33 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { AppShell } from "@/components/slai/app-shell"
 import { SessionActions } from "@/components/slai/session-actions"
-import { SlaiSidebar, type SidebarSession } from "@/components/slai/slai-sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
-const SESSIONS: SidebarSession[] = [
-  { name: "Biology", periods: [{ name: "Period 1" }] },
-  {
-    name: "Physics",
-    periods: [
-      { name: "Period 1" },
-      { name: "Period 3 — Aug 21", active: true },
-    ],
-  },
-  { name: "Science", periods: [] },
-]
-
-const SOURCES = ["Inclined Plane Lab", "Photosynthesis Discussion"]
-
-const USER = { name: "Anurag Maravi", email: "amaravi@wisc.edu", initials: "AM" }
+import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
+import { PageSidebar } from "./_page-fixtures"
 
 const sidebar = (
-  <SlaiSidebar
-    sessions={SESSIONS}
-    sources={SOURCES}
-    user={USER}
-    activeNav="manage"
-    defaultOpenSession="Physics"
+  <PageSidebar
+    activeNav="live"
+    liveSessionActive
+    activeSession={{ className: "Physics", session: "Period 3 — Aug 21" }}
   />
 )
 
@@ -49,7 +32,8 @@ function Placeholder() {
         </CardHeader>
         <CardContent className="text-muted-foreground">
           The header and toolbar rows use <code>--shell-px</code> /{" "}
-          <code>--shell-py</code> so chrome spacing stays identical across pages.
+          <code>--shell-py</code> so chrome spacing stays identical across
+          pages.
         </CardContent>
       </Card>
     </div>
@@ -58,6 +42,7 @@ function Placeholder() {
 
 const meta: Meta<typeof AppShell> = {
   title: "SLAI/Shell/AppShell",
+  tags: ["autodocs"],
   component: AppShell,
   parameters: { layout: "fullscreen" },
 }
@@ -71,7 +56,7 @@ export const TitleOnly: Story = {
     <AppShell
       sidebar={sidebar}
       title={
-        <span className="font-medium text-muted-foreground">Manage Session</span>
+        <PageBreadcrumb items={[{ label: "Live" }, { label: "New session" }]} />
       }
     >
       <Placeholder />
@@ -85,11 +70,9 @@ export const WithToolbar: Story = {
     <AppShell
       sidebar={sidebar}
       title={
-        <>
-          <span className="text-muted-foreground">Physics</span>
-          <span className="text-muted-foreground">/</span>
-          <span className="font-medium">Period 3 — Aug 21</span>
-        </>
+        <PageBreadcrumb
+          items={[{ label: "Physics" }, { label: "Period 3 — Aug 21" }]}
+        />
       }
       toolbar={
         <div className="ml-auto">

@@ -1,9 +1,9 @@
 {
   "name": "@trail-ai-lab/trail-design-system",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "private": false,
   "license": "MIT",
-  "description": "Trail Lab design system — shared UI components for SLAI, AIBAT, Casting Lab, Murder Mystery, Trail Console, and Bias Audit",
+  "description": "TRAIL Lab design system — shared foundations, primitives and patterns for TRAIL lab tools (SLAI, Lab Website).",
   "exports": {
     ".": {
       "import": {
@@ -23,6 +23,16 @@
       "require": {
         "types": "./dist/ui/index.d.ts",
         "default": "./dist/ui/index.js"
+      }
+    },
+    "./patterns": {
+      "import": {
+        "types": "./dist/patterns/index.d.mts",
+        "default": "./dist/patterns/index.mjs"
+      },
+      "require": {
+        "types": "./dist/patterns/index.d.ts",
+        "default": "./dist/patterns/index.js"
       }
     },
     "./slai": {
@@ -45,64 +55,27 @@
         "default": "./dist/lab-website/index.js"
       }
     },
-    "./aibat": {
-      "import": {
-        "types": "./dist/aibat/index.d.mts",
-        "default": "./dist/aibat/index.mjs"
-      },
-      "require": {
-        "types": "./dist/aibat/index.d.ts",
-        "default": "./dist/aibat/index.js"
-      }
-    },
-    "./casting-lab": {
-      "import": {
-        "types": "./dist/casting-lab/index.d.mts",
-        "default": "./dist/casting-lab/index.mjs"
-      },
-      "require": {
-        "types": "./dist/casting-lab/index.d.ts",
-        "default": "./dist/casting-lab/index.js"
-      }
-    },
-    "./murder-mystery": {
-      "import": {
-        "types": "./dist/murder-mystery/index.d.mts",
-        "default": "./dist/murder-mystery/index.mjs"
-      },
-      "require": {
-        "types": "./dist/murder-mystery/index.d.ts",
-        "default": "./dist/murder-mystery/index.js"
-      }
-    },
-    "./trail-console": {
-      "import": {
-        "types": "./dist/trail-console/index.d.mts",
-        "default": "./dist/trail-console/index.mjs"
-      },
-      "require": {
-        "types": "./dist/trail-console/index.d.ts",
-        "default": "./dist/trail-console/index.js"
-      }
-    },
-    "./bias-audit": {
-      "import": {
-        "types": "./dist/bias-audit/index.d.mts",
-        "default": "./dist/bias-audit/index.mjs"
-      },
-      "require": {
-        "types": "./dist/bias-audit/index.d.ts",
-        "default": "./dist/bias-audit/index.js"
-      }
-    },
-    "./globals.css": "./src/tokens/globals.css"
+    "./styles.css": "./src/tokens/styles.css",
+    "./globals.css": "./src/tokens/globals.css",
+    "./semantic.css": "./src/tokens/semantic.css",
+    "./scales.css": "./src/tokens/scales.css",
+    "./layout.css": "./src/tokens/layout.css",
+    "./fonts.css": "./src/tokens/fonts.css"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "src/tokens/globals.css"
+    "src/tokens/globals.css",
+    "src/tokens/semantic.css",
+    "src/tokens/scales.css",
+    "src/tokens/layout.css",
+    "src/tokens/fonts.css",
+    "src/tokens/styles.css"
+  ],
+  "sideEffects": [
+    "*.css"
   ],
   "scripts": {
     "build": "tsup && node scripts/add-use-client-banner.mjs",
@@ -110,47 +83,74 @@
     "dev": "tsup --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lint": "tsc --noEmit"
+    "lint": "pnpm typecheck && eslint .",
+    "ui:update": "node scripts/update-ui.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit -p tsconfig.lint.json",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:stories": "vitest run --project storybook",
+    "check": "pnpm format:check && pnpm lint && pnpm test && pnpm build"
   },
   "peerDependencies": {
-    "next": "^14.0.0 || ^15.0.0",
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "next-themes": "^0.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^5.4.0",
+    "@eslint/js": "^10.0.1",
     "@storybook/addon-a11y": "^10.6.1",
     "@storybook/addon-docs": "^10.6.1",
-    "@storybook/addon-mcp": "^0.6.0",
-    "@storybook/nextjs": "^10.6.1",
+    "@storybook/addon-mcp": "^10.6.1",
+    "@storybook/addon-vitest": "^10.6.1",
+    "@storybook/react-vite": "^10.6.1",
     "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitest/browser-playwright": "^5.0.3",
+    "@vitest/coverage-v8": "^5.0.3",
     "esbuild": "^0.28.2",
-    "next": "^15.5.27",
+    "eslint": "^10.12.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-storybook": "^10.6.1",
+    "globals": "^17.13.0",
+    "next-themes": "^0.4.6",
+    "playwright": "^1.63.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "remark-gfm": "^4.0.1",
     "storybook": "^10.6.1",
     "tailwindcss": "^4.3.3",
     "tsup": "^8.5.1",
-    "tw-animate-css": "^1.4.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3"
   },
   "dependencies": {
-    "@base-ui/react": "^1.5.0",
+    "@base-ui/react": "^1.8.0",
     "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "cn": "^0.4.0",
     "date-fns": "^4.4.0",
-    "lucide-react": "^1.17.0",
-    "next-themes": "^0.4.6",
-    "radix-ui": "^1.5.0",
+    "lucide-react": "^1.52.0",
+    "radix-ui": "^1.7.0",
     "react-day-picker": "^10.0.2",
     "react-qr-code": "^2.2.0",
     "react-resizable-panels": "^4.14.2",
-    "recharts": "^3.8.0",
-    "shadcn": "^4.11.0",
+    "recharts": "~3.8.0",
+    "shadcn": "^4.21.3",
     "sonner": "^2.0.8",
-    "tailwind-merge": "^3.7.0"
-  }
+    "tw-animate-css": "^1.4.0",
+    "vaul": "^1.1.2"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "packageManager": "pnpm@11.3.0"
 }

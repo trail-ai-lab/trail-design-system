@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const meta: Meta<typeof Tabs> = {
@@ -17,10 +17,16 @@ export const Default: Story = {
         <TabsTrigger value="speakers">Speakers</TabsTrigger>
         <TabsTrigger value="flags">Flags</TabsTrigger>
       </TabsList>
-      <TabsContent value="overview" className="mt-4 text-sm text-muted-foreground">
+      <TabsContent
+        value="overview"
+        className="mt-4 text-sm text-muted-foreground"
+      >
         Session overview content here.
       </TabsContent>
-      <TabsContent value="speakers" className="mt-4 text-sm text-muted-foreground">
+      <TabsContent
+        value="speakers"
+        className="mt-4 text-sm text-muted-foreground"
+      >
         Speaker participation breakdown here.
       </TabsContent>
       <TabsContent value="flags" className="mt-4 text-sm text-muted-foreground">
@@ -38,10 +44,16 @@ export const LineVariant: Story = {
         <TabsTrigger value="speakers">Speakers</TabsTrigger>
         <TabsTrigger value="flags">Flags</TabsTrigger>
       </TabsList>
-      <TabsContent value="overview" className="mt-4 text-sm text-muted-foreground">
+      <TabsContent
+        value="overview"
+        className="mt-4 text-sm text-muted-foreground"
+      >
         Session overview content.
       </TabsContent>
-      <TabsContent value="speakers" className="mt-4 text-sm text-muted-foreground">
+      <TabsContent
+        value="speakers"
+        className="mt-4 text-sm text-muted-foreground"
+      >
         Speaker details.
       </TabsContent>
       <TabsContent value="flags" className="mt-4 text-sm text-muted-foreground">

@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { initials } from "@/components/slai/lib/format"
+import { initials } from "@/lib/format"
 import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
 
 export interface RecordedSpeaker {
@@ -104,9 +104,7 @@ function ManageSpeakers({
               <div key={speaker.id} className="flex items-center gap-2">
                 <Avatar size="sm">
                   <AvatarFallback>
-                    {speaker.name?.trim()
-                      ? initials(speaker.name)
-                      : index + 1}
+                    {speaker.name?.trim() ? initials(speaker.name) : index + 1}
                   </AvatarFallback>
                 </Avatar>
                 <Input
@@ -215,9 +213,7 @@ function RecordedTranscriptCard({
             {entries.map((entry) => {
               const speaker = byId.get(entry.speakerId)
               const named = speaker?.name?.trim()
-              const label = named
-                ? named
-                : `Speaker ${speaker?.ordinal ?? "?"}`
+              const label = named ? named : `Speaker ${speaker?.ordinal ?? "?"}`
               const avatar = named
                 ? initials(named)
                 : String(speaker?.ordinal ?? "?")

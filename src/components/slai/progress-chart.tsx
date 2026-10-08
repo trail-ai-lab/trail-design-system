@@ -15,9 +15,7 @@ import {
 } from "recharts"
 
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
-import {
-  VERDICT_VALUE,
-} from "@/components/slai/lib/verdict"
+import { VERDICT_VALUE } from "@/components/slai/lib/verdict"
 import type {
   ProgressMetric,
   StudentSessionData,
@@ -101,7 +99,7 @@ function trendLabel(data: Point[], threshold: number) {
         textAnchor="middle"
         fontSize={13}
         fontWeight="bold"
-        fill={up ? "var(--status-uploaded)" : "var(--status-recording)"}
+        fill={up ? "var(--success)" : "var(--destructive)"}
       >
         {up ? "↑" : "↓"}
       </text>
@@ -173,8 +171,14 @@ function ProgressChart({
 
   if (metric === "academic") {
     return (
-      <ChartContainer config={config} className={className ?? "aspect-auto h-60 w-full"}>
-        <BarChart data={data} margin={{ top: 30, right: 20, left: 10, bottom: 5 }}>
+      <ChartContainer
+        config={config}
+        className={className ?? "aspect-auto h-60 w-full"}
+      >
+        <BarChart
+          data={data}
+          margin={{ top: 30, right: 20, left: 10, bottom: 5 }}
+        >
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="label" {...axis} />
           <YAxis allowDecimals={false} width={28} {...axis} />
@@ -190,7 +194,11 @@ function ProgressChart({
             <LabelList
               dataKey="value"
               position="top"
-              style={{ fontSize: 11, fontWeight: 600, fill: "var(--color-value)" }}
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                fill: "var(--color-value)",
+              }}
             />
           </Bar>
         </BarChart>
@@ -211,8 +219,14 @@ function ProgressChart({
   const lineType = standard ? "stepAfter" : "monotone"
 
   return (
-    <ChartContainer config={config} className={className ?? "aspect-auto h-60 w-full"}>
-      <LineChart data={data} margin={{ top: 36, right: 24, left: 10, bottom: 5 }}>
+    <ChartContainer
+      config={config}
+      className={className ?? "aspect-auto h-60 w-full"}
+    >
+      <LineChart
+        data={data}
+        margin={{ top: 36, right: 24, left: 10, bottom: 5 }}
+      >
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis dataKey="label" {...axis} />
         <YAxis

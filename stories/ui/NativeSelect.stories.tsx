@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Label } from "@/components/ui/label"
 
@@ -12,7 +12,7 @@ type Story = StoryObj<typeof NativeSelect>
 
 export const Default: Story = {
   render: () => (
-    <div className="flex flex-col gap-1.5 w-56">
+    <div className="flex w-56 flex-col gap-1.5">
       <Label htmlFor="tool">Tool</Label>
       <NativeSelect id="tool">
         <option value="">Select a tool…</option>
@@ -27,7 +27,7 @@ export const Default: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <NativeSelect disabled className="w-56">
+    <NativeSelect disabled aria-label="Tool" className="w-56">
       <option>Disabled select</option>
     </NativeSelect>
   ),

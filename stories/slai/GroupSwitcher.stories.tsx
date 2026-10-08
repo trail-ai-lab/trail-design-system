@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import {
   ALL_GROUPS,
@@ -27,7 +27,9 @@ type Story = StoryObj<typeof GroupSwitcher>
 
 function Controlled({ groups }: { groups: SwitcherGroup[] }) {
   const [value, setValue] = React.useState(ALL_GROUPS)
-  return <GroupSwitcher groups={groups} value={value} onValueChange={setValue} />
+  return (
+    <GroupSwitcher groups={groups} value={value} onValueChange={setValue} />
+  )
 }
 
 export const Default: Story = {

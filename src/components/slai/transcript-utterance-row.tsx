@@ -46,6 +46,7 @@ function TranscriptUtteranceRow({
 
   return (
     <div
+      data-slot="transcript-utterance-row"
       data-highlighted={highlighted || undefined}
       className={cn(
         "flex gap-3 data-[highlighted]:-mx-2 data-[highlighted]:rounded-xl data-[highlighted]:bg-primary/10 data-[highlighted]:px-2 data-[highlighted]:py-1.5",
@@ -61,7 +62,7 @@ function TranscriptUtteranceRow({
               type="button"
               onClick={onPlayToggle}
               aria-label={playing ? "Pause segment" : "Play segment"}
-              className="flex size-5 items-center justify-center rounded-full bg-muted text-foreground outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+              className="relative flex size-5 items-center justify-center rounded-full bg-muted text-foreground outline-none after:absolute after:-inset-1.5 hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
             >
               {playing ? (
                 <PauseIcon className="size-3" />

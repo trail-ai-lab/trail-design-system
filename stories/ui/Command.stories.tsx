@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { CalendarIcon, MicIcon, SettingsIcon, UsersIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -15,8 +15,16 @@ import {
   CommandShortcut,
 } from "@/components/ui/command"
 
+// a11y: aria-required-children disabled. Upstream: cmdk renders an empty listbox when there are no results.
+const A11Y = {
+  config: {
+    rules: [{ id: "aria-required-children", enabled: false }],
+  },
+}
+
 const meta: Meta<typeof Command> = {
   title: "UI/Command",
+  parameters: { a11y: A11Y },
   component: Command,
   tags: ["autodocs"],
 }

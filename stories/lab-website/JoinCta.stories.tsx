@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { JoinCta } from "@/components/lab-website/join-cta"
 
@@ -13,7 +13,10 @@ const meta: Meta<typeof JoinCta> = {
     description:
       "We work with educators, students, scholars, and engineers — anyone willing to sit with hard questions about AI in learning.",
     primaryAction: { label: "Meet the team", href: "/people" },
-    secondaryAction: { label: "Get in touch", href: "mailto:shamya.karumbaiah@wisc.edu" },
+    secondaryAction: {
+      label: "Get in touch",
+      href: "mailto:shamya.karumbaiah@wisc.edu",
+    },
   },
 }
 export default meta

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Kbd } from "@/components/ui/kbd"
 
 const meta: Meta<typeof Kbd> = {
@@ -11,10 +11,12 @@ type Story = StoryObj<typeof Kbd>
 
 export const Default: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2 items-center">
+    <div className="flex flex-wrap items-center gap-2">
       <Kbd>⌘</Kbd>
       <Kbd>K</Kbd>
-      <span className="text-muted-foreground text-sm">Open command palette</span>
+      <span className="text-sm text-muted-foreground">
+        Open command palette
+      </span>
     </div>
   ),
 }
@@ -28,10 +30,12 @@ export const Shortcuts: Story = {
         { keys: ["⌘", "⇧", "P"], label: "Export PDF" },
         { keys: ["Esc"], label: "Close dialog" },
       ].map(({ keys, label }) => (
-        <div key={label} className="flex items-center justify-between w-56">
+        <div key={label} className="flex w-56 items-center justify-between">
           <span className="text-sm text-muted-foreground">{label}</span>
           <div className="flex gap-1">
-            {keys.map((k) => <Kbd key={k}>{k}</Kbd>)}
+            {keys.map((k) => (
+              <Kbd key={k}>{k}</Kbd>
+            ))}
           </div>
         </div>
       ))}

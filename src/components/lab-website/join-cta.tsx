@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 export interface JoinCtaProps {
   eyebrow: string
@@ -30,13 +31,19 @@ export function JoinCta({
   backdrop,
 }: JoinCtaProps) {
   return (
-    <section className={cn("relative overflow-hidden border-b border-border", className)}>
+    <section
+      data-slot="join-cta"
+      className={cn(
+        "relative overflow-hidden border-b border-border",
+        className
+      )}
+    >
       {backdrop}
       <div className="relative mx-auto max-w-3xl px-6 py-20 text-center md:py-28 lg:px-8">
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {eyebrow}
-        </p>
-        <h2 className="mt-4 font-heading text-3xl tracking-tight text-foreground md:text-5xl">
+        <SectionLabel asChild>
+          <p>{eyebrow}</p>
+        </SectionLabel>
+        <h2 className="mt-4 text-h2 text-foreground md:text-display">
           {title}
         </h2>
         <p className="mx-auto mt-6 max-w-prose text-lg leading-relaxed text-muted-foreground">

@@ -1,37 +1,21 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { AppShell } from "@/components/slai/app-shell"
-import { SlaiSidebar } from "@/components/slai/slai-sidebar"
 import { StudentProgressView } from "@/components/slai/student-progress-view"
-import { SESSIONS, SIDEBAR_USER, SOURCES } from "./_page-fixtures"
+import { PageSidebar } from "./_page-fixtures"
 import { MEI, SESSION_LABELS } from "./_student-fixtures"
+import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 
 function StudentProgressPage() {
   return (
     <AppShell
-      sidebar={
-        <SlaiSidebar
-          sessions={SESSIONS}
-          sources={SOURCES}
-          user={SIDEBAR_USER}
-          activeStudent="mei"
-          students={[
-            { id: "mei", name: "Mei", language: "Mandarin" },
-            { id: "liam", name: "Liam", language: "English" },
-            { id: "rosa", name: "Rosa", language: "Spanish" },
-          ]}
-        />
-      }
+      sidebar={<PageSidebar showStudents activeStudent="mei" />}
       title={
-        <>
-          <span className="text-muted-foreground">Students</span>
-          <span className="text-muted-foreground">/</span>
-          <span className="font-medium">Mei</span>
-        </>
+        <PageBreadcrumb items={[{ label: "Students" }, { label: "Mei" }]} />
       }
     >
       <StudentProgressView
-        className="min-h-0 flex-1 p-(--shell-px)"
+        className="min-h-0 flex-1 p-(--shell-gap)"
         student={MEI}
         sessionLabels={SESSION_LABELS}
         standardLabel="CCSS"

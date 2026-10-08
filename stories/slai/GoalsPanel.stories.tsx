@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { GoalsPanel } from "@/components/slai/goals-panel"
 import { INSIGHTS } from "./_student-fixtures"
@@ -13,7 +13,7 @@ const meta: Meta<typeof GoalsPanel> = {
     students: INSIGHTS,
     goal: {
       standardCode: "3.OA.A.2",
-      languageObjective: "Explain equal sharing using \"each\".",
+      languageObjective: 'Explain equal sharing using "each".',
       standardDescription:
         "Interpret whole-number quotients as the number of objects in each share.",
     },
@@ -35,7 +35,8 @@ export const Default: Story = {}
 
 export const WithGroupCallout: Story = {
   args: {
-    callout: "Group 2 reached the objective together after switching to Spanish.",
+    callout:
+      "Group 2 reached the objective together after switching to Spanish.",
   },
 }
 

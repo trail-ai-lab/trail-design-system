@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Button } from "@/components/ui/button"
 import { DEFAULT_LANGUAGES } from "@/components/slai/language-settings-form"

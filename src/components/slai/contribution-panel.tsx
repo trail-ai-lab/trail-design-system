@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
-import { formatElapsed } from "@/components/slai/lib/format"
+import { formatElapsed } from "@/lib/format"
 import { SpeakerAssignDropdown } from "@/components/slai/speaker-assign-dropdown"
 
 export interface ContributionSpeaker {
@@ -70,7 +70,7 @@ function ContributionPanel({
         <CardAction className="text-xs text-muted-foreground">
           {status === "saving" && (
             <span className="flex items-center gap-1.5">
-              <Spinner className="size-3" /> Saving...
+              <Spinner className="size-3" /> Saving…
             </span>
           )}
           {status === "saved" && (
@@ -89,7 +89,10 @@ function ContributionPanel({
           {speakers.map((speaker, index) => (
             <div
               key={speaker.id}
-              className={cn("h-full", SPEAKER_FILLS[index % SPEAKER_FILLS.length])}
+              className={cn(
+                "h-full",
+                SPEAKER_FILLS[index % SPEAKER_FILLS.length]
+              )}
               style={{ width: `${percent(speaker.seconds)}%` }}
             />
           ))}
@@ -117,6 +120,7 @@ function ContributionPanel({
                 value={speaker.student}
                 onValueChange={(student) => onAssign?.(speaker.id, student)}
                 onAddStudent={onAddStudent}
+                aria-label={`Student for ${speaker.label}`}
               />
             </li>
           ))}

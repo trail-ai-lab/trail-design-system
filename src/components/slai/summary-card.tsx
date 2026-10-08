@@ -5,6 +5,7 @@ import {
   ChevronDownIcon,
   RefreshCwIcon,
   TriangleAlertIcon,
+  FileTextIcon,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -22,6 +23,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { SummaryText } from "@/components/slai/summary-text"
@@ -77,7 +85,7 @@ function SummaryCard({
           </CardAction>
         )}
       </CardHeader>
-      <CardContent className="flex-1">
+      <CardContent className="flex-1" aria-live="polite" aria-busy={loading}>
         {loading ? (
           <div className="flex flex-col gap-2">
             <Skeleton className="h-4 w-full" />
@@ -92,7 +100,7 @@ function SummaryCard({
               </Badge>
             )}
             {thinSummaryTurns !== undefined && (
-              <p className="flex items-center gap-1.5 text-xs text-status-paused">
+              <p className="flex items-center gap-1.5 text-xs text-warning">
                 <TriangleAlertIcon className="size-3.5" />
                 Only {thinSummaryTurns} turns since the last check-in — the
                 summary may be thin.
@@ -101,10 +109,18 @@ function SummaryCard({
             <SummaryText text={summary} />
           </div>
         ) : (
-          <p className="text-sm leading-relaxed text-muted-foreground italic">
-            Generate a summary of what {scopeLabel ?? "the class"} has discussed
-            so far.
-          </p>
+          <Empty className="p-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileTextIcon />
+              </EmptyMedia>
+              <EmptyTitle>No summary yet</EmptyTitle>
+              <EmptyDescription>
+                Generate a summary of what {scopeLabel ?? "the class"}{" "}
+                discussed.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
         {earlierPhases.length > 0 && (
           <Collapsible className="mt-4 border-t border-border pt-3">
@@ -151,7 +167,7 @@ function SummaryCard({
             ) : (
               <CheckCheckIcon data-icon="inline-start" />
             )}
-            {checkingIn ? "Checking in..." : "Check in"}
+            {checkingIn ? "Checking in…" : "Check in"}
           </Button>
         )}
       </CardFooter>

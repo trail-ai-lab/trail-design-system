@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { PersonRow } from "@/components/patterns/person-row"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 export interface ResearchPerson {
   name: string
@@ -28,59 +29,50 @@ export interface ResearchDetailProps {
  * body, associated people, and an optional publications slot. For the
  * compact card used on the Research listing page, use ResearchCard instead.
  */
-export function ResearchDetail({ research, className, publications }: ResearchDetailProps) {
+export function ResearchDetail({
+  research,
+  className,
+  publications,
+}: ResearchDetailProps) {
   return (
-    <section className={cn("border-b border-border", className)}>
+    <section
+      data-slot="research-detail"
+      className={cn("border-b border-border", className)}
+    >
       <div className="mx-auto max-w-3xl px-6 py-16 lg:px-8">
-        <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+        <span className="font-mono text-xs tracking-wider text-muted-foreground uppercase">
           Research
         </span>
 
-        <h1 className="mt-4 font-heading text-3xl tracking-tight text-foreground md:text-4xl">
+        <h1 className="mt-4 text-h2 text-foreground md:text-h1">
           {research.title}
         </h1>
 
         {research.funders && research.funders.length > 0 ? (
-          <p className="mt-4 text-xs uppercase tracking-wider text-muted-foreground">
+          <p className="mt-4 text-xs tracking-wider text-muted-foreground uppercase">
             Funded by {research.funders.join(" · ")}
           </p>
         ) : null}
 
-        <div className="prose prose-neutral mt-10 max-w-none dark:prose-invert">
+        <div className="prose prose-neutral dark:prose-invert mt-10 max-w-none">
           {research.content}
         </div>
 
         {research.people && research.people.length > 0 ? (
           <div className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              People
-            </h2>
+            <SectionLabel asChild>
+              <h2>People</h2>
+            </SectionLabel>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {research.people.map((person) => (
-                <div
+                <PersonRow
                   key={person.name}
-                  className="flex items-center gap-3 rounded-2xl border border-border p-4"
-                >
-                  <Avatar size="lg">
-                    <AvatarImage src={person.image} alt={person.name} />
-                    <AvatarFallback>{person.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    {person.href ? (
-                      <a
-                        href={person.href}
-                        className="text-sm font-medium text-foreground hover:text-primary"
-                      >
-                        {person.name}
-                      </a>
-                    ) : (
-                      <p className="text-sm font-medium text-foreground">{person.name}</p>
-                    )}
-                    {person.designation ? (
-                      <p className="mt-0.5 text-xs text-muted-foreground">{person.designation}</p>
-                    ) : null}
-                  </div>
-                </div>
+                  variant="outline"
+                  name={person.name}
+                  description={person.designation}
+                  image={person.image}
+                  href={person.href}
+                />
               ))}
             </div>
           </div>

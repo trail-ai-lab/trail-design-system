@@ -4,6 +4,7 @@ import * as React from "react"
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useControllableState } from "@/lib/use-controllable-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -26,34 +27,47 @@ import {
  */
 function LanguageMultiSelect({
   options,
-  value,
-  onChange,
+  value: valueProp,
+  defaultValue = [],
+  onValueChange,
   placeholder = "Select languages",
   helperText,
   disabled = false,
   id,
+  "aria-label": ariaLabel,
   className,
 }: {
   options: string[]
-  value: string[]
-  onChange: (value: string[]) => void
+  value?: string[]
+  defaultValue?: string[]
+  onValueChange?: (value: string[]) => void
   placeholder?: string
   helperText?: string
   disabled?: boolean
   id?: string
+  /** Accessible name when there's no visible <label htmlFor={id}> */
+  "aria-label"?: string
   className?: string
 }) {
   const [open, setOpen] = React.useState(false)
+  const [value, setValue] = useControllableState({
+    value: valueProp,
+    defaultValue,
+    onChange: onValueChange,
+  })
 
   const toggle = (language: string) =>
-    onChange(
+    setValue(
       value.includes(language)
         ? value.filter((item) => item !== language)
         : [...value, language]
     )
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div
+      data-slot="language-multi-select"
+      className={cn("flex flex-col gap-2", className)}
+    >
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -61,16 +75,18 @@ function LanguageMultiSelect({
             type="button"
             variant="outline"
             role="combobox"
+            aria-label={ariaLabel}
             aria-expanded={open}
             disabled={disabled}
             className="w-full justify-between font-normal"
           >
             <span
-              className={cn("truncate", value.length === 0 && "text-muted-foreground")}
+              className={cn(
+                "truncate",
+                value.length === 0 && "text-muted-foreground"
+              )}
             >
-              {value.length === 0
-                ? placeholder
-                : `${value.length} selected`}
+              {value.length === 0 ? placeholder : `${value.length} selected`}
             </span>
             <ChevronsUpDownIcon className="size-4 shrink-0 text-muted-foreground" />
           </Button>
@@ -80,7 +96,7 @@ function LanguageMultiSelect({
           className="w-(--radix-popover-trigger-width) min-w-56 p-0"
         >
           <Command>
-            <CommandInput placeholder="Search languages..." />
+            <CommandInput placeholder="Search languages…" />
             <CommandList>
               <CommandEmpty>No language found.</CommandEmpty>
               <CommandGroup>

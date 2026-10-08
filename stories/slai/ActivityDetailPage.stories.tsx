@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ArrowLeftIcon, MicIcon, SquareIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import {
 import { RecordingTimer } from "@/components/slai/recording-timer"
 import { SessionStatusBadge } from "@/components/slai/session-status-badge"
 import { PageSidebar } from "./_page-fixtures"
+import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 
 function ActivityDetailPage({
   variant,
@@ -45,11 +46,7 @@ function ActivityDetailPage({
     <AppShell
       sidebar={<PageSidebar activeNav="activities" />}
       title={
-        <>
-          <span className="text-muted-foreground">Activities</span>
-          <span className="text-muted-foreground">/</span>
-          <span className="font-medium">{name}</span>
-        </>
+        <PageBreadcrumb items={[{ label: "Activities" }, { label: name }]} />
       }
       toolbar={
         <>
@@ -67,7 +64,7 @@ function ActivityDetailPage({
             {recording ? (
               <Button variant="destructive" onClick={stop}>
                 <SquareIcon data-icon="inline-start" />
-                Stop
+                Stop recording
               </Button>
             ) : (
               <Button
@@ -84,7 +81,7 @@ function ActivityDetailPage({
         </>
       }
     >
-      <div className="flex min-h-0 flex-1 flex-col p-(--shell-px)">
+      <div className="flex min-h-0 flex-1 flex-col p-(--shell-gap)">
         <ActivityViewer
           variant={variant}
           title={name}

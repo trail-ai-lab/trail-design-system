@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   Select,
   SelectContent,
@@ -18,7 +18,7 @@ type Story = StoryObj
 export const Default: Story = {
   render: () => (
     <Select>
-      <SelectTrigger className="w-48">
+      <SelectTrigger className="w-48" aria-label="Tool">
         <SelectValue placeholder="Select a tool" />
       </SelectTrigger>
       <SelectContent>
@@ -35,7 +35,7 @@ export const Default: Story = {
 
 export const WithLabel: Story = {
   render: () => (
-    <div className="flex flex-col gap-1.5 w-48">
+    <div className="flex w-48 flex-col gap-1.5">
       <Label htmlFor="tool-select">Active tool</Label>
       <Select>
         <SelectTrigger id="tool-select">
@@ -53,7 +53,7 @@ export const WithLabel: Story = {
 export const Disabled: Story = {
   render: () => (
     <Select disabled>
-      <SelectTrigger className="w-48">
+      <SelectTrigger className="w-48" aria-label="Tool">
         <SelectValue placeholder="Disabled" />
       </SelectTrigger>
       <SelectContent>

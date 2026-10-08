@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
