@@ -23,7 +23,6 @@ export {
 export { LanguageSettingsSheet } from "./language-settings-sheet"
 export { NewSessionForm } from "./new-session-form"
 export { RecordingControl } from "./recording-control"
-export { RecordingCard } from "./recording-card"
 export { GroupSetupForm } from "./group-setup-form"
 export { StudentChip } from "./student-chip"
 export { MicPermissionError } from "./mic-permission-error"

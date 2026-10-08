@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { MailCheckIcon } from "lucide-react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -15,7 +14,6 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { IconTile } from "@/components/patterns/icon-tile"
 
 /**
  * Request a password-reset email. Moves from `idle` to `sending` to `sent`
@@ -41,9 +39,6 @@ function ForgotPasswordForm({
     return (
       <Card className={className}>
         <CardHeader className="items-center text-center">
-          <IconTile size="lg" className="mb-2">
-            <MailCheckIcon />
-          </IconTile>
           <CardTitle className="text-h3">Check your email</CardTitle>
           <CardDescription>
             If an account exists for {email || "that address"}, we sent a link

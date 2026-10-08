@@ -7,17 +7,13 @@ import { SectionLabel } from "@/components/patterns/section-label"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { InsightCallout } from "@/components/slai/insight-callout"
 import { initials } from "@/lib/format"
 import { ProgressChart } from "@/components/slai/progress-chart"
 import { SessionEvidenceStrip } from "@/components/slai/session-evidence-strip"
 import { VerdictBadge } from "@/components/slai/verdict-badge"
-import {
-  VERDICT_LABELS,
-  widaLabel,
-  widaVerdict,
-} from "@/components/slai/lib/verdict"
+import { widaLabel } from "@/components/slai/lib/verdict"
 import type {
   ProgressMetric,
   StudentProgressData,
@@ -25,8 +21,8 @@ import type {
 
 /**
  * A student's progress over time: header with their latest WIDA and
- * standards status, an insight callout, a metric switcher and chart, and
- * the per-session evidence strip. `insight` is the auto-generated sentence;
+ * standards status, an insight callout, the progress chart with a tab per
+ * metric, and the per-session evidence strip. `insight` is the auto-generated sentence;
  * one that starts with a warning (`insightVariant="warning"`) is amber.
  */
 function StudentProgressView({
@@ -89,8 +85,6 @@ function StudentProgressView({
           </div>
           <p className="text-xs text-muted-foreground">
             {student.sessions.length} sessions recorded
-            {wida !== null &&
-              ` · WIDA ${VERDICT_LABELS[latest.widaVerdictOverride ?? widaVerdict(wida)].toLowerCase()}`}
           </p>
         </div>
       </div>
@@ -102,34 +96,31 @@ function StudentProgressView({
       <Separator />
 
       <div className="flex flex-col gap-2">
-        <SectionLabel>Metric</SectionLabel>
-        <ToggleGroup
-          type="single"
-          variant="outline"
-          size="sm"
-          value={metric}
-          onValueChange={(next) => next && setMetric(next as ProgressMetric)}
-          aria-label="Metric"
-          className="w-fit flex-wrap"
-        >
-          {metrics.map((m) => (
-            <ToggleGroupItem key={m.value} value={m.value}>
-              {m.label}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      </div>
-
-      <div className="flex flex-col gap-2">
         <SectionLabel>Progress over time</SectionLabel>
-        <ProgressChart
-          sessions={student.sessions}
-          sessionLabels={sessionLabels}
-          metric={metric}
-          standardLabel={standardLabel}
-          isNativeEnglish={native}
-          studentName={student.name}
-        />
+        <Tabs
+          value={metric}
+          onValueChange={(next) => setMetric(next as ProgressMetric)}
+        >
+          <TabsList className="w-full">
+            {metrics.map((m) => (
+              <TabsTrigger key={m.value} value={m.value}>
+                {m.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {metrics.map((m) => (
+            <TabsContent key={m.value} value={m.value}>
+              <ProgressChart
+                sessions={student.sessions}
+                sessionLabels={sessionLabels}
+                metric={m.value}
+                standardLabel={standardLabel}
+                isNativeEnglish={native}
+                studentName={student.name}
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
       </div>
 
       <Separator />

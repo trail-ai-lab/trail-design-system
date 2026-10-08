@@ -20,7 +20,8 @@ import { VidyaMapPlaceholder } from "@/components/slai/vidya-map-placeholder"
 /**
  * Shows the selected activity beside the recording controls. Most activities
  * are sandboxed iframes (`variant="iframe"`); `variant="vidyamap"` renders the
- * VidyaMapPlaceholder, since that simulation is native to the app. While an
+ * VidyaMapPlaceholder as a standalone form card (no outer frame), since that
+ * simulation is native to the app. While an
  * iframe loads a skeleton shows; `blocked` swaps in a fallback with a link
  * to open the activity in a new tab (for sites that refuse embedding).
  */
@@ -47,25 +48,42 @@ function ActivityViewer({
 }) {
   const [loaded, setLoaded] = React.useState(false)
 
+  const closeButton = onClose && (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Close activity"
+      className="absolute top-2 right-2 z-10"
+      onClick={onClose}
+    >
+      <XIcon />
+    </Button>
+  )
+
+  // The VidyaMap entry screen is a single-task form: it stands on its own as
+  // a card at form width, centered like other in-app forms, rather than
+  // sitting inside a full-size frame.
+  if (variant === "vidyamap") {
+    return (
+      <div
+        data-slot="activity-viewer"
+        data-variant={variant}
+        className={cn(
+          "relative flex min-h-0 flex-1 items-center-safe justify-center overflow-y-auto",
+          className
+        )}
+      >
+        {closeButton}
+        <VidyaMapPlaceholder className="max-w-sm" />
+      </div>
+    )
+  }
+
   return (
     <Card className={cn("relative min-h-0 flex-1 gap-0 py-0", className)}>
-      {onClose && (
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Close activity"
-          className="absolute top-2 right-2 z-10"
-          onClick={onClose}
-        >
-          <XIcon />
-        </Button>
-      )}
+      {closeButton}
 
-      {variant === "vidyamap" ? (
-        <div className="flex flex-1 items-center justify-center p-6">
-          <VidyaMapPlaceholder variant="embedded" />
-        </div>
-      ) : blocked ? (
+      {blocked ? (
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">

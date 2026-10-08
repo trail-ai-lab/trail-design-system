@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { MapIcon, PlayIcon, TriangleAlertIcon } from "lucide-react"
+import { PlayIcon, TriangleAlertIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -23,7 +23,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
-import { IconTile } from "@/components/patterns/icon-tile"
 
 /**
  * Stand-in for the VidyaMap simulation (concept map and word cloud). The real
@@ -61,10 +60,7 @@ function VidyaMapPlaceholder({
         className
       )}
     >
-      <CardHeader className="items-center text-center">
-        <IconTile size="lg" className="mb-2">
-          <MapIcon className="text-muted-foreground" />
-        </IconTile>
+      <CardHeader>
         <CardTitle>VidyaMap</CardTitle>
         <CardDescription>
           Explore a concept map of the subject. The interactive map appears here

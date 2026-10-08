@@ -175,7 +175,7 @@ function ActiveSessionPage() {
     "activity" | "language" | "invite" | null
   >(null)
   const [activity, setActivity] = React.useState("none")
-  const [scope, setScope] = React.useState(ALL_GROUPS)
+  const [scope, setScope] = React.useState(GROUPS[0].id)
 
   const activeGroup = GROUPS.find((group) => group.id === scope)
   const scopeLabel = scope === ALL_GROUPS ? "All groups" : activeGroup?.name
@@ -208,13 +208,6 @@ function ActiveSessionPage() {
       }
     >
       <div className="flex min-h-0 flex-1 flex-col gap-(--shell-gap) p-(--shell-gap) lg:grid lg:grid-cols-2">
-        <TranscriptCard
-          className="h-[60svh] lg:h-full"
-          groups={GROUPS}
-          scope={scope}
-          status={activeGroup?.status ?? "recording"}
-          translationLanguage="English"
-        />
         <SummaryQaPanel
           className="h-[60svh] lg:h-full"
           summary={{
@@ -230,6 +223,13 @@ function ActiveSessionPage() {
               "Summarize misconceptions",
             ],
           }}
+        />
+        <TranscriptCard
+          className="h-[60svh] lg:h-full"
+          groups={GROUPS}
+          scope={scope}
+          status={activeGroup?.status ?? "recording"}
+          translationLanguage="English"
         />
       </div>
 
@@ -293,7 +293,7 @@ function NewSessionPage() {
         <PageBreadcrumb items={[{ label: "Live" }, { label: "New session" }]} />
       }
     >
-      <div className="flex flex-1 items-start justify-center overflow-y-auto p-(--shell-gap) pt-8">
+      <div className="flex flex-1 items-center-safe justify-center overflow-y-auto p-(--shell-gap)">
         <NewSessionForm
           classes={CLASSES.map((c) => c.name)}
           className="w-full max-w-lg"

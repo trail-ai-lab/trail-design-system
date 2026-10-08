@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { LinkIcon } from "lucide-react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -21,7 +20,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { IconTile } from "@/components/patterns/icon-tile"
 
 export type ResetPasswordStatus =
   "validating" | "invalid" | "ready" | "submitting" | "done"
@@ -76,9 +74,6 @@ function ResetPasswordCard({
     return (
       <Card className={className}>
         <CardHeader className="items-center text-center">
-          <IconTile variant="destructive" size="lg" className="mb-2">
-            <LinkIcon />
-          </IconTile>
           <CardTitle className="text-h3">Link expired</CardTitle>
           <CardDescription>
             {error ?? "This reset link is invalid or has already been used."}

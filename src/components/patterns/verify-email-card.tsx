@@ -1,7 +1,5 @@
 "use client"
 
-import { MailIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
-import { IconTile } from "@/components/patterns/icon-tile"
 
 /**
  * "Verify your email" screen. Shows the address, a resend button with a
@@ -80,9 +77,6 @@ function VerifyEmailCard({
   return (
     <Card className={className}>
       <CardHeader className="items-center text-center">
-        <IconTile size="lg" className="mb-2">
-          <MailIcon />
-        </IconTile>
         <CardTitle className="text-h3">Verify your email</CardTitle>
         <CardDescription>
           We sent a verification link to{" "}

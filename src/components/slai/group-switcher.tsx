@@ -24,12 +24,13 @@ export interface SwitcherGroup {
 
 /**
  * One control to switch the whole workspace — transcript, summary, and
- * Q&A — between a single group and the combined "All groups" view.
+ * Q&A — between a single group and the combined "All groups" view. Groups
+ * come first and the first group is selected by default; "All groups" is last.
  */
 function GroupSwitcher({
   groups,
   value: valueProp,
-  defaultValue = ALL_GROUPS,
+  defaultValue,
   onValueChange,
   allLabel = "All groups",
   className,
@@ -37,6 +38,7 @@ function GroupSwitcher({
   groups: SwitcherGroup[]
   /** Active group id, or `ALL_GROUPS` */
   value?: string
+  /** Defaults to the first group (or `ALL_GROUPS` when there are none) */
   defaultValue?: string
   onValueChange?: (value: string) => void
   allLabel?: string
@@ -44,7 +46,7 @@ function GroupSwitcher({
 }) {
   const [value, setValue] = useControllableState({
     value: valueProp,
-    defaultValue,
+    defaultValue: defaultValue ?? groups[0]?.id ?? ALL_GROUPS,
     onChange: onValueChange,
   })
 
@@ -61,10 +63,6 @@ function GroupSwitcher({
       data-slot="group-switcher"
       className={cn("h-8 rounded-2xl bg-muted p-[3px]", className)}
     >
-      <ToggleGroupItem value={ALL_GROUPS} className={itemClassName}>
-        <LayersIcon className="size-3.5" />
-        {allLabel}
-      </ToggleGroupItem>
       {groups.map((group) => (
         <ToggleGroupItem
           key={group.id}
@@ -89,6 +87,10 @@ function GroupSwitcher({
           )}
         </ToggleGroupItem>
       ))}
+      <ToggleGroupItem value={ALL_GROUPS} className={itemClassName}>
+        <LayersIcon className="size-3.5" />
+        {allLabel}
+      </ToggleGroupItem>
     </ToggleGroup>
   )
 }

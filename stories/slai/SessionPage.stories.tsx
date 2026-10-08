@@ -267,7 +267,7 @@ const SLAI_SIDEBAR = (
 )
 
 function SessionReviewPage() {
-  const [scope, setScope] = React.useState(ALL_GROUPS)
+  const [scope, setScope] = React.useState(GROUPS[0].id)
   const [audioVisible, setAudioVisible] = React.useState(false)
   const [qaVisible, setQaVisible] = React.useState(false)
   const [dialog, setDialog] = React.useState<"rename" | "delete" | null>(null)
@@ -373,6 +373,13 @@ function SessionReviewPage() {
                   qaVisible && "lg:grid-cols-2"
                 )}
               >
+                {qaVisible && (
+                  <SummaryQaPanel
+                    className="h-[60svh] lg:h-full"
+                    summary={{ scopeLabel, summary }}
+                    chat={{ scopeLabel, messages: chat }}
+                  />
+                )}
                 <Tabs
                   defaultValue="goals"
                   className="h-[60svh] min-h-0 lg:h-full"
@@ -385,7 +392,9 @@ function SessionReviewPage() {
                   </TabsList>
                   <TabsContent
                     value="goals"
-                    className="min-h-0 overflow-y-auto"
+                    // Inset (cancelled by the negative margin) so the cards'
+                    // ring and shadow aren't clipped by the scroll edge.
+                    className="-mx-1 min-h-0 overflow-y-auto px-1 pb-1"
                   >
                     <GoalsPanel
                       standardLabel="CCSS"
@@ -433,14 +442,6 @@ function SessionReviewPage() {
                     />
                   </TabsContent>
                 </Tabs>
-
-                {qaVisible && (
-                  <SummaryQaPanel
-                    className="h-[60svh] lg:h-full"
-                    summary={{ scopeLabel, summary }}
-                    chat={{ scopeLabel, messages: chat }}
-                  />
-                )}
               </div>
             </div>
           )

@@ -126,7 +126,12 @@ function SessionEvidenceStrip({
   return (
     <div
       data-slot="session-evidence-strip"
-      className={cn("flex gap-3 overflow-x-auto px-px pb-3", className)}
+      // A horizontal scroller clips on both axes: the inset (cancelled by the
+      // negative margin) keeps the cards' ring and shadow visible.
+      className={cn(
+        "-mx-1 -mt-1 flex gap-3 overflow-x-auto px-1 pt-1 pb-3",
+        className
+      )}
     >
       {sessions.map((session, i) => (
         <SessionEvidenceCard

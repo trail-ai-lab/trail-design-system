@@ -143,7 +143,7 @@ function InviteStudentsSheet({
             session.
           </SheetDescription>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
+        <div className="flex-1 overflow-y-auto px-6 pt-1 pb-6">
           <InvitePanel
             joinUrl={joinUrl}
             onGenerateNewLink={onGenerateNewLink}

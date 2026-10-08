@@ -11,7 +11,7 @@ export type SummaryQaTab = "summary" | "qa"
 
 /**
  * The AI side panel shared by Live and Session review: Summary and Q&A as tabs,
- * always in the right-hand column (content on the left, AI on the right).
+ * always in the left-hand column (AI on the left, content on the right).
  */
 function SummaryQaPanel({
   summary,

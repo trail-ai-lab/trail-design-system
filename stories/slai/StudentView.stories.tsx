@@ -10,7 +10,7 @@ import { StudentRecordingScreen } from "@/components/slai/student-recording-scre
  */
 function StudentGroupSetupPage() {
   return (
-    <div className="flex min-h-svh justify-center bg-background px-4 py-12">
+    <div className="flex min-h-svh items-center-safe justify-center bg-background px-4 py-12">
       <GroupSetupForm className="w-full max-w-sm" />
     </div>
   )
@@ -19,7 +19,7 @@ function StudentGroupSetupPage() {
 /** Blocks recording until the student grants microphone permission. */
 function StudentMicBlockedPage() {
   return (
-    <div className="flex min-h-svh justify-center bg-background px-4 py-12">
+    <div className="flex min-h-svh items-center-safe justify-center bg-background px-4 py-12">
       <MicPermissionError className="w-full max-w-sm" />
     </div>
   )

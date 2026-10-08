@@ -12,7 +12,7 @@ function AddSourcePage({ uploading = false }: { uploading?: boolean }) {
       sidebar={<PageSidebar activeNav="source" />}
       title={<PageBreadcrumb items={[{ label: "Add Source" }]} />}
     >
-      <div className="flex flex-1 items-start justify-center overflow-y-auto p-(--shell-gap) pt-8">
+      <div className="flex flex-1 items-center-safe justify-center overflow-y-auto p-(--shell-gap)">
         <AddSourceForm
           className="w-full max-w-lg"
           languageOptions={DEFAULT_LANGUAGES}

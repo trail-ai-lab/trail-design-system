@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+### Major Changes
+
+- **`RecordingCard` removed.** The quick recording page now shows `RecordingControl` directly in
+  the content area, without a card, matching the student recording screen. _Migrate:_ render
+  `<RecordingControl />` centered in the page (`flex flex-1 items-center justify-center
+  p-(--shell-gap)`); the activity and language options are in the page toolbar.
+
+- **`GroupSwitcher`: groups first, "All groups" last.** The first group is now the default
+  selection instead of `ALL_GROUPS`. _Migrate:_ pages that seed their scope state with
+  `ALL_GROUPS` should seed it with the first group's id; pass `defaultValue={ALL_GROUPS}` to keep
+  the old default.
+
+### Patch Changes
+
+- **`StudentProgressView`:** the metric picker is now a `Tabs` list (matching Session review)
+  above the progress chart, replacing the outline toggle group and its "Metric" label.
+- **`ActivityViewer` (`variant="vidyamap"`):** the VidyaMap form now renders as a standalone,
+  vertically centered card at form width (`max-w-sm`) instead of filling a full-size outer card.
+- **Card headers are text only:** removed the header icon tile from `VidyaMapPlaceholder`,
+  `ForgotPasswordForm` (sent state), `VerifyEmailCard` and `ResetPasswordCard` (invalid state).
+  `VidyaMapPlaceholder`'s header is now left-aligned like the other in-app forms.
+- **Clipped card edges in scroll containers:** `SessionEvidenceStrip` cards lost their top edge
+  (a horizontal scroller clips vertically too); the strip now insets its content. The Activity,
+  Invite and Language sheet bodies get a `pt-1` inset so the first item's focus ring isn't cut off.
+- **Single-card pages are vertically centered** (`items-center-safe`) instead of top-aligned.
+
 ## 3.0.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.

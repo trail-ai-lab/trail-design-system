@@ -25,7 +25,7 @@ import {
 } from "@/components/slai/activity-picker"
 import { AppShell } from "@/components/slai/app-shell"
 import { LanguageSettingsSheet } from "@/components/slai/language-settings-sheet"
-import { RecordingCard } from "@/components/slai/recording-card"
+import { RecordingControl } from "@/components/slai/recording-control"
 import { PageSidebar } from "./_page-fixtures"
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
@@ -119,8 +119,10 @@ function QuickRecordingPage() {
         </div>
       }
     >
-      <div className="flex flex-1 items-start justify-center overflow-y-auto p-(--shell-gap) pt-8">
-        <RecordingCard className="w-full max-w-lg" />
+      {/* No card: like the student recording screen, the control stands alone
+          in the content area; title and actions live in the shell. */}
+      <div className="flex flex-1 items-center justify-center p-(--shell-gap)">
+        <RecordingControl />
       </div>
 
       <LanguageSettingsSheet

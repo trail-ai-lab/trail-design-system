@@ -25,8 +25,14 @@ const meta: Meta<typeof GroupSwitcher> = {
 export default meta
 type Story = StoryObj<typeof GroupSwitcher>
 
-function Controlled({ groups }: { groups: SwitcherGroup[] }) {
-  const [value, setValue] = React.useState(ALL_GROUPS)
+function Controlled({
+  groups,
+  initial = groups[0].id,
+}: {
+  groups: SwitcherGroup[]
+  initial?: string
+}) {
+  const [value, setValue] = React.useState(initial)
   return (
     <GroupSwitcher groups={groups} value={value} onValueChange={setValue} />
   )
@@ -38,4 +44,9 @@ export const Default: Story = {
 
 export const TwoGroups: Story = {
   render: () => <Controlled groups={GROUPS.slice(0, 2)} />,
+}
+
+/** The combined view, selected from the last item. */
+export const AllGroupsSelected: Story = {
+  render: () => <Controlled groups={GROUPS} initial={ALL_GROUPS} />,
 }
