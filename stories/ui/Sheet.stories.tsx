@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   Sheet,
   SheetContent,
@@ -25,7 +25,9 @@ export const Right: Story = {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Session details</SheetTitle>
-          <SheetDescription>View and edit details for this SLAI session.</SheetDescription>
+          <SheetDescription>
+            View and edit details for this SLAI session.
+          </SheetDescription>
         </SheetHeader>
         <div className="mt-4 text-sm text-muted-foreground">
           Sheet content goes here.
@@ -60,7 +62,9 @@ export const Top: Story = {
       <SheetContent side="top">
         <SheetHeader>
           <SheetTitle>Announcement</SheetTitle>
-          <SheetDescription>A banner-style sheet from the top edge.</SheetDescription>
+          <SheetDescription>
+            A banner-style sheet from the top edge.
+          </SheetDescription>
         </SheetHeader>
       </SheetContent>
     </Sheet>
@@ -76,7 +80,9 @@ export const Bottom: Story = {
       <SheetContent side="bottom">
         <SheetHeader>
           <SheetTitle>Quick actions</SheetTitle>
-          <SheetDescription>A tray-style sheet from the bottom edge.</SheetDescription>
+          <SheetDescription>
+            A tray-style sheet from the bottom edge.
+          </SheetDescription>
         </SheetHeader>
       </SheetContent>
     </Sheet>

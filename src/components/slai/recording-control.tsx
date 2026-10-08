@@ -4,8 +4,9 @@ import * as React from "react"
 import { MicIcon, PauseIcon, PlayIcon, SquareIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
-import { formatDuration } from "@/components/slai/lib/format"
+import { formatDuration } from "@/lib/format"
 
 type RecordingState = "idle" | "recording" | "paused"
 
@@ -17,11 +18,12 @@ type RecordingState = "idle" | "recording" | "paused"
  */
 function RecordingControl({
   captions = {
-    idle: "Tap to Record",
-    recording: "Recording...",
+    idle: "Tap to record",
+    recording: "Recording…",
     paused: "Paused — tap to resume",
   },
   defaultState = "idle",
+  status,
   className,
 }: {
   captions?: { idle: string; recording: string; paused: string }
@@ -29,6 +31,10 @@ function RecordingControl({
    * recording/paused without a real interaction. Real usage always starts
    * idle. */
   defaultState?: RecordingState
+  /** Transitional state: the mic is connecting or the recording is being
+   * finalized. Disables both buttons and shows a spinner. */
+  /** In-flight phase: "connecting" while starting, "stopping" while saving */
+  status?: "connecting" | "stopping"
   className?: string
 }) {
   const [state, setState] = React.useState<RecordingState>(defaultState)
@@ -46,11 +52,14 @@ function RecordingControl({
   }
 
   return (
-    <div className={cn("flex flex-col items-center gap-8", className)}>
+    <div
+      data-slot="recording-control"
+      className={cn("flex flex-col items-center gap-8", className)}
+    >
       <span
         className={cn(
           "font-heading text-6xl font-bold tracking-tight tabular-nums",
-          state === "idle" ? "text-muted-foreground/25" : "text-foreground"
+          state === "idle" ? "text-muted-foreground" : "text-foreground"
         )}
       >
         {formatDuration(elapsed)}
@@ -67,6 +76,7 @@ function RecordingControl({
                 current === "recording" ? "paused" : "recording"
               )
             }
+            disabled={Boolean(status)}
             aria-label={
               state === "recording" ? "Pause recording" : "Resume recording"
             }
@@ -84,11 +94,14 @@ function RecordingControl({
           type="button"
           size="icon"
           variant={state === "idle" ? "outline" : "destructive"}
+          disabled={Boolean(status)}
           onClick={state === "idle" ? () => setState("recording") : stop}
           aria-label={state === "idle" ? "Start recording" : "Stop recording"}
           className="size-24 rounded-full"
         >
-          {state === "idle" ? (
+          {status ? (
+            <Spinner className="size-8" />
+          ) : state === "idle" ? (
             <MicIcon className="size-8" />
           ) : (
             <SquareIcon className="size-8" />
@@ -97,11 +110,15 @@ function RecordingControl({
       </div>
 
       <p className="text-sm text-muted-foreground">
-        {state === "idle"
-          ? captions.idle
-          : state === "recording"
-            ? captions.recording
-            : captions.paused}
+        {status
+          ? status === "connecting"
+            ? "Connecting…"
+            : "Stopping…"
+          : state === "idle"
+            ? captions.idle
+            : state === "recording"
+              ? captions.recording
+              : captions.paused}
       </p>
     </div>
   )

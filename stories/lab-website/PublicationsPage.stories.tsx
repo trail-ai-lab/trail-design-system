@@ -1,10 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
 import { labFooterDemoProps } from "./lab-footer-demo-props"
 import { PageHeader } from "@/components/lab-website/page-header"
-import { PublicationList, type Publication } from "@/components/lab-website/publication-list"
+import {
+  PublicationList,
+  type Publication,
+} from "@/components/lab-website/publication-list"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
 const PUBLICATIONS: Publication[] = [
@@ -14,12 +17,14 @@ const PUBLICATIONS: Publication[] = [
       "Multimodal Analytics for Collaborative Teacher Reflection of Human-AI Hybrid Teaching: Design Opportunities and Constraints",
     authors: ["Shamya Karumbaiah"],
     year: 2024,
-    publisher: "Proceedings of the International Conference on Learning Analytics & Knowledge",
+    publisher:
+      "Proceedings of the International Conference on Learning Analytics & Knowledge",
     link: "",
   },
   {
     id: "publication-6",
-    title: "Optimizing philosophies for predictive models in learning analytics",
+    title:
+      "Optimizing philosophies for predictive models in learning analytics",
     authors: ["Shane Hutt", "Shamya Karumbaiah", "Joshua Ocumpaugh"],
     year: 2021,
     publisher: "Journal of Educational Data Mining",
@@ -36,7 +41,8 @@ const PUBLICATIONS: Publication[] = [
       "Matthew L Jensen",
     ],
     year: 2016,
-    publisher: "Proceedings of the 11th Pre-ICIS Workshop on Information Security and Privacy (WISP)",
+    publisher:
+      "Proceedings of the 11th Pre-ICIS Workshop on Information Security and Privacy (WISP)",
     link: "https://core.ac.uk/download/pdf/301371589.pdf",
   },
 ]

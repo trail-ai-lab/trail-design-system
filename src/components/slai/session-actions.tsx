@@ -8,6 +8,7 @@ import {
   Settings2Icon,
 } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -15,11 +16,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
 
 /**
  * The live-session action cluster: Invite, a Session menu (add activity /
- * language settings), and End session. Rendered in the AppShell toolbar on
- * the manage-session pages. Each handler is optional so pages can expose only
+ * language settings), and End session, which asks for confirmation first.
+ * Rendered in the AppShell toolbar on the Live pages. Each handler is optional so pages can expose only
  * the actions that apply to their state (e.g. waiting-for-groups omits the
  * Session menu).
  */
@@ -28,14 +30,20 @@ function SessionActions({
   onOpenLanguageSettings,
   onInviteStudents,
   onEndSession,
+  className,
 }: {
   onAddActivity?: () => void
   onOpenLanguageSettings?: () => void
   onInviteStudents?: () => void
+  /** Called after the teacher confirms ending the session */
   onEndSession?: () => void
+  className?: string
 }) {
   return (
-    <div className="flex items-center gap-2">
+    <div
+      data-slot="session-actions"
+      className={cn("flex items-center gap-2", className)}
+    >
       <Button onClick={onInviteStudents}>
         <QrCodeIcon data-icon="inline-start" />
         Invite
@@ -65,14 +73,21 @@ function SessionActions({
         </DropdownMenu>
       )}
       <div aria-hidden className="h-5 w-px shrink-0 self-center bg-border" />
-      <Button
-        variant="ghost"
-        className="text-destructive hover:text-destructive"
-        onClick={onEndSession}
-      >
-        <OctagonXIcon data-icon="inline-start" />
-        End session
-      </Button>
+      <ConfirmDialog
+        trigger={
+          <Button
+            variant="ghost"
+            className="text-destructive hover:text-destructive"
+          >
+            <OctagonXIcon data-icon="inline-start" />
+            End session
+          </Button>
+        }
+        title="End this session?"
+        description="Recording stops for every group and students are disconnected. The recordings will be under Sessions for review."
+        confirmLabel="End session"
+        onConfirm={() => onEndSession?.()}
+      />
     </div>
   )
 }

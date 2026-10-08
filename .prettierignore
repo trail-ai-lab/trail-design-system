@@ -1,0 +1,14 @@
+# Build output
+dist
+storybook-static
+.next
+# CLI-managed or generated — keep byte-identical to their source
+src/components/ui
+src/tokens/globals.css
+pnpm-lock.yaml
+# Reference content (inspiration only, never edited)
+src/components/blocks
+stories/_preview
+# Historical docs
+CHANGELOG.md
+docs

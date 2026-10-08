@@ -20,6 +20,7 @@ import {
   FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Select,
   SelectContent,
@@ -33,6 +34,8 @@ import {
   type LanguageSettingsValue,
 } from "@/components/slai/language-settings-form"
 
+const NEW_CLASS = "__new_class__"
+
 /**
  * "Start a new session" card shown when no session is active.
  * Collects class, session name, and language settings.
@@ -41,6 +44,8 @@ function NewSessionForm({
   classes,
   defaultClass,
   onStartSession,
+  loading = false,
+  allowNewClass = false,
   className,
 }: {
   classes: string[]
@@ -50,10 +55,18 @@ function NewSessionForm({
     session: string
     languages: LanguageSettingsValue
   }) => void
+  /** Session is being created; disables the form and shows a spinner */
+  loading?: boolean
+  /** Adds a "+ New class" option that reveals a free-text class input */
+  allowNewClass?: boolean
   className?: string
 }) {
+  const uid = React.useId()
   const [klass, setKlass] = React.useState(defaultClass ?? "")
   const [session, setSession] = React.useState("")
+  const [newClass, setNewClass] = React.useState("")
+  const creatingClass = klass === NEW_CLASS
+  const resolvedClass = creatingClass ? newClass.trim() : klass
   const languagesRef = React.useRef<LanguageSettingsValue>(
     defaultLanguageSettings
   )
@@ -61,8 +74,11 @@ function NewSessionForm({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardDescription>New session</CardDescription>
-        <CardTitle className="font-heading">Start a new session</CardTitle>
+        <CardTitle>Start a new session</CardTitle>
+        <CardDescription>
+          Pick the class and name this session. Groups join with the invite link
+          once it starts.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <FieldGroup>
@@ -70,15 +86,15 @@ function NewSessionForm({
             <FieldLegend variant="label">Session details</FieldLegend>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="slai-new-session-class">
-                  Class / Year
+                <FieldLabel htmlFor={`${uid}-new-session-class`}>
+                  Class
                 </FieldLabel>
                 <Select value={klass} onValueChange={setKlass}>
                   <SelectTrigger
-                    id="slai-new-session-class"
+                    id={`${uid}-new-session-class`}
                     className="w-full"
                   >
-                    <SelectValue placeholder="Select a class..." />
+                    <SelectValue placeholder="Select a class…" />
                   </SelectTrigger>
                   <SelectContent>
                     {classes.map((name) => (
@@ -86,15 +102,26 @@ function NewSessionForm({
                         {name}
                       </SelectItem>
                     ))}
+                    {allowNewClass && (
+                      <SelectItem value={NEW_CLASS}>+ New class</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
+                {creatingClass && (
+                  <Input
+                    aria-label="New class name"
+                    placeholder="e.g., Grade 8 Science"
+                    value={newClass}
+                    onChange={(event) => setNewClass(event.target.value)}
+                  />
+                )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="slai-new-session-name">
-                  Session / Period
+                <FieldLabel htmlFor={`${uid}-new-session-name`}>
+                  Session
                 </FieldLabel>
                 <Input
-                  id="slai-new-session-name"
+                  id={`${uid}-new-session-name`}
                   placeholder="e.g., Period 3 — Aug 21"
                   value={session}
                   onChange={(event) => setSession(event.target.value)}
@@ -106,7 +133,7 @@ function NewSessionForm({
           <FieldSet>
             <FieldLegend variant="label">Languages</FieldLegend>
             <LanguageSettingsForm
-              onChange={(value) => {
+              onValueChange={(value) => {
                 languagesRef.current = value
               }}
             />
@@ -115,19 +142,22 @@ function NewSessionForm({
       </CardContent>
       <CardFooter>
         <Button
-          size="lg"
           className="w-full"
-          disabled={!klass}
+          disabled={!resolvedClass || loading}
           onClick={() =>
             onStartSession?.({
-              klass,
+              klass: resolvedClass,
               session,
               languages: languagesRef.current,
             })
           }
         >
-          <PlayIcon data-icon="inline-start" />
-          Start session
+          {loading ? (
+            <Spinner data-icon="inline-start" />
+          ) : (
+            <PlayIcon data-icon="inline-start" />
+          )}
+          {loading ? "Starting…" : "Start session"}
         </Button>
       </CardFooter>
     </Card>

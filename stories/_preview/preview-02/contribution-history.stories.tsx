@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview-02/cards/contribution-history.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ContributionHistory } from "@/components/blocks/preview-02/cards/contribution-history"
 
 const meta: Meta<typeof ContributionHistory> = {
-  title: "_Preview/Preview-02/ContributionHistory",
+  title: "Preview/Blocks 02/ContributionHistory",
   component: ContributionHistory,
   parameters: { layout: "centered" },
 }

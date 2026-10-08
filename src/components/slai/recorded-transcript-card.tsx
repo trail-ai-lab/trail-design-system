@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { initials } from "@/components/slai/lib/format"
+import { initials } from "@/lib/format"
 import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
 
 export interface RecordedSpeaker {
@@ -45,10 +45,16 @@ function RecordedRow({
   entry,
   speakerLabel,
   speakerInitials,
+  highlighted,
+  playing,
+  onPlayToggle,
 }: {
   entry: RecordedEntry
   speakerLabel: string
   speakerInitials: string
+  highlighted?: boolean
+  playing?: boolean
+  onPlayToggle?: () => void
 }) {
   return (
     <TranscriptUtteranceRow
@@ -59,6 +65,9 @@ function RecordedRow({
       }
       meta={<span className="font-medium text-foreground">{speakerLabel}</span>}
       entry={entry}
+      highlighted={highlighted}
+      playing={playing}
+      onPlayToggle={onPlayToggle}
     />
   )
 }
@@ -95,9 +104,7 @@ function ManageSpeakers({
               <div key={speaker.id} className="flex items-center gap-2">
                 <Avatar size="sm">
                   <AvatarFallback>
-                    {speaker.name?.trim()
-                      ? initials(speaker.name)
-                      : index + 1}
+                    {speaker.name?.trim() ? initials(speaker.name) : index + 1}
                   </AvatarFallback>
                 </Avatar>
                 <Input
@@ -138,12 +145,21 @@ function RecordedTranscriptCard({
   speakers: speakersProp,
   entries,
   onSpeakersChange,
+  highlightedEntryId,
+  playingEntryId,
+  onPlayEntry,
   className,
 }: {
   /** Detected speakers; `name` is blank until the teacher assigns one */
   speakers: RecordedSpeaker[]
   entries: RecordedEntry[]
   onSpeakersChange?: (speakers: RecordedSpeaker[]) => void
+  /** Entry to emphasize, e.g. the sentence a chat answer cites */
+  highlightedEntryId?: string
+  /** Entry whose audio segment is currently playing */
+  playingEntryId?: string
+  /** Adds a per-utterance play button; called with the entry to toggle */
+  onPlayEntry?: (entry: RecordedEntry) => void
   className?: string
 }) {
   const [speakers, setSpeakers] = React.useState(speakersProp)
@@ -197,9 +213,7 @@ function RecordedTranscriptCard({
             {entries.map((entry) => {
               const speaker = byId.get(entry.speakerId)
               const named = speaker?.name?.trim()
-              const label = named
-                ? named
-                : `Speaker ${speaker?.ordinal ?? "?"}`
+              const label = named ? named : `Speaker ${speaker?.ordinal ?? "?"}`
               const avatar = named
                 ? initials(named)
                 : String(speaker?.ordinal ?? "?")
@@ -209,6 +223,9 @@ function RecordedTranscriptCard({
                   entry={entry}
                   speakerLabel={label}
                   speakerInitials={avatar}
+                  highlighted={entry.id === highlightedEntryId}
+                  playing={entry.id === playingEntryId}
+                  onPlayToggle={onPlayEntry && (() => onPlayEntry(entry))}
                 />
               )
             })}

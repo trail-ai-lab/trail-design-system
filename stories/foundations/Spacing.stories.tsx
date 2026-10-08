@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 /**
  * Foundations / Spacing
@@ -101,7 +101,7 @@ function TokenTable({
               <td className="px-3 py-2">
                 <code className="text-foreground">{row.name}</code>
               </td>
-              <td className="px-3 py-2 tabular-nums text-muted-foreground">
+              <td className="px-3 py-2 text-muted-foreground tabular-nums">
                 {row.value}
               </td>
               <td className="px-3 py-2 text-muted-foreground">{row.use}</td>
@@ -148,7 +148,7 @@ function SpacingFoundations() {
               <code className="w-14 shrink-0 text-muted-foreground">
                 {step.token}
               </code>
-              <span className="w-12 shrink-0 tabular-nums text-muted-foreground">
+              <span className="w-12 shrink-0 text-muted-foreground tabular-nums">
                 {step.px}px
               </span>
               <div

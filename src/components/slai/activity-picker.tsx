@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { CheckIcon, CircleSlashIcon, ShapesIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -52,10 +53,30 @@ function ActivityPicker({
     },
     ...activities,
   ]
+  const optionRefs = React.useRef<Array<HTMLButtonElement | null>>([])
+  const selectedIndex = Math.max(
+    0,
+    options.findIndex((activity) => activity.id === value)
+  )
+
+  // Radio-group keyboard pattern: arrows move and select, Tab leaves the group.
+  const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
+    const step =
+      event.key === "ArrowDown" || event.key === "ArrowRight"
+        ? 1
+        : event.key === "ArrowUp" || event.key === "ArrowLeft"
+          ? -1
+          : 0
+    if (!step) return
+    event.preventDefault()
+    const next = (index + step + options.length) % options.length
+    onValueChange?.(options[next].id)
+    optionRefs.current[next]?.focus()
+  }
 
   return (
     <ItemGroup className={cn("gap-2", className)} role="radiogroup">
-      {options.map((activity) => {
+      {options.map((activity, index) => {
         const selected = value === activity.id
         return (
           <Item
@@ -71,6 +92,11 @@ function ActivityPicker({
               type="button"
               role="radio"
               aria-checked={selected}
+              ref={(node) => {
+                optionRefs.current[index] = node
+              }}
+              tabIndex={index === selectedIndex ? 0 : -1}
+              onKeyDown={(event) => handleKeyDown(event, index)}
               onClick={() => onValueChange?.(activity.id)}
             >
               <ItemMedia variant="icon">
@@ -127,7 +153,7 @@ function ActivityPickerSheet({
             it alongside the recording controls.
           </SheetDescription>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
+        <div className="flex-1 overflow-y-auto px-6 pt-1 pb-6">
           <ActivityPicker
             activities={activities}
             value={value}

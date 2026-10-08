@@ -1,9 +1,17 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 
+// a11y: scrollable-region-focusable disabled. Upstream: Radix ScrollArea's viewport isn't keyboard-focusable.
+const A11Y = {
+  config: {
+    rules: [{ id: "scrollable-region-focusable", enabled: false }],
+  },
+}
+
 const meta: Meta<typeof ScrollArea> = {
   title: "UI/ScrollArea",
+  parameters: { a11y: A11Y },
   component: ScrollArea,
   tags: ["autodocs"],
 }

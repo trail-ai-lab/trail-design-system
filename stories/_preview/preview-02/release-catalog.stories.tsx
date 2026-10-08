@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview-02/cards/release-catalog.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ReleaseCatalog } from "@/components/blocks/preview-02/cards/release-catalog"
 
 const meta: Meta<typeof ReleaseCatalog> = {
-  title: "_Preview/Preview-02/ReleaseCatalog",
+  title: "Preview/Blocks 02/ReleaseCatalog",
   component: ReleaseCatalog,
   parameters: { layout: "centered" },
 }

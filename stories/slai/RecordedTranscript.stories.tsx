@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { RecordedTranscriptCard } from "@/components/slai/recorded-transcript-card"
 
@@ -29,7 +29,8 @@ const ENTRIES = [
     timestamp: "3:41 PM",
     language: "Marathi",
     original: "उताराचा कोन वाढवला तर चेंडू वेगाने जाईल.",
-    translation: "If we increase the angle of the ramp, the ball will go faster.",
+    translation:
+      "If we increase the angle of the ramp, the ball will go faster.",
   },
   {
     id: "4",
@@ -73,5 +74,16 @@ export const Unnamed: Story = {
     speakers: SPEAKERS.map((speaker) => ({ id: speaker.id })),
     entries: ENTRIES,
     className: "h-full",
+  },
+}
+
+/** `onPlayEntry` adds a per-utterance play button; `playingEntryId` marks the active one. */
+export const WithSegmentPlayback: Story = {
+  args: {
+    speakers: SPEAKERS,
+    entries: ENTRIES,
+    className: "h-full",
+    playingEntryId: ENTRIES[0]?.id,
+    onPlayEntry: () => {},
   },
 }

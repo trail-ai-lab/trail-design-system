@@ -1,29 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ExternalLinkIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ActivityCard } from "@/components/slai/activity-card"
 import { type SessionActivity } from "@/components/slai/activity-picker"
 import { AppShell } from "@/components/slai/app-shell"
-import { SlaiSidebar, type SidebarSession } from "@/components/slai/slai-sidebar"
-
-const SESSIONS: SidebarSession[] = [
-  { name: "Biology", periods: [{ name: "Period 1" }, { name: "Period 6" }] },
-  { name: "Physics", periods: [{ name: "Period 1" }, { name: "Period 3 — Aug 21" }] },
-  { name: "Science", periods: [] },
-]
-
-const SOURCES = [
-  "Inclined Plane Lab",
-  "Photosynthesis Discussion",
-  "Newton's Laws Review",
-]
-
-const SIDEBAR_USER = {
-  name: "Anurag Maravi",
-  email: "amaravi@wisc.edu",
-  initials: "AM",
-}
+import { PageSidebar } from "./_page-fixtures"
+import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 
 const ACTIVITIES: SessionActivity[] = [
   {
@@ -50,7 +33,8 @@ const ACTIVITIES: SessionActivity[] = [
   {
     id: "roller-coaster",
     name: "Roller Coaster",
-    description: "Interactive roller coaster simulation for physics discussions",
+    description:
+      "Interactive roller coaster simulation for physics discussions",
     tags: ["physics"],
   },
   {
@@ -62,27 +46,19 @@ const ACTIVITIES: SessionActivity[] = [
   },
 ]
 
-const SLAI_SIDEBAR = (
-  <SlaiSidebar
-    sessions={SESSIONS}
-    sources={SOURCES}
-    user={SIDEBAR_USER}
-    activeNav="activities"
-    defaultOpenSession="Physics"
-  />
-)
+const SLAI_SIDEBAR = <PageSidebar activeNav="activities" />
 
 function ActivitiesPage() {
   return (
     <AppShell
       sidebar={SLAI_SIDEBAR}
-      title={<span className="font-medium text-muted-foreground">Activities</span>}
+      title={<PageBreadcrumb items={[{ label: "Activities" }]} />}
     >
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="flex flex-col gap-(--shell-gap) p-(--shell-gap)">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex flex-col gap-1">
-              <h1 className="font-heading text-lg font-semibold text-foreground">
+              <h1 className="text-h3 text-foreground">
                 Interactive Learning &amp; Design Lab
               </h1>
               <p className="text-sm text-muted-foreground">

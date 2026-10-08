@@ -1,16 +1,20 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
 import { labFooterDemoProps } from "./lab-footer-demo-props"
 import { PageHeader } from "@/components/lab-website/page-header"
-import { EventCard, type EventCardItem } from "@/components/lab-website/event-card"
+import {
+  EventCard,
+  type EventCardItem,
+} from "@/components/lab-website/event-card"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
 const UPCOMING: EventCardItem[] = [
   {
     id: "tutorial-aibat-aied2026",
-    title: "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
+    title:
+      "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
     conference: "AIED 2026",
     year: 2026,
     status: "upcoming",
@@ -31,7 +35,7 @@ function TutorialsPage() {
 
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8">
-          <h2 className="font-heading text-xl tracking-tight text-foreground">Upcoming</h2>
+          <h2 className="text-h3 text-foreground">Upcoming</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {UPCOMING.map((event) => (
               <EventCard key={event.id} event={event} />

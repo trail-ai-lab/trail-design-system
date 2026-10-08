@@ -2,7 +2,11 @@ import { ArrowRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { NewsArchive, type NewsEntry } from "@/components/lab-website/news-archive"
+import {
+  NewsArchive,
+  type NewsEntry,
+} from "@/components/lab-website/news-archive"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 export interface RecentNewsProps {
   eyebrow: string
@@ -30,16 +34,17 @@ export function RecentNews({
   className,
 }: RecentNewsProps) {
   return (
-    <section className={cn("border-b border-border", className)}>
+    <section
+      data-slot="recent-news"
+      className={cn("border-b border-border", className)}
+    >
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {eyebrow}
-            </p>
-            <h2 className="mt-4 font-heading text-3xl tracking-tight text-foreground md:text-4xl">
-              {title}
-            </h2>
+            <SectionLabel asChild>
+              <p>{eyebrow}</p>
+            </SectionLabel>
+            <h2 className="mt-4 text-h2 text-foreground md:text-h1">{title}</h2>
           </div>
           <p className="max-w-prose text-muted-foreground lg:col-span-4 lg:col-start-9">
             {description}

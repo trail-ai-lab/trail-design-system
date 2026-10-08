@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 export interface PageHeaderProps {
   eyebrow: string
@@ -23,13 +24,19 @@ export function PageHeader({
   backdrop,
 }: PageHeaderProps) {
   return (
-    <section className={cn("relative overflow-hidden border-b border-border", className)}>
+    <section
+      data-slot="page-header"
+      className={cn(
+        "relative overflow-hidden border-b border-border",
+        className
+      )}
+    >
       {backdrop}
       <div className="relative mx-auto max-w-6xl px-6 py-14 md:py-20 lg:px-8">
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {eyebrow}
-        </p>
-        <h1 className="mt-4 max-w-3xl font-heading text-3xl tracking-tight text-foreground md:text-5xl">
+        <SectionLabel asChild>
+          <p>{eyebrow}</p>
+        </SectionLabel>
+        <h1 className="mt-4 max-w-3xl text-h2 text-foreground md:text-display">
           {title}
         </h1>
         {description ? (

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { PersonProfile } from "@/components/lab-website/person-profile"
 
@@ -16,7 +16,11 @@ const meta: Meta<typeof PersonProfile> = {
       website: "https://shamya.github.io/",
       bio: "Shamya Karumbaiah is an Assistant Professor at the University of Wisconsin–Madison, directing the TRAIL Lab.",
       research: [
-        { id: "research-1", title: "Reliability Issues in Current Approaches to Identify and Mitigate AI Bias" },
+        {
+          id: "research-1",
+          title:
+            "Reliability Issues in Current Approaches to Identify and Mitigate AI Bias",
+        },
       ],
     },
   },

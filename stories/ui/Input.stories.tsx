@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 
@@ -26,7 +26,7 @@ export const Disabled: Story = {
 
 export const WithLabel: Story = {
   render: () => (
-    <div className="flex flex-col gap-1.5 w-64">
+    <div className="flex w-64 flex-col gap-1.5">
       <Label htmlFor="email">Email address</Label>
       <Input id="email" type="email" placeholder="you@example.com" />
     </div>
@@ -35,7 +35,7 @@ export const WithLabel: Story = {
 
 export const WithError: Story = {
   render: () => (
-    <div className="flex flex-col gap-1.5 w-64">
+    <div className="flex w-64 flex-col gap-1.5">
       <Label htmlFor="username">Username</Label>
       <Input
         id="username"

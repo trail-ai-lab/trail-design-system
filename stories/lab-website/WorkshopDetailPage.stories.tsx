@@ -1,13 +1,17 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
 import { labFooterDemoProps } from "./lab-footer-demo-props"
-import { EventDetail, type EventDetailData } from "@/components/lab-website/event-detail"
+import {
+  EventDetail,
+  type EventDetailData,
+} from "@/components/lab-website/event-detail"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
 const WORKSHOP: EventDetailData = {
-  title: "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
+  title:
+    "Stakeholder-Driven Contextual Evaluation of Language Models in Education",
   conference: "AIED 2026",
   year: 2026,
   status: "upcoming",
@@ -34,8 +38,16 @@ const WORKSHOP: EventDetailData = {
     { duration: "2:30", title: "Closing & next steps" },
   ],
   organizers: [
-    { name: "Shamya Karumbaiah", affiliation: "UW–Madison", href: "/people/shamya-karumbaiah" },
-    { name: "Kaycie Barron", affiliation: "UW–Madison", href: "/people/kaycie-barron" },
+    {
+      name: "Shamya Karumbaiah",
+      affiliation: "UW–Madison",
+      href: "/people/shamya-karumbaiah",
+    },
+    {
+      name: "Kaycie Barron",
+      affiliation: "UW–Madison",
+      href: "/people/kaycie-barron",
+    },
   ],
 }
 

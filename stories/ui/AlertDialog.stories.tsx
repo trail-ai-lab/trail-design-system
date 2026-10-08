@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +29,8 @@ export const Default: Story = {
         <AlertDialogHeader>
           <AlertDialogTitle>Delete this report?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. The bias audit report will be permanently deleted.
+            This action cannot be undone. The bias audit report will be
+            permanently deleted.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

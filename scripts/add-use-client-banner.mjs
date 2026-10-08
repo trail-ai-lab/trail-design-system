@@ -18,4 +18,4 @@ function walk(dir) {
 }
 
 walk(distDir)
-console.log("Prepended \"use client\"; to all dist/**/index.{js,mjs} files")
+console.log('Prepended "use client"; to all dist/**/index.{js,mjs} files')

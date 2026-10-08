@@ -1,13 +1,20 @@
 import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { CardLink } from "@/components/patterns/card-link"
+import { EventStatusBadge, type EventStatus } from "./event-status-badge"
 
 export interface EventCardItem {
   id: string
   title: string
   conference: string
   year: number
-  status: "upcoming" | "past"
+  status: EventStatus
   href: string
 }
 
@@ -23,19 +30,19 @@ export interface EventCardProps {
  */
 export function EventCard({ event, className }: EventCardProps) {
   return (
-    <Card className={cn("relative transition-colors hover:bg-accent", className)}>
-      <a href={event.href} className="absolute inset-0" aria-label={event.title} />
-      <CardContent className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-            {event.conference} · {event.year}
-          </span>
-          <Badge variant={event.status === "upcoming" ? "default" : "secondary"}>
-            {event.status === "upcoming" ? "Upcoming" : "Past"}
-          </Badge>
-        </div>
-        <CardTitle className="text-lg">{event.title}</CardTitle>
-      </CardContent>
+    <Card
+      className={cn("relative transition-colors hover:bg-accent", className)}
+    >
+      <CardLink href={event.href} label={event.title} />
+      <CardHeader>
+        <CardDescription className="font-mono text-xs tracking-wider uppercase">
+          {event.conference} · {event.year}
+        </CardDescription>
+        <CardTitle>{event.title}</CardTitle>
+        <CardAction>
+          <EventStatusBadge status={event.status} />
+        </CardAction>
+      </CardHeader>
     </Card>
   )
 }

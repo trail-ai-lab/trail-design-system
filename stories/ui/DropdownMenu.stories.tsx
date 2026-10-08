@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import * as React from "react"
 import { Download, Languages, Settings, Trash2, User } from "lucide-react"
 import {
@@ -34,17 +34,21 @@ export const Default: Story = {
         <DropdownMenuLabel>Session report</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Download />Export PDF
+          <Download />
+          Export PDF
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <User />Assign reviewer
+          <User />
+          Assign reviewer
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Settings />Settings
+          <Settings />
+          Settings
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
-          <Trash2 />Delete report
+          <Trash2 />
+          Delete report
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -92,11 +96,13 @@ export const WithSubmenu: Story = {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-52">
         <DropdownMenuItem>
-          <Download />Export PDF
+          <Download />
+          Export PDF
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
-            <Languages />Translate
+            <Languages />
+            Translate
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuItem>Spanish</DropdownMenuItem>
@@ -106,7 +112,8 @@ export const WithSubmenu: Story = {
         </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
-          <Trash2 />Delete report
+          <Trash2 />
+          Delete report
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   Accordion,
   AccordionContent,
@@ -20,19 +20,22 @@ export const Single: Story = {
       <AccordionItem value="item-1">
         <AccordionTrigger>What is Trail Lab?</AccordionTrigger>
         <AccordionContent>
-          Trail Lab is a collection of AI tools including SLAI, AIBAT, Casting Lab, and more.
+          Trail Lab is a collection of AI tools including SLAI, AIBAT, Casting
+          Lab, and more.
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
         <AccordionTrigger>How does SLAI work?</AccordionTrigger>
         <AccordionContent>
-          SLAI analyzes speaker participation and talk-time distribution in recorded sessions.
+          SLAI analyzes speaker participation and talk-time distribution in
+          recorded sessions.
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-3">
         <AccordionTrigger>What is Bias Audit?</AccordionTrigger>
         <AccordionContent>
-          Bias Audit scans transcripts and media for potential bias indicators across multiple dimensions.
+          Bias Audit scans transcripts and media for potential bias indicators
+          across multiple dimensions.
         </AccordionContent>
       </AccordionItem>
     </Accordion>

@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { PlusIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -35,7 +35,8 @@ const ACTIVITIES: SessionActivity[] = [
   {
     id: "roller-coaster",
     name: "Roller Coaster",
-    description: "Interactive roller coaster simulation for physics discussions",
+    description:
+      "Interactive roller coaster simulation for physics discussions",
     tags: ["physics"],
   },
   {

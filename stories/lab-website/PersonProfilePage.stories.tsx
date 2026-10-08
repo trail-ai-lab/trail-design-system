@@ -1,9 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
 import { labFooterDemoProps } from "./lab-footer-demo-props"
-import { PersonProfile, type PersonProfileData } from "@/components/lab-website/person-profile"
+import {
+  PersonProfile,
+  type PersonProfileData,
+} from "@/components/lab-website/person-profile"
 import { ROUTES } from "@/components/lab-website/lib/routes"
 
 const DIRECTOR: PersonProfileData = {
@@ -16,7 +19,8 @@ const DIRECTOR: PersonProfileData = {
   research: [
     {
       id: "research-1",
-      title: "Reliability Issues in Current Approaches to Identify and Mitigate AI Bias",
+      title:
+        "Reliability Issues in Current Approaches to Identify and Mitigate AI Bias",
     },
     {
       id: "research-2",

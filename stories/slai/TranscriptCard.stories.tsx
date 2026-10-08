@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import {
@@ -39,7 +39,8 @@ const GROUPS: TranscriptGroup[] = [
         id: "4",
         timestamp: "3:43 PM",
         language: "American English",
-        original: "Let's test it with three different angles and time each run.",
+        original:
+          "Let's test it with three different angles and time each run.",
       },
     ],
   },
@@ -67,11 +68,18 @@ const GROUPS: TranscriptGroup[] = [
   },
 ]
 
+// a11y: scrollable-region-focusable disabled. Upstream: Radix ScrollArea's viewport isn't keyboard-focusable.
+const A11Y = {
+  config: {
+    rules: [{ id: "scrollable-region-focusable", enabled: false }],
+  },
+}
+
 const meta: Meta<typeof TranscriptCard> = {
   title: "SLAI/TranscriptCard",
   component: TranscriptCard,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: A11Y },
   decorators: [
     // Full-height component: needs a sized parent or h-full collapses.
     (Story) => (
@@ -130,6 +138,31 @@ export const Paused: Story = {
     scope: "group-1",
     status: "paused",
     translationLanguage: "English",
+    className: "h-full",
+  },
+}
+
+/** After the session: the uploaded, speaker-unknown transcript with a static title. */
+export const SessionReview: Story = {
+  args: {
+    title: "Transcript",
+    groups: GROUPS,
+    scope: "group-1",
+    status: "uploaded",
+    autoScroll: false,
+    translationLanguage: "English",
+    className: "h-full",
+  },
+}
+
+/** `highlightedEntryId` emphasizes the row a chat answer or search result cites. */
+export const HighlightedEntry: Story = {
+  args: {
+    groups: GROUPS,
+    scope: "group-1",
+    status: "recording",
+    translationLanguage: "English",
+    highlightedEntryId: GROUPS[0].entries[1]?.id,
     className: "h-full",
   },
 }

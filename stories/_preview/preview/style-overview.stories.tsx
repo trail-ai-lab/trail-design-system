@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/style-overview.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { StyleOverview } from "@/components/blocks/preview/cards/style-overview"
 
 const meta: Meta<typeof StyleOverview> = {
-  title: "_Preview/Preview/StyleOverview",
+  title: "Preview/Blocks 01/StyleOverview",
   component: StyleOverview,
   parameters: { layout: "centered" },
 }

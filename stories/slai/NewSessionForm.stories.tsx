@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { NewSessionForm } from "@/components/slai/new-session-form"
 
@@ -13,8 +13,16 @@ const CLASSES = [
   "Science 23",
 ]
 
+// a11y: scrollable-region-focusable disabled. Upstream: Radix ScrollArea's viewport isn't keyboard-focusable.
+const A11Y = {
+  config: {
+    rules: [{ id: "scrollable-region-focusable", enabled: false }],
+  },
+}
+
 const meta: Meta<typeof NewSessionForm> = {
   title: "SLAI/NewSessionForm",
+  parameters: { a11y: A11Y },
   component: NewSessionForm,
   tags: ["autodocs"],
   args: {
@@ -30,4 +38,12 @@ export const Default: Story = {}
 
 export const WithClassPreselected: Story = {
   args: { defaultClass: "Physics" },
+}
+
+export const Starting: Story = {
+  args: { defaultClass: "Physics", loading: true },
+}
+
+export const AllowNewClass: Story = {
+  args: { allowNewClass: true },
 }

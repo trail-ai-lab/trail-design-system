@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { RecentNews } from "@/components/lab-website/recent-news"
 
@@ -14,8 +14,14 @@ const meta: Meta<typeof RecentNews> = {
     viewAllHref: "/news",
     totalCount: 68,
     items: [
-      { date: "Jul 24, 2025", text: "Alina Guha presented at the Artificial Intelligence in Education conference." },
-      { date: "2024", text: "Shamya Karumbaiah publishes on optimizing predictive model philosophies." },
+      {
+        date: "Jul 24, 2025",
+        text: "Alina Guha presented at the Artificial Intelligence in Education conference.",
+      },
+      {
+        date: "2024",
+        text: "Shamya Karumbaiah publishes on optimizing predictive model philosophies.",
+      },
     ],
   },
 }

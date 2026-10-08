@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Loader2, Mail, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -9,7 +9,14 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "outline", "ghost", "destructive", "secondary", "link"],
+      options: [
+        "default",
+        "outline",
+        "ghost",
+        "destructive",
+        "secondary",
+        "link",
+      ],
     },
     size: {
       control: "select",
@@ -27,7 +34,7 @@ export const Default: Story = {
 
 export const AllVariants: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-3 items-center">
+    <div className="flex flex-wrap items-center gap-3">
       <Button variant="default">Default</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="outline">Outline</Button>
@@ -40,7 +47,7 @@ export const AllVariants: Story = {
 
 export const AllSizes: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-3 items-center">
+    <div className="flex flex-wrap items-center gap-3">
       <Button size="xs">Extra Small</Button>
       <Button size="sm">Small</Button>
       <Button size="default">Default</Button>
@@ -51,7 +58,7 @@ export const AllSizes: Story = {
 
 export const WithIcon: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-3 items-center">
+    <div className="flex flex-wrap items-center gap-3">
       <Button>
         <Mail />
         Send email
@@ -70,7 +77,7 @@ export const WithIcon: Story = {
 
 export const Loading: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-3 items-center">
+    <div className="flex flex-wrap items-center gap-3">
       <Button disabled>
         <Loader2 className="animate-spin" />
         Loading…
@@ -85,10 +92,14 @@ export const Loading: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-3 items-center">
+    <div className="flex flex-wrap items-center gap-3">
       <Button disabled>Default</Button>
-      <Button variant="outline" disabled>Outline</Button>
-      <Button variant="ghost" disabled>Ghost</Button>
+      <Button variant="outline" disabled>
+        Outline
+      </Button>
+      <Button variant="ghost" disabled>
+        Ghost
+      </Button>
     </div>
   ),
 }

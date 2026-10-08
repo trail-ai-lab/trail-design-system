@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { initials } from "@/components/slai/lib/format"
+import { initials } from "@/lib/format"
 
 export interface ParticipationEntry {
   name: string
@@ -59,7 +59,10 @@ function ParticipationCard({
                   {student.percent}% · {student.turns} turns
                 </span>
               </div>
-              <Progress value={student.percent} />
+              <Progress
+                value={student.percent}
+                aria-label={`${student.name}: ${student.percent}% of speaking turns`}
+              />
             </div>
           </div>
         ))}

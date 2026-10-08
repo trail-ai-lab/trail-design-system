@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 export interface FocusArea {
   icon: LucideIcon
@@ -33,15 +34,16 @@ export function FocusAreas({
   iconClassName = "size-16 text-primary",
 }: FocusAreasProps) {
   return (
-    <section className={cn("border-b border-border bg-accent/40", className)}>
+    <section
+      data-slot="focus-areas"
+      className={cn("border-b border-border bg-accent/40", className)}
+    >
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24 lg:px-8">
         <div className="max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            {eyebrow}
-          </p>
-          <h2 className="mt-4 font-heading text-3xl tracking-tight text-foreground md:text-4xl">
-            {title}
-          </h2>
+          <SectionLabel asChild>
+            <p>{eyebrow}</p>
+          </SectionLabel>
+          <h2 className="mt-4 text-h2 text-foreground md:text-h1">{title}</h2>
         </div>
 
         <div className="mt-16 flex flex-col gap-16 md:gap-20">
@@ -58,7 +60,7 @@ export function FocusAreas({
                     reversed ? "lg:col-start-8 lg:row-start-1" : ""
                   }`}
                 >
-                  <div className="flex aspect-square items-center justify-center overflow-hidden rounded-4xl bg-card ring-1 ring-foreground/5">
+                  <div className="flex aspect-square items-center justify-center overflow-hidden rounded-card bg-card ring-1 ring-foreground/5">
                     <Icon className={iconClassName} strokeWidth={1.25} />
                   </div>
                 </figure>
@@ -68,9 +70,7 @@ export function FocusAreas({
                   }`}
                 >
                   <Badge variant="secondary">{area.tag}</Badge>
-                  <h3 className="mt-4 font-heading text-2xl tracking-tight text-foreground">
-                    {area.title}
-                  </h3>
+                  <h3 className="mt-4 text-h3 text-foreground">{area.title}</h3>
                   <p className="mt-4 max-w-prose text-base leading-relaxed text-muted-foreground">
                     {area.body}
                   </p>

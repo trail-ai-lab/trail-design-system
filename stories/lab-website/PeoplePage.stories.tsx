@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { Header } from "@/components/lab-website/header"
 import { LabFooter } from "@/components/lab-website/lab-footer"
@@ -11,8 +11,16 @@ const GROUPS: { category: string; people: Person[] }[] = [
   {
     category: "People",
     people: [
-      { id: "shamya-karumbaiah", name: "Shamya Karumbaiah", designation: "Lab Director" },
-      { id: "kaycie-barron", name: "Kaycie Barron", designation: "PhD Student" },
+      {
+        id: "shamya-karumbaiah",
+        name: "Shamya Karumbaiah",
+        designation: "Lab Director",
+      },
+      {
+        id: "kaycie-barron",
+        name: "Kaycie Barron",
+        designation: "PhD Student",
+      },
       { id: "yaxuan-yin", name: "Yaxuan Yin", designation: "PhD Student" },
     ],
   },
@@ -52,9 +60,7 @@ function PeoplePage() {
       {GROUPS.map((group) => (
         <section key={group.category} className="border-b border-border">
           <div className="mx-auto max-w-6xl px-6 py-14 lg:px-8">
-            <h2 className="font-heading text-xl tracking-tight text-foreground">
-              {group.category}
-            </h2>
+            <h2 className="text-h3 text-foreground">{group.category}</h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {group.people.map((person) => (
                 <PersonCard key={person.id} person={person} />

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { PublicationList } from "@/components/lab-website/publication-list"
 
@@ -11,16 +11,18 @@ const meta: Meta<typeof PublicationList> = {
     items: [
       {
         id: "publication-9",
-        title: "Multimodal Analytics for Collaborative Teacher Reflection of Human-AI Hybrid Teaching",
+        title:
+          "Multimodal Analytics for Collaborative Teacher Reflection of Human-AI Hybrid Teaching",
         authors: ["Shamya Karumbaiah"],
-        year: "2024",
+        year: 2024,
         publisher: "Proceedings of LAK",
       },
       {
         id: "publication-6",
-        title: "Optimizing philosophies for predictive models in learning analytics",
+        title:
+          "Optimizing philosophies for predictive models in learning analytics",
         authors: ["Shane Hutt", "Shamya Karumbaiah", "Joshua Ocumpaugh"],
-        year: "2021",
+        year: 2021,
         publisher: "Journal of Educational Data Mining",
       },
     ],

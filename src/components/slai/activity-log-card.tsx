@@ -17,12 +17,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import { IconTile } from "@/components/patterns/icon-tile"
 
 export interface ActivityLogEvent {
   id: string
@@ -70,7 +66,7 @@ function ActivityLogCard({
               </EmptyMedia>
               <EmptyTitle>No activity yet</EmptyTitle>
               <EmptyDescription>
-                Trail runs and simulation changes will appear here as{" "}
+                Activity runs and simulation changes will appear here as{" "}
                 {scopeLabel ?? "the group"} works.
               </EmptyDescription>
             </EmptyHeader>
@@ -83,9 +79,9 @@ function ActivityLogCard({
                 return (
                   <TableRow key={event.id}>
                     <TableCell className="w-10">
-                      <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                        <Icon className="size-4 shrink-0 text-muted-foreground" />
-                      </div>
+                      <IconTile>
+                        <Icon className="text-muted-foreground" />
+                      </IconTile>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">

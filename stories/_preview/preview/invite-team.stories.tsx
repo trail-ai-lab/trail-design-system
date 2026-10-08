@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/invite-team.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { InviteTeam } from "@/components/blocks/preview/cards/invite-team"
 
 const meta: Meta<typeof InviteTeam> = {
-  title: "_Preview/Preview/InviteTeam",
+  title: "Preview/Blocks 01/InviteTeam",
   component: InviteTeam,
   parameters: { layout: "centered" },
 }

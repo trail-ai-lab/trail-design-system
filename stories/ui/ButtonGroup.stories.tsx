@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { AlignCenter, AlignLeft, AlignRight } from "lucide-react"
 import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
@@ -33,11 +33,17 @@ export const Vertical: Story = {
 export const WithIcons: Story = {
   render: () => (
     <ButtonGroup>
-      <Button variant="outline" size="icon"><AlignLeft /></Button>
+      <Button variant="outline" size="icon" aria-label="Align left">
+        <AlignLeft />
+      </Button>
       <ButtonGroupSeparator />
-      <Button variant="outline" size="icon"><AlignCenter /></Button>
+      <Button variant="outline" size="icon" aria-label="Align center">
+        <AlignCenter />
+      </Button>
       <ButtonGroupSeparator />
-      <Button variant="outline" size="icon"><AlignRight /></Button>
+      <Button variant="outline" size="icon" aria-label="Align right">
+        <AlignRight />
+      </Button>
     </ButtonGroup>
   ),
 }

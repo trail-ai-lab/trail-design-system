@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/observability-card.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ObservabilityCard } from "@/components/blocks/preview/cards/observability-card"
 
 const meta: Meta<typeof ObservabilityCard> = {
-  title: "_Preview/Preview/ObservabilityCard",
+  title: "Preview/Blocks 01/ObservabilityCard",
   component: ObservabilityCard,
   parameters: { layout: "centered" },
 }

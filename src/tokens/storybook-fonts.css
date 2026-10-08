@@ -1,15 +1,11 @@
-/* Storybook-only: provide font variables that Next.js normally injects via next/font/google */
+/* Storybook-only: load the font files an app would load with next/font.
+   The font-family variables themselves come from fonts.css. */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&family=Geist+Mono:wght@100..900&display=swap");
-
-:root {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Montserrat", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, monospace;
-}
+@import "./fonts.css";
 
 /* Next.js applies `antialiased` to <body> via layout.tsx; replicate it here so
-   Storybook matches the cards project. Without this, macOS uses subpixel
-   smoothing which renders the same weights noticeably thicker. */
+   Storybook matches the apps. Without this, macOS uses subpixel smoothing
+   which renders the same weights noticeably thicker. */
 html,
 body {
   -webkit-font-smoothing: antialiased;

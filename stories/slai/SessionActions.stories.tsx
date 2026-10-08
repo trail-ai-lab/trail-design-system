@@ -1,9 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { SessionActions } from "@/components/slai/session-actions"
 
 const meta: Meta<typeof SessionActions> = {
   title: "SLAI/Shell/SessionActions",
+  tags: ["autodocs"],
   component: SessionActions,
   parameters: { layout: "centered" },
 }

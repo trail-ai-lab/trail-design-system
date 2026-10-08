@@ -1,6 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Info, TriangleAlert } from "lucide-react"
-import { Alert, AlertTitle, AlertDescription, AlertAction } from "@/components/ui/alert"
+import {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertAction,
+} from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 
 const meta: Meta<typeof Alert> = {
@@ -16,7 +21,9 @@ export const Default: Story = {
     <Alert className="w-96">
       <Info />
       <AlertTitle>Heads up</AlertTitle>
-      <AlertDescription>Your session analysis is ready to review.</AlertDescription>
+      <AlertDescription>
+        Your session analysis is ready to review.
+      </AlertDescription>
     </Alert>
   ),
 }
@@ -26,7 +33,9 @@ export const Destructive: Story = {
     <Alert variant="destructive" className="w-96">
       <TriangleAlert />
       <AlertTitle>Bias detected</AlertTitle>
-      <AlertDescription>3 potential bias indicators were found in this transcript.</AlertDescription>
+      <AlertDescription>
+        3 potential bias indicators were found in this transcript.
+      </AlertDescription>
     </Alert>
   ),
 }
@@ -36,9 +45,13 @@ export const WithAction: Story = {
     <Alert className="w-96">
       <Info />
       <AlertTitle>New preset available</AlertTitle>
-      <AlertDescription>The SLAI preset has been updated with new red tokens.</AlertDescription>
+      <AlertDescription>
+        The SLAI preset has been updated with new red tokens.
+      </AlertDescription>
       <AlertAction>
-        <Button size="sm" variant="outline">Update now</Button>
+        <Button size="sm" variant="outline">
+          Update now
+        </Button>
       </AlertAction>
     </Alert>
   ),

@@ -1,0 +1,87 @@
+/**
+ * Trail semantic tokens — hand-maintained, layered on top of the generated theme.
+ *
+ * globals.css is generated from the shadcn preset (components.json) and is never
+ * edited by hand. Everything Trail adds or adjusts lives here instead, imported
+ * right after globals.css, so regenerating the preset never loses it.
+ *
+ *  1. Meaning colors: success / warning / info (+ foreground). One hue, one meaning.
+ *  2. Status aliases: recording / paused / uploaded → destructive / warning / info.
+ *  3. Contrast adjustments to preset values that fail WCAG AA (noted inline).
+ *  4. Focus ring: one full-strength ring color for every focusable element.
+ *  5. --radius-card: the clamped card radius as a reusable token.
+ *
+ * Every color below was contrast-checked. Meaning colors must reach 4.5:1 both on the
+ * page and on their own 10% tint (badges use `bg-<color>/10 text-<color>`).
+ */
+
+:root {
+  /* 1. Meaning colors — ratios: on background / on own 10% tint. */
+  --success: oklch(0.5 0.14 150); /* 5.6 / 4.9 */
+  --success-foreground: oklch(0.985 0.02 150);
+  --warning: oklch(0.53 0.15 65); /* 5.5 / 4.8 */
+  --warning-foreground: oklch(0.99 0.02 85);
+  --info: oklch(0.53 0.21 258); /* 5.4 / 4.7 */
+  --info-foreground: oklch(0.98 0.015 258);
+
+  /* 2. Status aliases — recording state only, never a meaning. */
+  --status-recording: var(--destructive);
+  --status-paused: var(--warning);
+  --status-uploaded: var(--info);
+
+  /* 3. Contrast fixes to preset values:
+        muted-foreground L 0.56 → 0.52: 4.15 → 4.9:1 on --muted, 4.5:1 on primary/10.
+        destructive L 0.577 → 0.53: 3.99 → 4.55:1 on its own 10% tint (badges). */
+  --muted-foreground: oklch(0.52 0.021 213.5);
+  --destructive: oklch(0.53 0.245 27.325);
+
+  /* 4. Focus ring: brand primary (6.4:1). The preset's grey ring was 2.4:1. */
+  --ring: var(--primary);
+}
+
+.dark {
+  --success: oklch(0.72 0.17 150);
+  --success-foreground: oklch(0.148 0.004 228.8);
+  --warning: oklch(0.8 0.15 75);
+  --warning-foreground: oklch(0.148 0.004 228.8);
+  --info: oklch(0.7 0.16 256);
+  --info-foreground: oklch(0.148 0.004 228.8);
+
+  --status-recording: var(--destructive);
+  --status-paused: var(--warning);
+  --status-uploaded: var(--info);
+
+  /* 3. Contrast: the preset's dark primary (L 0.444) is 2.35:1 as text. Like shadcn's
+        dark themes, primary gets lighter in dark mode with dark text on top:
+        5.5:1 on background, 4.9:1 on card, 5.5:1 for button text. */
+  --primary: oklch(0.65 0.21 25);
+  --primary-foreground: oklch(0.148 0.004 228.8);
+
+  --ring: var(--primary);
+}
+
+@theme inline {
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-status-recording: var(--status-recording);
+  --color-status-paused: var(--status-paused);
+  --color-status-uploaded: var(--status-uploaded);
+
+  /* 5. The rounded-[min(var(--radius-4xl),24px)] card radius as `rounded-card`. */
+  --radius-card: min(var(--radius-4xl), 24px);
+}
+
+/*
+ * 4. Focus ring at full strength. shadcn primitives draw focus as `ring-ring/30` or
+ * `ring-ring/50`; at that opacity no color can reach the 3:1 that WCAG 1.4.11 requires
+ * for focus indicators. This rule is unlayered, so it wins over Tailwind's layered
+ * utilities and makes every focus ring opaque without editing the CLI-managed
+ * primitives. Invalid fields keep their destructive ring.
+ */
+:focus-visible:not([aria-invalid="true"]) {
+  --tw-ring-color: var(--ring);
+}

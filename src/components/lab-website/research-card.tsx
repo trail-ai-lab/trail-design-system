@@ -1,5 +1,12 @@
 import { cn } from "@/lib/utils"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { CardLink } from "@/components/patterns/card-link"
 
 export interface ResearchCardItem {
   index: string
@@ -29,21 +36,31 @@ export function ResearchCard({ research, className }: ResearchCardProps) {
   const isLinked = Boolean(research.href)
 
   return (
-    <Card className={cn("relative", isLinked && "transition-colors hover:bg-accent", className)}>
+    <Card
+      className={cn(
+        "relative",
+        isLinked && "transition-colors hover:bg-accent",
+        className
+      )}
+    >
       {research.href ? (
-        <a href={research.href} className="absolute inset-0" aria-label={research.title} />
+        <CardLink href={research.href} label={research.title} />
       ) : null}
-      <CardContent className="flex flex-1 flex-col gap-6">
-        <span className="font-mono text-xs text-muted-foreground">{research.index}</span>
-        <CardTitle className={cn("text-xl tracking-tight", isLinked && "group-hover/card:text-primary")}>
+      <CardHeader className="gap-3">
+        <CardDescription className="font-mono text-xs">
+          {research.index}
+        </CardDescription>
+        <CardTitle className={cn(isLinked && "group-hover/card:text-primary")}>
           {research.title}
         </CardTitle>
-        {research.funders.length > 0 ? (
-          <p className="mt-auto text-xs uppercase tracking-wider text-muted-foreground">
+      </CardHeader>
+      {research.funders.length > 0 ? (
+        <CardFooter className="mt-auto">
+          <p className="text-xs tracking-wider text-muted-foreground uppercase">
             Funded by {research.funders.join(" · ")}
           </p>
-        ) : null}
-      </CardContent>
+        </CardFooter>
+      ) : null}
     </Card>
   )
 }

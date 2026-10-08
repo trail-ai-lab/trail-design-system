@@ -4,11 +4,13 @@ import * as React from "react"
 import {
   AudioLinesIcon,
   ClockIcon,
+  LanguagesIcon,
   QrCodeIcon,
   UsersIcon,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +22,7 @@ import {
 } from "@/components/ui/card"
 import {
   Empty,
+  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
@@ -71,23 +74,26 @@ function toMinutes(time?: string) {
 function TranscriptRow({
   entry,
   groupName,
-  translationLanguage,
+  highlighted,
 }: {
   entry: TranscriptEntry
   /** Set in the combined view to show which group the line came from */
   groupName?: string
-  translationLanguage?: string
+  highlighted?: boolean
 }) {
   return (
     <TranscriptUtteranceRow
+      highlighted={highlighted}
       leading={
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted">
-          <AudioLinesIcon className="size-3.5 text-muted-foreground" />
-        </div>
+        <Avatar size="sm" className="mt-0.5" aria-hidden>
+          <AvatarFallback>
+            <AudioLinesIcon className="size-3" />
+          </AvatarFallback>
+        </Avatar>
       }
       meta={
         groupName && (
-          <Badge variant="outline" className="h-4 px-1.5 text-[10px]">
+          <Badge variant="outline" className="h-4 px-1.5 text-xs">
             {groupName}
           </Badge>
         )
@@ -101,16 +107,21 @@ function TranscriptRow({
  * Hero card for the live session. Shows the active group's transcript — or
  * every group's, interleaved and badged — with translations stacked below
  * each utterance. The speaker is not identified; the detected language leads.
+ * Also used after a session (with `title="Transcript"`) to show the raw,
+ * speaker-unknown transcript alongside the diarized one.
  */
 function TranscriptCard({
+  title = "Live transcript",
   groups,
   scope = ALL_GROUPS,
   status = "recording",
   translationLanguage,
   allLabel = "All groups",
   autoScroll = true,
+  highlightedEntryId,
   className,
 }: {
+  title?: React.ReactNode
   groups: TranscriptGroup[]
   /** Active group id, or `ALL_GROUPS` for the combined view */
   scope?: string
@@ -121,6 +132,8 @@ function TranscriptCard({
   allLabel?: string
   /** Keep the newest entries in view as they arrive */
   autoScroll?: boolean
+  /** Entry to emphasize, e.g. the sentence a chat answer cites */
+  highlightedEntryId?: string
   className?: string
 }) {
   const isAll = scope === ALL_GROUPS
@@ -131,9 +144,7 @@ function TranscriptCard({
   const rows = React.useMemo(() => {
     if (isAll) {
       return groups
-        .flatMap((group) =>
-          group.entries.map((entry) => ({ entry, group }))
-        )
+        .flatMap((group) => group.entries.map((entry) => ({ entry, group })))
         .sort(
           (a, b) => toMinutes(a.entry.timestamp) - toMinutes(b.entry.timestamp)
         )
@@ -156,17 +167,15 @@ function TranscriptCard({
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2.5">
-          Live transcript
+          {title}
           <SessionStatusBadge status={status} />
         </CardTitle>
         <div className="col-start-1 row-start-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {isAll ? (
             <span className="flex items-center gap-1">
               <UsersIcon className="size-3.5" />
-              {groups.length} groups · {groups.reduce(
-                (total, group) => total + group.memberCount,
-                0
-              )}{" "}
+              {groups.length} groups ·{" "}
+              {groups.reduce((total, group) => total + group.memberCount, 0)}{" "}
               students
             </span>
           ) : (
@@ -185,6 +194,12 @@ function TranscriptCard({
               </span>
             </>
           )}
+          {translationLanguage && (
+            <span className="flex items-center gap-1">
+              <LanguagesIcon className="size-3.5" />
+              Translated to {translationLanguage}
+            </span>
+          )}
         </div>
         {scopeLabel && (
           <CardAction>
@@ -195,19 +210,30 @@ function TranscriptCard({
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
           {rows.length === 0 ? (
-            <div className="flex h-full items-center justify-center px-(--card-spacing) py-10">
-              <p className="text-sm text-muted-foreground">
-                Waiting for students to speak...
-              </p>
-            </div>
+            <Empty className="h-full">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <AudioLinesIcon />
+                </EmptyMedia>
+                <EmptyTitle>Waiting for students to speak</EmptyTitle>
+                <EmptyDescription>
+                  Lines appear here as each group talks.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           ) : (
-            <div className="flex flex-col gap-5 px-(--card-spacing) py-1">
+            <div
+              role="log"
+              aria-live="polite"
+              aria-label="Transcript"
+              className="flex flex-col gap-5 px-(--card-spacing) py-1"
+            >
               {rows.map(({ entry, group }) => (
                 <TranscriptRow
                   key={`${group?.id}-${entry.id}`}
                   entry={entry}
                   groupName={isAll ? group?.name : undefined}
-                  translationLanguage={translationLanguage}
+                  highlighted={entry.id === highlightedEntryId}
                 />
               ))}
             </div>
@@ -215,7 +241,7 @@ function TranscriptCard({
         </ScrollArea>
         <div className="px-(--card-spacing)">
           <Separator className="-mx-2 mt-1 w-auto!" />
-          <p className="pt-3 text-center text-xs text-muted-foreground/70">
+          <p className="pt-3 text-center text-xs text-muted-foreground">
             SLAI can make mistakes. Double-check important responses.
           </p>
         </div>
@@ -246,10 +272,12 @@ function GroupsEmptyState({
           students join.
         </EmptyDescription>
       </EmptyHeader>
-      <Button variant="outline" onClick={onShowInvite}>
-        <QrCodeIcon data-icon="inline-start" />
-        Show invite
-      </Button>
+      <EmptyContent>
+        <Button variant="outline" onClick={onShowInvite}>
+          <QrCodeIcon data-icon="inline-start" />
+          Show invite
+        </Button>
+      </EmptyContent>
     </Empty>
   )
 }

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ChevronsUpDownIcon } from "lucide-react"
 
 import {
@@ -50,9 +50,7 @@ export const Collapsed: Story = {
   render: () => (
     <Collapsible className="w-80">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-foreground">
-          Advanced settings
-        </p>
+        <p className="text-sm font-medium text-foreground">Advanced settings</p>
         <CollapsibleTrigger asChild>
           <Button variant="ghost" size="icon-sm">
             <ChevronsUpDownIcon />

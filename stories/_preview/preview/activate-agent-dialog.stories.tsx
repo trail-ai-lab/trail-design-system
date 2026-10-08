@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/activate-agent-dialog.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ActivateAgentDialog } from "@/components/blocks/preview/cards/activate-agent-dialog"
 
 const meta: Meta<typeof ActivateAgentDialog> = {
-  title: "_Preview/Preview/ActivateAgentDialog",
+  title: "Preview/Blocks 01/ActivateAgentDialog",
   component: ActivateAgentDialog,
   parameters: { layout: "centered" },
 }

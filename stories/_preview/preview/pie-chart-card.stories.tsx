@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/pie-chart-card.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { PieChartCard } from "@/components/blocks/preview/cards/pie-chart-card"
 
 const meta: Meta<typeof PieChartCard> = {
-  title: "_Preview/Preview/PieChartCard",
+  title: "Preview/Blocks 01/PieChartCard",
   component: PieChartCard,
   parameters: { layout: "centered" },
 }

@@ -2,6 +2,8 @@
 
 import * as React from "react"
 
+import { useControllableState } from "@/lib/use-controllable-state"
+
 import { Badge } from "@/components/ui/badge"
 import {
   Field,
@@ -13,14 +15,8 @@ import {
   FieldTitle,
 } from "@/components/ui/field"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { LanguageCombobox } from "@/components/slai/language-combobox"
 
 const DEFAULT_LANGUAGES = [
   "English (US)",
@@ -40,6 +36,8 @@ export interface LanguageSettingsValue {
   language2?: string
   translation: boolean
   translateTo: string
+  /** Mask profanity in transcripts and translations */
+  profanityFilter?: boolean
 }
 
 const defaultLanguageSettings: LanguageSettingsValue = {
@@ -49,35 +47,36 @@ const defaultLanguageSettings: LanguageSettingsValue = {
   language2: "English (US)",
   translation: true,
   translateTo: "English (US)",
+  profanityFilter: false,
 }
 
 function LanguageSelect({
   value,
   onValueChange,
   languages,
-  placeholder = "Select a language...",
+  placeholder,
   allowNone = false,
+  id,
+  "aria-label": ariaLabel,
 }: {
   value?: string
-  onValueChange: (value: string) => void
+  onValueChange: (value: string | undefined) => void
   languages: string[]
   placeholder?: string
   allowNone?: boolean
+  id?: string
+  "aria-label"?: string
 }) {
   return (
-    <Select value={value ?? ""} onValueChange={onValueChange}>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {allowNone && <SelectItem value="none">None</SelectItem>}
-        {languages.map((language) => (
-          <SelectItem key={language} value={language}>
-            {language}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <LanguageCombobox
+      id={id}
+      aria-label={ariaLabel}
+      value={value}
+      onValueChange={onValueChange}
+      languages={languages}
+      placeholder={placeholder}
+      noneLabel={allowNone ? "None" : undefined}
+    />
   )
 }
 
@@ -88,23 +87,26 @@ function LanguageSelect({
  */
 function LanguageSettingsForm({
   value: valueProp,
-  onChange,
+  defaultValue = defaultLanguageSettings,
+  onValueChange,
   languages = DEFAULT_LANGUAGES,
   className,
 }: {
   value?: LanguageSettingsValue
-  onChange?: (value: LanguageSettingsValue) => void
+  defaultValue?: LanguageSettingsValue
+  onValueChange?: (value: LanguageSettingsValue) => void
   languages?: string[]
   className?: string
 }) {
-  const [internal, setInternal] = React.useState(defaultLanguageSettings)
-  const value = valueProp ?? internal
+  const uid = React.useId()
+  const [value, setValue] = useControllableState({
+    value: valueProp,
+    defaultValue,
+    onChange: onValueChange,
+  })
 
-  const update = (patch: Partial<LanguageSettingsValue>) => {
-    const next = { ...value, ...patch }
-    setInternal(next)
-    onChange?.(next)
-  }
+  const update = (patch: Partial<LanguageSettingsValue>) =>
+    setValue({ ...value, ...patch })
 
   return (
     <FieldGroup className={className}>
@@ -132,22 +134,32 @@ function LanguageSettingsForm({
             aria-label="Spoken language mode"
             className="grid gap-3 @md/field-group:grid-cols-2"
           >
-            <FieldLabel htmlFor="slai-mode-auto">
+            <FieldLabel htmlFor={`${uid}-mode-auto`}>
               <Field orientation="horizontal">
-                <RadioGroupItem value="auto" id="slai-mode-auto" />
+                <RadioGroupItem
+                  value="auto"
+                  id={`${uid}-mode-auto`}
+                  aria-labelledby={`${uid}-mode-auto-title`}
+                />
                 <FieldContent>
-                  <FieldTitle>Auto-detect</FieldTitle>
+                  <FieldTitle id={`${uid}-mode-auto-title`}>
+                    Auto-detect
+                  </FieldTitle>
                   <FieldDescription>
                     Detects all languages automatically.
                   </FieldDescription>
                 </FieldContent>
               </Field>
             </FieldLabel>
-            <FieldLabel htmlFor="slai-mode-specific">
+            <FieldLabel htmlFor={`${uid}-mode-specific`}>
               <Field orientation="horizontal">
-                <RadioGroupItem value="specific" id="slai-mode-specific" />
+                <RadioGroupItem
+                  value="specific"
+                  id={`${uid}-mode-specific`}
+                  aria-labelledby={`${uid}-mode-specific-title`}
+                />
                 <FieldContent>
-                  <FieldTitle>
+                  <FieldTitle id={`${uid}-mode-specific-title`}>
                     Specific
                     <Badge
                       variant="secondary"
@@ -167,27 +179,31 @@ function LanguageSettingsForm({
           {value.mode === "specific" && (
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="slai-language-1">Language 1</FieldLabel>
+                <FieldLabel htmlFor={`${uid}-language-1`}>
+                  Language 1
+                </FieldLabel>
                 <LanguageSelect
+                  id={`${uid}-language-1`}
+                  aria-label="Language 1"
                   value={value.language1}
-                  onValueChange={(language1) => update({ language1 })}
+                  onValueChange={(language1) =>
+                    language1 && update({ language1 })
+                  }
                   languages={languages}
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="slai-language-2">
+                <FieldLabel htmlFor={`${uid}-language-2`}>
                   Language 2
                   <span className="font-normal text-muted-foreground">
                     — optional
                   </span>
                 </FieldLabel>
                 <LanguageSelect
+                  id={`${uid}-language-2`}
+                  aria-label="Language 2"
                   value={value.language2}
-                  onValueChange={(language2) =>
-                    update({
-                      language2: language2 === "none" ? undefined : language2,
-                    })
-                  }
+                  onValueChange={(language2) => update({ language2 })}
                   languages={languages}
                   allowNone
                 />
@@ -220,13 +236,32 @@ function LanguageSettingsForm({
           </FieldContent>
           <div className="sm:w-56">
             <LanguageSelect
+              aria-label="Translate to"
               value={value.translateTo}
-              onValueChange={(translateTo) => update({ translateTo })}
+              onValueChange={(translateTo) =>
+                translateTo && update({ translateTo })
+              }
               languages={languages}
             />
           </div>
         </Field>
       )}
+
+      <FieldSeparator />
+
+      <Field orientation="horizontal">
+        <FieldContent>
+          <FieldTitle>Profanity filter</FieldTitle>
+          <FieldDescription>
+            Mask profanity in transcripts and translations.
+          </FieldDescription>
+        </FieldContent>
+        <Switch
+          checked={value.profanityFilter ?? false}
+          onCheckedChange={(checked) => update({ profanityFilter: checked })}
+          aria-label="Profanity filter"
+        />
+      </Field>
     </FieldGroup>
   )
 }

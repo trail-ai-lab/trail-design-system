@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/usage-card.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { UsageCard } from "@/components/blocks/preview/cards/usage-card"
 
 const meta: Meta<typeof UsageCard> = {
-  title: "_Preview/Preview/UsageCard",
+  title: "Preview/Blocks 01/UsageCard",
   component: UsageCard,
   parameters: { layout: "centered" },
 }

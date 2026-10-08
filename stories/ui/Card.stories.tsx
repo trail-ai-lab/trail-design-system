@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,11 +24,14 @@ export const Basic: Story = {
     <Card className="w-80">
       <CardHeader>
         <CardTitle>Card title</CardTitle>
-        <CardDescription>A short description of the card content.</CardDescription>
+        <CardDescription>
+          A short description of the card content.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          This is the main content area of the card. You can place any content here.
+          This is the main content area of the card. You can place any content
+          here.
         </p>
       </CardContent>
       <CardFooter>
@@ -50,7 +53,8 @@ export const WithBadge: Story = {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          A deep dive into designing for accessibility in modern web applications.
+          A deep dive into designing for accessibility in modern web
+          applications.
         </p>
       </CardContent>
     </Card>
@@ -71,7 +75,9 @@ export const WithActions: Story = {
       </CardContent>
       <CardFooter className="flex gap-2">
         <Button size="sm">View report</Button>
-        <Button size="sm" variant="outline">Dismiss</Button>
+        <Button size="sm" variant="outline">
+          Dismiss
+        </Button>
       </CardFooter>
     </Card>
   ),

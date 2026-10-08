@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/bar-chart-card.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { BarChartCard } from "@/components/blocks/preview/cards/bar-chart-card"
 
 const meta: Meta<typeof BarChartCard> = {
-  title: "_Preview/Preview/BarChartCard",
+  title: "Preview/Blocks 01/BarChartCard",
   component: BarChartCard,
   parameters: { layout: "centered" },
 }

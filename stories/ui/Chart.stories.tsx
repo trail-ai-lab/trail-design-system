@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import {
   ChartContainer,
@@ -54,9 +54,24 @@ export const TalkTimeLine: Story = {
         <XAxis dataKey="segment" tickLine={false} axisLine={false} />
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Line dataKey="sarah" stroke="var(--color-primary)" strokeWidth={2} dot={false} />
-        <Line dataKey="marcus" stroke="var(--color-secondary)" strokeWidth={2} dot={false} />
-        <Line dataKey="priya" stroke="var(--color-muted-foreground)" strokeWidth={2} dot={false} />
+        <Line
+          dataKey="sarah"
+          stroke="var(--color-primary)"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          dataKey="marcus"
+          stroke="var(--color-secondary)"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          dataKey="priya"
+          stroke="var(--color-muted-foreground)"
+          strokeWidth={2}
+          dot={false}
+        />
       </LineChart>
     </ChartContainer>
   ),

@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview/cards/analytics-card.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { AnalyticsCard } from "@/components/blocks/preview/cards/analytics-card"
 
 const meta: Meta<typeof AnalyticsCard> = {
-  title: "_Preview/Preview/AnalyticsCard",
+  title: "Preview/Blocks 01/AnalyticsCard",
   component: AnalyticsCard,
   parameters: { layout: "centered" },
 }

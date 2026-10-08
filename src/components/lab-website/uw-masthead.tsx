@@ -18,14 +18,20 @@ function UwMasthead({
 }: UwMastheadProps) {
   return (
     <div
+      data-slot="uw-masthead"
       role="navigation"
       className={cn(
-        "w-full bg-primary px-4 py-1 text-[0.825rem] font-semibold uppercase tracking-wide text-primary-foreground",
+        // eslint-disable-next-line trail/no-arbitrary-values -- Lab Website brand size kept as-is; decide whether it maps to the type scale
+        "w-full bg-primary px-4 py-1 text-[0.825rem] font-semibold tracking-wide text-primary-foreground uppercase",
         className
       )}
     >
       <div className="mx-auto flex w-full max-w-6xl justify-between">
-        <a href="https://www.wisc.edu" className="pl-4 hover:underline" aria-label="University home page">
+        <a
+          href="https://www.wisc.edu"
+          className="pl-4 hover:underline"
+          aria-label="University home page"
+        >
           University of Wisconsin–Madison
         </a>
         <a

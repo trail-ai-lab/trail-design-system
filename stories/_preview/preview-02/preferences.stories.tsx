@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview-02/cards/preferences.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Preferences } from "@/components/blocks/preview-02/cards/preferences"
 
 const meta: Meta<typeof Preferences> = {
-  title: "_Preview/Preview-02/Preferences",
+  title: "Preview/Blocks 02/Preferences",
   component: Preferences,
   parameters: { layout: "centered" },
 }

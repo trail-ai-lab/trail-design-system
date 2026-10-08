@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import {
   SessionChatCard,
@@ -65,5 +65,35 @@ export const Loading: Story = {
     scopeLabel: "Group 1",
     loading: true,
     className: "h-full",
+  },
+}
+
+export const WithWelcomeAndDisclaimer: Story = {
+  args: {
+    messages: [],
+    scopeLabel: "Group 1",
+    className: "h-full",
+    welcomeMessage: "Hi! Ask me anything about what Group 1 has discussed.",
+    showDisclaimer: true,
+  },
+}
+
+/** Answers can cite sources, and a `highlight` makes the answer clickable so
+ * the transcript can scroll to the sentence it came from. */
+export const WithSourcesAndHighlight: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    className: "h-full",
+    onMessageClick: () => {},
+    messages: [
+      { id: "1", role: "user", content: "Who mentioned friction?" },
+      {
+        id: "2",
+        role: "assistant",
+        content: "Student 2 brought up friction when comparing the ramps.",
+        highlight: "entry-4",
+        sources: ["Group 1 · 10:44 AM", "Group 3 · 10:51 AM"],
+      },
+    ],
   },
 }

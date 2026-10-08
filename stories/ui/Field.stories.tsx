@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   Field,
   FieldDescription,
@@ -18,10 +18,12 @@ type Story = StoryObj
 
 export const Vertical: Story = {
   render: () => (
-    <div className="flex flex-col gap-4 w-72">
+    <div className="flex w-72 flex-col gap-4">
       <Field>
         <FieldLabel>Session name</FieldLabel>
-        <FieldDescription>A short identifier for this recording.</FieldDescription>
+        <FieldDescription>
+          A short identifier for this recording.
+        </FieldDescription>
         <Input placeholder="e.g. Town Hall Q2" />
       </Field>
     </div>
@@ -32,8 +34,12 @@ export const WithError: Story = {
   render: () => (
     <div className="w-72">
       <Field>
-        <FieldLabel>Email</FieldLabel>
-        <Input aria-invalid="true" defaultValue="not-an-email" />
+        <FieldLabel htmlFor="field-email-invalid">Email</FieldLabel>
+        <Input
+          id="field-email-invalid"
+          aria-invalid="true"
+          defaultValue="not-an-email"
+        />
         <FieldError>Please enter a valid email address.</FieldError>
       </Field>
     </div>
@@ -42,13 +48,17 @@ export const WithError: Story = {
 
 export const Horizontal: Story = {
   render: () => (
-    <div className="flex flex-col gap-4 w-80">
+    <div className="flex w-80 flex-col gap-4">
       <Field orientation="horizontal">
         <FieldGroup>
-          <FieldLabel>Enable bias scanning</FieldLabel>
-          <FieldDescription>Automatically flag potential bias in transcripts.</FieldDescription>
+          <FieldLabel htmlFor="field-bias-scanning">
+            Enable bias scanning
+          </FieldLabel>
+          <FieldDescription>
+            Automatically flag potential bias in transcripts.
+          </FieldDescription>
         </FieldGroup>
-        <Switch />
+        <Switch id="field-bias-scanning" />
       </Field>
     </div>
   ),

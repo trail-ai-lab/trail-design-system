@@ -2,11 +2,11 @@
 // Source: ../trail-desing-system-cards/preview-02/cards/syncing-state.tsx
 // Promote to stories/trail/ or stories/slai/ when adopting
 
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { SyncingState } from "@/components/blocks/preview-02/cards/syncing-state"
 
 const meta: Meta<typeof SyncingState> = {
-  title: "_Preview/Preview-02/SyncingState",
+  title: "Preview/Blocks 02/SyncingState",
   component: SyncingState,
   parameters: { layout: "centered" },
 }

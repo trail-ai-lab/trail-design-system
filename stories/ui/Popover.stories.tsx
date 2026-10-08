@@ -1,5 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import type { Meta, StoryObj } from "@storybook/react-vite"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 
 const meta: Meta = {

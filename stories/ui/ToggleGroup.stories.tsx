@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { AlignCenter, AlignLeft, AlignRight } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
@@ -23,9 +23,15 @@ export const Single: Story = {
 export const Multiple: Story = {
   render: () => (
     <ToggleGroup type="multiple">
-      <ToggleGroupItem value="bold" aria-label="Bold"><AlignLeft /></ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Center"><AlignCenter /></ToggleGroupItem>
-      <ToggleGroupItem value="underline" aria-label="Right"><AlignRight /></ToggleGroupItem>
+      <ToggleGroupItem value="bold" aria-label="Bold">
+        <AlignLeft />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="italic" aria-label="Center">
+        <AlignCenter />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="underline" aria-label="Right">
+        <AlignRight />
+      </ToggleGroupItem>
     </ToggleGroup>
   ),
 }
