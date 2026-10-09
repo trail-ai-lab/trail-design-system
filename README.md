@@ -12,10 +12,10 @@ consumers install it from a git release tag and bump the tag themselves when the
 newer version. No registry config or auth token is needed.
 
 ```
-pnpm add github:trail-ai-lab/trail-design-system#v3.0.0
+pnpm add github:trail-ai-lab/trail-design-system#v1.0.0
 ```
 
-(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v3.0.0"`
+(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v1.0.0"`
 entry in `package.json`). Installing runs this repo's `prepare` script, which builds `dist/`.
 
 ### Requirements
@@ -109,14 +109,16 @@ the published package.
 
 ## Versioning & releases
 
-Releases are git tags (`vX.Y.Z`); the tag must equal `version` in `package.json`. Follow
-semver: breaking changes (removed or renamed exports, changed props, token value changes that
-alter meaning) bump the major version and list migration steps in the changelog. To cut one, bump `version` in `package.json`, add an entry
-to [`CHANGELOG.md`](CHANGELOG.md) describing what changed (move anything under "Unreleased"),
-merge to `main`, then tag the merge commit:
+Releases follow [Semantic Versioning](https://semver.org) and are git tags (`vX.Y.Z`) that
+equal `version` in `package.json`; `1.0.0` is the first stable release. In short:
 
-```
-git tag vX.Y.Z && git push origin vX.Y.Z
-```
+- **MAJOR** — breaking: something removed or renamed, a prop changed or made required, a
+  default or token meaning changed, a peer dependency minimum raised. Comes with _Migrate:_ notes.
+- **MINOR** — additions that need no code changes: new components, optional props, variants,
+  tokens; intentional visual updates; deprecations.
+- **PATCH** — fixes: bugs, accessibility, visual glitches, internal refactors.
 
-Consumers pick up the change by updating the tag in their own `package.json`.
+[`VERSIONING.md`](VERSIONING.md) has the full rules, the deprecation policy, pre-release tags
+and the release steps. Every change is recorded in [`CHANGELOG.md`](CHANGELOG.md) under
+"Unreleased" until it ships. Consumers pick up a release by updating the tag in their own
+`package.json`.

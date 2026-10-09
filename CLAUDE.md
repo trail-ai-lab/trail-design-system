@@ -16,7 +16,7 @@
 
 - **Brand:** red is the primary color (TRAIL lab theme). Use it the way shadcn uses `--primary`: main call-to-action buttons, active/selected states, focus and links. Don't use red to express meaning (that's `destructive`/status tokens); destructive actions are distinguished by their `destructive` variant and a confirmation step.
 - **Platform:** latest versions only — React 19, current Next.js, Tailwind CSS v4, current Storybook. No React 18 / older Next support; tools upgrade to match.
-- **Releases:** consumers install from git tags (`github:trail-ai-lab/trail-design-system#vX.Y.Z`). The tag must equal `package.json` `version`; record every change in CHANGELOG.md, and breaking changes bump the major version with migration notes.
+- **Releases:** consumers install from git tags (`github:trail-ai-lab/trail-design-system#vX.Y.Z`). Semver since `1.0.0`, per [VERSIONING.md](VERSIONING.md): the tag must equal `package.json` `version`; tags are never moved or deleted. Record every change in CHANGELOG.md under `## Unreleased`, in the section matching its bump (`Major Changes` with _Migrate:_ notes, `Minor Changes`, `Deprecated`, `Patch Changes`). When unsure whether a change is breaking, treat it as major.
 
 ## SLAI Product Model
 

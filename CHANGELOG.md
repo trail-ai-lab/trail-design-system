@@ -1,6 +1,21 @@
 # @trail-ai-lab/trail-design-system
 
+All notable changes are recorded here. Versions follow [Semantic Versioning](https://semver.org);
+see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
+
 ## Unreleased
+
+## 1.0.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.0.0`.
+
+**First stable release.** The public API (exports, props, tokens, CSS files — see VERSIONING.md)
+is now covered by semver: breaking changes only happen in a new major version, with migration
+notes. Earlier tags (`v0.1.0`–`v0.5.0`) used a different numbering; see "Pre-1.0 history" below.
+
+_Upgrading from an earlier tag:_ apply the migration notes of every pre-1.0 entry newer than
+the version your tag shipped (e.g. from `v0.4.2`, which shipped 2.1.1: the 3.0.0 notes), then
+the changes below.
 
 ### Major Changes
 
@@ -28,11 +43,15 @@
   Invite and Language sheet bodies get a `pt-1` inset so the first item's focus ring isn't cut off.
 - **Single-card pages are vertically centered** (`items-center-safe`) instead of top-aligned.
 
-## 3.0.0
+## Pre-1.0 history
 
-Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
+Before 1.0.0, release tags didn't follow `package.json`. Each entry below is the `package.json`
+version at the time, with the tag it shipped in. Entries marked "never tagged" were only
+available as part of a later tag.
 
-### Major Changes
+### 3.0.0 (shipped as tag `v0.5.0`)
+
+#### Major Changes
 
 - **Platform: React 19 only.** `peerDependencies` are now `react`/`react-dom` `^19.0.0`; React 18
   and the unused `next` peer are dropped. Built against Next.js 16, Tailwind CSS 4, Storybook 10,
@@ -60,7 +79,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   `var(--destructive/--warning/--info)`. Paused amber is slightly deeper (`--warning` meets 4.5:1
   as text). "Stopped" status renders neutral instead of blue.
 
-### Foundations
+#### Foundations
 
 - **Token layers.** Hand-maintained tokens moved out of the generated `globals.css` into
   `semantic.css`, so regenerating the preset no longer drops them. Both new files are included in
@@ -78,7 +97,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
 - Foundations docs: new Radius, Elevation, Motion, Focus and Stacking pages; Typography documents
   the new scale. `SectionLabel` uses `text-label`.
 
-### Primitives
+#### Primitives
 
 - **All shadcn primitives updated** to the latest registry (`radix-rhea` style) via the new
   `pnpm ui:update` script: React 19 function components (no more `forwardRef`), improved focus
@@ -88,7 +107,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   `cn` is now configured with Trail's scales, fixing a bug where `cn("text-label",
   "text-muted-foreground")` dropped the size (any `text-<scale>` combined with a text color).
 
-### Quality gates
+#### Quality gates
 
 - **CI** (`.github/workflows/ci.yml`): format check, TypeScript, ESLint, unit tests, package and
   Storybook builds, and every story rendered in Chromium with axe accessibility checks — on every
@@ -111,7 +130,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   `translationLanguage`.
 - _Migrate:_ wrap your app root in `TooltipProvider` (shadcn's Tooltip now requires it).
 
-### Component conventions
+#### Component conventions
 
 - **API conventions** (CLAUDE.md "Component API Conventions"): `value`/`defaultValue`/
   `onValueChange`, `open`/`defaultOpen`/`onOpenChange` (all optional), `loading` vs a `status`
@@ -137,7 +156,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
 - **`formatClock`** (m:ss) added to `lib/format`, replacing the audio player's private copy;
   formatters have unit tests.
 
-### Composition consistency
+#### Composition consistency
 
 - **Summary on the right in both modes:** new `SummaryQaPanel` (Summary + Q&A tabs) is the right
   column on Live and Session review. Session review's left tabs are Goals, Transcript, Speakers,
@@ -158,7 +177,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
 - All form IDs come from `React.useId()` (auth forms, new session, add source, recording,
   invite, VidyaMap). Field labels "Rename"/"File name" → "Name"; typographic ellipses (…).
 
-### Minor Changes
+#### Minor Changes
 
 - **Stylesheet entry `styles.css`** (recommended): imports the theme, layout tokens and font
   tokens, and adds the Tailwind `@source` for the package — no manual `@source` needed. Also
@@ -191,9 +210,9 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   + `ResearchCard` grid, matching the homepage recipe's use of real, reusable section components
   instead of page-local markup.
 
-## 2.1.1
+### 2.1.1 (shipped as tags `v0.3.1`–`v0.4.2`)
 
-### Patch Changes
+#### Patch Changes
 
 - Every composed page story (`HomePage`, `NewsPage`, `PeoplePage`, etc.) was rendering
   `<LabFooter />` with no props, showing only the crest — Contact, Affiliations, and the
@@ -201,18 +220,18 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   fixture (`stories/lab-website/lab-footer-demo-props.tsx`) and wired it into every composed page
   story so Storybook now shows the footer's full content everywhere. No component changes.
 
-## 2.1.0
+### 2.1.0 (never tagged)
 
-### Minor Changes
+#### Minor Changes
 
 - `FocusAreas`: add an optional `iconClassName` prop (defaults to `size-16 text-primary`, matching
   prior behavior) so consumers passing a richer illustration instead of a small Lucide-style icon
   can size it appropriately. Also adds `overflow-hidden` to the icon card so larger icons stay
   clipped to its rounded corners.
 
-## 2.0.3
+### 2.0.3 (never tagged)
 
-### Patch Changes
+#### Patch Changes
 
 - Add weight 400 to the Montserrat fallback `@import` in `globals.css`. Headings (`h1`–`h4`,
   and any `font-heading` element) render at `font-weight: 400` by default with no explicit
@@ -221,9 +240,9 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   Consumers using their own font loader (e.g. `next/font`) for `--font-heading` should make sure
   it also includes weight 400.
 
-## 2.0.2
+### 2.0.2 (shipped as tag `v0.3.0`)
 
-### Patch Changes
+#### Patch Changes
 
 - Fix duplicated dividers in `NewsArchive` and `EventDetail`'s important-dates list: both drew a
   leading border on the outer container _and_ a trailing border on every item (including the
@@ -232,9 +251,9 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   to the same "border between items only" pattern already used by `PublicationList`
   (`border-t` + `first:border-t-0`) for visual consistency across all list-style components.
 
-## 2.0.1
+### 2.0.1 (never tagged)
 
-### Patch Changes
+#### Patch Changes
 
 - Update the neutral gray family in `globals.css` (`background`, `foreground`, `muted`, `accent`,
   `border`, `input`, `ring`, `sidebar-*`) to match the design system's actual preset — these had
@@ -242,35 +261,35 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   `--primary`/`--primary-foreground` so text selection is consistent with the theme instead of
   falling back to the browser default.
 
-## 2.0.0
+### 2.0.0 (never tagged)
 
-### Major Changes
+#### Major Changes
 
 - Move `UwCrest` and `UwMasthead` from the shared `trail/` namespace (and the root `.` export) into
   `lab-website/`. Both are specific to the marketing-site chrome and aren't used by any other tool,
   so they no longer belong in the cross-tool `trail/` namespace. Import them from
   `@trail-ai-lab/trail-design-system/lab-website` instead of the root package.
 
-## 1.0.0
+### 1.0.0 (never tagged)
 
-### Major Changes
+#### Major Changes
 
 - Remove `lab-website/Footer`. `LabFooter` now covers everything it did (UW compliance links via
   the crest + "Part of the Universities of Wisconsin", plus the copyright line) and more —
   there's no remaining reason to keep both. Consumers importing `Footer` should switch to
   `LabFooter`.
 
-## 0.6.0
+### 0.6.0 (never tagged)
 
-### Minor Changes
+#### Minor Changes
 
 - `LabFooter`: replace the `coordinates` prop with a built-in copyright line (Logo + `labName` +
   `year`, matching `Footer`'s copyright text). `LabFooter` is now a complete, self-sufficient
   footer — pages using it no longer need to also render `Footer`.
 
-## 0.5.0
+### 0.5.0 (never tagged)
 
-### Minor Changes
+#### Minor Changes
 
 - Add `lab-website/LabFooter`: the rich marketing-site footer band (UW crest + tagline, Contact,
   Affiliations, optional feedback/coordinates strip) that was previously bespoke per-consumer
@@ -278,26 +297,26 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   with the plain compliance `Footer` underneath (`showCrest={false}`) for the University links
   and copyright line.
 
-## 0.4.0
+### 0.4.0 (never tagged)
 
-### Minor Changes
+#### Minor Changes
 
 - Extract `UwCrest` (previously a private helper inside `Footer`) into its own `trail/UwCrest`
   component so consumers can place the crest graphic elsewhere on the page — e.g. as a lab's
   visual identity mark in a footer, replacing a redundant wordmark repeat. `Footer`'s own
   `showCrest` behavior is unchanged.
 
-## 0.3.0
+### 0.3.0 (shipped as tag `v0.2.1`)
 
-### Minor Changes
+#### Minor Changes
 
 - `Header`: add an optional `actions` prop, rendered between the nav links and the mobile menu
   button (visible on both desktop and mobile). Lets consumers drop in a theme toggle or similar
   control without forking the component. Non-breaking.
 
-## 0.2.0
+### 0.2.0 (shipped as tag `v0.2.0`)
 
-### Minor Changes
+#### Minor Changes
 
 - a1a962f: Normalize component APIs toward Button's canonical patterns (Section 3 of the design
   system audit). Breaking prop renames:
@@ -367,7 +386,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   correctly for consumers — previously the subpath didn't exist in the published package
   despite the components being fully built.
 
-### Patch Changes
+#### Patch Changes
 
 - a1a962f: Fix invalid `hsl(var(--sidebar-border))` shadow (oklch wrapped in `hsl()` was silently
   dropped by the browser) and replace raw-color/arbitrary-value patterns with semantic
@@ -377,7 +396,7 @@ Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
   `AlertDialog`/`Dialog`/`Sheet`/`Card`/`Chart`/`Tooltip`; `Sidebar`'s width constants
   moved from JS into `--shell-sidebar-*` tokens in `layout.css`.
 
-## 0.1.0
+### 0.1.0 (shipped as tags `v0.1.0`–`v0.1.4`)
 
 Initial release.
 
