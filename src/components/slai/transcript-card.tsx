@@ -33,6 +33,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import { NoisyAudioBanner } from "@/components/slai/noisy-audio-banner"
+import { RecordingTimer } from "@/components/slai/recording-timer"
 import {
   SessionStatusBadge,
   type SessionStatus,
@@ -63,6 +64,9 @@ export interface TranscriptGroup {
   status?: SessionStatus
   /** Formatted start time, e.g. "3:38 PM" */
   startedAt?: string
+  /** Seconds this group has been recording, pauses excluded, from your own
+   * clock. Shown after the status badge while this group is in scope. */
+  recordedSeconds?: number
   students?: string[]
   /** The group's audio was flagged as too noisy for reliable transcription */
   noisyAudio?: boolean
@@ -151,6 +155,7 @@ function TranscriptRow({
  * language leads. Also used after a session (with `title="Transcript"`) to
  * show the raw, speaker-unknown transcript alongside the diarized one.
  *
+ * A single group's `recordedSeconds` shows as a timer after the status badge.
  * Groups flagged `noisyAudio` get a warning above the lines; `checkIn` marks
  * where the latest check-in happened; `interimText` shows words still being
  * recognized; `transcriptionEnabled={false}` explains that live
@@ -243,6 +248,13 @@ function TranscriptCard({
         <CardTitle className="flex items-center gap-2.5">
           {title}
           <SessionStatusBadge status={status} />
+          {!isAll && activeGroup?.recordedSeconds !== undefined && (
+            <RecordingTimer
+              seconds={activeGroup.recordedSeconds}
+              compact
+              className="text-sm text-muted-foreground"
+            />
+          )}
         </CardTitle>
         <div className="col-start-1 row-start-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {isAll ? (

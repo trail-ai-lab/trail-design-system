@@ -5,6 +5,13 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+### Minor Changes
+
+- **`TranscriptGroup.recordedSeconds`:** a group's recording time (pauses excluded, from your own
+  clock). `TranscriptCard` shows it as a small `RecordingTimer` after the status badge while that
+  group is in scope; the combined "All groups" view shows none. The Live page story drops its
+  session-wide toolbar timer in favor of it.
+
 ### Patch Changes
 
 - **`NewSessionForm` section headings:** "Session details" and "Languages" now use `SectionLabel`,

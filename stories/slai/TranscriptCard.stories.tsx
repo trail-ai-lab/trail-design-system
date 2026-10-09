@@ -135,6 +135,20 @@ export const EmptyGroup: Story = {
   },
 }
 
+/** `recordedSeconds` on the group in scope shows its recording time after the status badge. */
+export const RecordingTime: Story = {
+  args: {
+    groups: GROUPS.map((group, index) => ({
+      ...group,
+      recordedSeconds: index === 0 ? 1324 : 761,
+    })),
+    scope: "group-1",
+    status: "recording",
+    translationLanguage: "English",
+    className: "h-full",
+  },
+}
+
 export const Paused: Story = {
   args: {
     groups: GROUPS,

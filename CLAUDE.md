@@ -26,7 +26,7 @@
   - **Session review** (opened from the sidebar's "Sessions" tree, page stories `SLAI/Pages/Session`) — used after class: recordings, diarized transcripts and speakers, goals/WIDA verdicts, summary, Q&A. Deeper analysis.
 - Keep the two modes structurally consistent:
   - Layout: AI panels (Summary, Q&A) on the left, primary content (live transcript / analysis tabs) on the right.
-  - Session timing lives in the toolbar (`RecordingTimer compact`), never in the breadcrumb title.
+  - Recording time is per group: in Live it sits beside the transcript title (`TranscriptGroup.recordedSeconds`, pauses excluded) — no session-wide timer in the toolbar. A single-recording page (quick recording) keeps its `RecordingTimer compact` in the toolbar. Timing never goes in the breadcrumb title.
   - Page titles use `PageBreadcrumb`; page stories use the shared `PageSidebar` from `stories/slai/_page-fixtures.tsx`.
 - Irreversible or disruptive actions (end session, delete, discard, reset an invite link) always go through `ConfirmDialog` / `DeleteConfirmDialog`.
 - Copy is sentence case everywhere (nav, titles, buttons, tabs).
