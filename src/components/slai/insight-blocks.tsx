@@ -1,10 +1,6 @@
 import { cn } from "@/lib/utils"
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-} from "@/components/ui/item"
+import { Item, ItemContent, ItemMedia } from "@/components/ui/item"
+import { SectionLabel } from "@/components/patterns/section-label"
 
 /**
  * A student's words pulled from the transcript, with an optional translation
@@ -31,7 +27,9 @@ function TranscriptQuote({
       )}
     >
       {label && (
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <SectionLabel asChild>
+          <p>{label}</p>
+        </SectionLabel>
       )}
       <p className="text-sm italic">&ldquo;{quote}&rdquo;</p>
       {translation && (
@@ -65,7 +63,9 @@ function InsightItem({
       </ItemMedia>
       <ItemContent>
         {label && (
-          <ItemDescription className="text-xs">{label}</ItemDescription>
+          <SectionLabel asChild>
+            <p>{label}</p>
+          </SectionLabel>
         )}
         <div className="text-sm">{children}</div>
       </ItemContent>

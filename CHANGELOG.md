@@ -5,6 +5,23 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+### Minor Changes
+
+- **`TranscriptGroup.recordedSeconds`:** a group's recording time (pauses excluded, from your own
+  clock). `TranscriptCard` shows it as a small `RecordingTimer` after the status badge while that
+  group is in scope; the combined "All groups" view shows none. The Live page story drops its
+  session-wide toolbar timer in favor of it.
+
+### Patch Changes
+
+- **`SlaiSidebar` nav:** the "Live" item is now labeled "Live session" (`id` stays `"live"`).
+- **`SlaiSidebar` nav:** "Record audio" is now labeled "Quick record" (`id` stays `"record"`).
+- **`NewSessionForm` section headings:** "Session details" and "Languages" now use `SectionLabel`,
+  the same uppercase label as "Class overview" / "Session goal" / "Students" in `GoalsPanel`.
+- **Insight labels:** the `label` of `InsightItem` and `TranscriptQuote`, and "Academic language
+  used" in `StudentInsightCard`, now use `SectionLabel`, so the expanded student card's sub-headings
+  match the rest of the Goals tab. Also applies to the "Said" label in `SessionEvidenceStrip`.
+
 ## 1.4.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.4.0`.

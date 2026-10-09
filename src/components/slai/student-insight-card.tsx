@@ -14,6 +14,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { Progress } from "@/components/ui/progress"
+import { SectionLabel } from "@/components/patterns/section-label"
 import { InsightItem, TranscriptQuote } from "@/components/slai/insight-blocks"
 import { VerdictBadge } from "@/components/slai/verdict-badge"
 import { weakestVerdict, type Verdict } from "@/components/slai/lib/verdict"
@@ -136,9 +137,9 @@ function StudentInsightCard({
           )}
 
           <div className="flex flex-col gap-1.5">
-            <p className="text-xs font-medium text-muted-foreground">
-              Academic language used
-            </p>
+            <SectionLabel asChild>
+              <p>Academic language used</p>
+            </SectionLabel>
             {student.academicTerms && student.academicTerms.length > 0 ? (
               <div className="flex flex-wrap gap-1.5">
                 {student.academicTerms.map(({ term, language }) => (

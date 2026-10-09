@@ -7,7 +7,6 @@ import { ALL_GROUPS, GroupSwitcher } from "@/components/slai/group-switcher"
 import { InviteStudentsSheet } from "@/components/slai/invite-students-sheet"
 import { LanguageSettingsSheet } from "@/components/slai/language-settings-sheet"
 import { NewSessionForm } from "@/components/slai/new-session-form"
-import { RecordingTimer } from "@/components/slai/recording-timer"
 import { SessionActions } from "@/components/slai/session-actions"
 import { type ChatMessage } from "@/components/slai/session-chat"
 import { CLASSES, PageSidebar } from "./_page-fixtures"
@@ -60,6 +59,7 @@ const GROUPS: TranscriptGroup[] = [
     active: true,
     status: "recording",
     startedAt: "3:38 PM",
+    recordedSeconds: 1324,
     students: ["Aarav", "Mia", "Jordan"],
     entries: [
       {
@@ -111,6 +111,7 @@ const GROUPS: TranscriptGroup[] = [
     active: true,
     status: "paused",
     startedAt: "3:41 PM",
+    recordedSeconds: 761,
     students: ["Sam", "Priya"],
     entries: [
       {
@@ -202,7 +203,6 @@ function ActiveSessionPage() {
             onValueChange={setScope}
           />
           <div className="ml-auto flex items-center gap-3">
-            <RecordingTimer seconds={1453} compact />
             <SessionActions
               onAddActivity={() => setSheet("activity")}
               onOpenLanguageSettings={() => setSheet("language")}
@@ -298,7 +298,9 @@ function NewSessionPage() {
     <AppShell
       sidebar={<PageSidebar activeNav="live" />}
       title={
-        <PageBreadcrumb items={[{ label: "Live" }, { label: "New session" }]} />
+        <PageBreadcrumb
+          items={[{ label: "Live session" }, { label: "New session" }]}
+        />
       }
     >
       <div className="flex flex-1 items-center-safe justify-center overflow-y-auto p-(--shell-gap)">
