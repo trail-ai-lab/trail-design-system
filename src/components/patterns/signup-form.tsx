@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { GoogleButton } from "@/components/patterns/google-button"
+import { AppLink } from "@/components/patterns/link-provider"
 
 /** Create-account form: name, email, password (min 6) and Google. */
 function SignupForm({
@@ -122,12 +123,12 @@ function SignupForm({
             {loginHref && (
               <p className="text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
-                <a
+                <AppLink
                   href={loginHref}
                   className="text-foreground underline underline-offset-4"
                 >
                   Sign in
-                </a>
+                </AppLink>
               </p>
             )}
           </FieldGroup>

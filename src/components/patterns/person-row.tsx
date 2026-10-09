@@ -10,6 +10,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item"
+import { AppLink } from "@/components/patterns/link-provider"
 
 type PersonRowSize = Extract<ButtonSize, "xs" | "sm" | "default">
 
@@ -57,9 +58,9 @@ function PersonRow({
       <ItemContent>
         <ItemTitle>
           {href ? (
-            <a href={href} className="hover:text-primary">
+            <AppLink href={href} className="hover:text-primary">
               {name}
-            </a>
+            </AppLink>
           ) : (
             name
           )}

@@ -13,8 +13,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
+import { InsightCallout } from "@/components/slai/insight-callout"
 import { StudentChip } from "@/components/slai/student-chip"
 
 function StepNumber({
@@ -42,12 +49,23 @@ function StepNumber({
  * Group setup collected on a student's device after joining a session (QR
  * code or link): a group name and, optionally, who's recording together —
  * shown before the student moves on to the recording screen.
+ *
+ * `loading` covers creating the group on the server; `notice` explains why
+ * the student is back here (e.g. the teacher removed their group).
  */
 function GroupSetupForm({
   onContinue,
+  loading = false,
+  notice,
   className,
 }: {
+  /** Receives the trimmed group name and the students added */
   onContinue?: (group: { name: string; students: string[] }) => void
+  /** The group is being created: the button shows "Joining…" and is disabled */
+  loading?: boolean
+  /** A warning shown at the top of the card, e.g. "Your group was removed by
+   * the teacher. Please set up a new group to continue." */
+  notice?: React.ReactNode
   className?: string
 }) {
   const uid = React.useId()
@@ -55,9 +73,12 @@ function GroupSetupForm({
   const [students, setStudents] = React.useState<string[]>([])
   const [studentInput, setStudentInput] = React.useState("")
 
+  const pendingStudent = studentInput.trim()
+  const alreadyAdded = students.includes(pendingStudent)
+
   const addStudent = () => {
     const name = studentInput.trim()
-    if (!name) return
+    if (!name || students.includes(name)) return
     setStudents((prev) => [...prev, name])
     setStudentInput("")
   }
@@ -76,6 +97,9 @@ function GroupSetupForm({
       </CardHeader>
       <CardContent>
         <FieldGroup>
+          {notice && (
+            <InsightCallout variant="warning">{notice}</InsightCallout>
+          )}
           <Field>
             <FieldLabel
               htmlFor={`${uid}-group-name`}
@@ -129,12 +153,17 @@ function GroupSetupForm({
                 variant="outline"
                 size="icon"
                 onClick={addStudent}
-                disabled={!studentInput.trim()}
+                disabled={!pendingStudent || alreadyAdded}
                 aria-label="Add student"
               >
                 <PlusIcon />
               </Button>
             </div>
+            {alreadyAdded && (
+              <FieldDescription>
+                {pendingStudent} is already in the group.
+              </FieldDescription>
+            )}
 
             {students.length > 0 && (
               <div className="flex flex-wrap gap-2">
@@ -153,11 +182,20 @@ function GroupSetupForm({
       <CardFooter>
         <Button
           className="w-full"
-          disabled={!groupName.trim()}
-          onClick={() => onContinue?.({ name: groupName, students })}
+          disabled={!groupName.trim() || loading}
+          onClick={() => onContinue?.({ name: groupName.trim(), students })}
         >
-          Continue to recording
-          <ArrowRightIcon data-icon="inline-end" />
+          {loading ? (
+            <>
+              <Spinner data-icon="inline-start" />
+              Joining…
+            </>
+          ) : (
+            <>
+              Continue to recording
+              <ArrowRightIcon data-icon="inline-end" />
+            </>
+          )}
         </Button>
       </CardFooter>
     </Card>

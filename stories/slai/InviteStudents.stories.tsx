@@ -41,3 +41,13 @@ export const InSheet: Story = {
     </InviteStudentsSheet>
   ),
 }
+
+/** The join link is still being created: placeholders, link actions disabled. */
+export const GeneratingLink: Story = {
+  args: { joinUrl: undefined },
+  render: (args) => (
+    <div className="w-full max-w-sm">
+      <InvitePanel {...args} onGenerateNewLink={() => {}} />
+    </div>
+  ),
+}

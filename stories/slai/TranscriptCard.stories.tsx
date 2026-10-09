@@ -166,3 +166,109 @@ export const HighlightedEntry: Story = {
     className: "h-full",
   },
 }
+
+/** Exact times (`at`) on each line, as an app has them. */
+const at = (time: string) => `2026-08-21T${time}`
+
+/**
+ * Two groups speaking within the same minute: with `at`, lines interleave in
+ * the order they were said (by minute alone they'd come out grouped).
+ */
+const SAME_MINUTE: TranscriptGroup[] = [
+  {
+    id: "group-1",
+    name: "Group 1",
+    memberCount: 3,
+    entries: [
+      {
+        id: "a",
+        timestamp: "3:42 PM",
+        at: at("15:42:05"),
+        language: "American English",
+        original: "Okay, ramp one is ready.",
+      },
+      {
+        id: "b",
+        timestamp: "3:42 PM",
+        at: at("15:42:40"),
+        language: "American English",
+        original: "Time it from when I let go.",
+      },
+    ],
+  },
+  {
+    id: "group-2",
+    name: "Group 2",
+    memberCount: 2,
+    noisyAudio: true,
+    entries: [
+      {
+        id: "a",
+        timestamp: "3:42 PM",
+        at: at("15:42:20"),
+        language: "American English",
+        original: "Which ramp is steeper?",
+      },
+      {
+        id: "b",
+        timestamp: "3:43 PM",
+        at: at("15:43:10"),
+        language: "American English",
+        original: "The blue one, by a lot.",
+      },
+    ],
+  },
+]
+
+export const SameMinuteOrdering: Story = {
+  args: {
+    groups: SAME_MINUTE,
+    scope: ALL_GROUPS,
+    className: "h-full",
+  },
+}
+
+/** A divider marks the latest check-in among the lines. */
+export const WithCheckIn: Story = {
+  args: {
+    groups: SAME_MINUTE.map((group) => ({ ...group, noisyAudio: false })),
+    scope: ALL_GROUPS,
+    checkIn: { at: at("15:42:30"), label: "3:42 PM" },
+    className: "h-full",
+  },
+}
+
+/** A group's audio was flagged: a warning above the lines. */
+export const NoisyAudio: Story = {
+  args: { groups: SAME_MINUTE, scope: "group-2", className: "h-full" },
+}
+
+/** All groups: one warning naming every noisy group. */
+export const NoisyAudioAllGroups: Story = {
+  args: {
+    groups: SAME_MINUTE.map((group) => ({ ...group, noisyAudio: true })),
+    scope: ALL_GROUPS,
+    className: "h-full",
+  },
+}
+
+/** Words still being recognized show muted after the last line. */
+export const InProgressLine: Story = {
+  args: {
+    groups: [GROUPS[1]],
+    scope: "group-2",
+    interimText: "and then we can compare the times for",
+    className: "h-full",
+  },
+}
+
+/** Live transcription is off for the session. */
+export const TranscriptionOff: Story = {
+  args: {
+    groups: GROUPS,
+    scope: ALL_GROUPS,
+    transcriptionEnabled: false,
+    onOpenLanguageSettings: () => {},
+    className: "h-full",
+  },
+}

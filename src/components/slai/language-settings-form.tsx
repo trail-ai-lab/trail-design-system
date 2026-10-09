@@ -17,6 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { LanguageCombobox } from "@/components/slai/language-combobox"
+import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 const DEFAULT_LANGUAGES = [
   "English (US)",
@@ -29,12 +30,16 @@ const DEFAULT_LANGUAGES = [
   "Portuguese",
 ]
 
+/** Language settings. Language fields hold option values (e.g. codes). */
 export interface LanguageSettingsValue {
   transcription: boolean
   mode: "auto" | "specific"
+  /** Spoken language, from `spokenLanguages` */
   language1: string
+  /** Optional second spoken language, from `spokenLanguages` */
   language2?: string
   translation: boolean
+  /** Target language, from `translationLanguages` */
   translateTo: string
   /** Mask profanity in transcripts and translations */
   profanityFilter?: boolean
@@ -61,7 +66,7 @@ function LanguageSelect({
 }: {
   value?: string
   onValueChange: (value: string | undefined) => void
-  languages: string[]
+  languages: LanguageOptions
   placeholder?: string
   allowNone?: boolean
   id?: string
@@ -84,18 +89,31 @@ function LanguageSelect({
  * Transcription + translation language configuration. Used inside the
  * "Start a new session" card and the Language Settings sheet of an
  * active session.
+ *
+ * Spoken and translation languages can come from different lists (e.g.
+ * speech-to-text codes vs translation codes); pass `{ value, label }` options
+ * to store codes. Translation and the profanity filter apply to the
+ * transcript, so they're hidden while live transcription is off, and turning
+ * transcription off also turns translation off.
  */
 function LanguageSettingsForm({
   value: valueProp,
   defaultValue = defaultLanguageSettings,
   onValueChange,
   languages = DEFAULT_LANGUAGES,
+  spokenLanguages = languages,
+  translationLanguages = languages,
   className,
 }: {
   value?: LanguageSettingsValue
   defaultValue?: LanguageSettingsValue
   onValueChange?: (value: LanguageSettingsValue) => void
-  languages?: string[]
+  /** Languages for both lists, unless overridden below */
+  languages?: LanguageOptions
+  /** Options for Language 1 / Language 2 */
+  spokenLanguages?: LanguageOptions
+  /** Options for "Translate to" */
+  translationLanguages?: LanguageOptions
   className?: string
 }) {
   const uid = React.useId()
@@ -119,7 +137,13 @@ function LanguageSettingsForm({
         </FieldContent>
         <Switch
           checked={value.transcription}
-          onCheckedChange={(checked) => update({ transcription: checked })}
+          onCheckedChange={(checked) =>
+            update(
+              checked
+                ? { transcription: true }
+                : { transcription: false, translation: false }
+            )
+          }
           aria-label="Live transcription"
         />
       </Field>
@@ -189,7 +213,7 @@ function LanguageSettingsForm({
                   onValueChange={(language1) =>
                     language1 && update({ language1 })
                   }
-                  languages={languages}
+                  languages={spokenLanguages}
                 />
               </Field>
               <Field>
@@ -204,64 +228,66 @@ function LanguageSettingsForm({
                   aria-label="Language 2"
                   value={value.language2}
                   onValueChange={(language2) => update({ language2 })}
-                  languages={languages}
+                  languages={spokenLanguages}
                   allowNone
                 />
               </Field>
             </div>
           )}
+
+          <FieldSeparator />
+
+          <Field orientation="horizontal">
+            <FieldContent>
+              <FieldTitle>Live translation</FieldTitle>
+              <FieldDescription>
+                Translate the transcript as students speak.
+              </FieldDescription>
+            </FieldContent>
+            <Switch
+              checked={value.translation}
+              onCheckedChange={(checked) => update({ translation: checked })}
+              aria-label="Live translation"
+            />
+          </Field>
+
+          {value.translation && (
+            <Field orientation="responsive">
+              <FieldContent>
+                <FieldTitle>Translate to</FieldTitle>
+              </FieldContent>
+              <div className="sm:w-56">
+                <LanguageSelect
+                  aria-label="Translate to"
+                  value={value.translateTo}
+                  onValueChange={(translateTo) =>
+                    translateTo && update({ translateTo })
+                  }
+                  languages={translationLanguages}
+                />
+              </div>
+            </Field>
+          )}
+
+          <FieldSeparator />
+
+          <Field orientation="horizontal">
+            <FieldContent>
+              <FieldTitle>Profanity filter</FieldTitle>
+              <FieldDescription>
+                Mask profanity in transcripts and translations.
+              </FieldDescription>
+            </FieldContent>
+            <Switch
+              checked={value.profanityFilter ?? false}
+              onCheckedChange={(checked) =>
+                update({ profanityFilter: checked })
+              }
+              aria-label="Profanity filter"
+            />
+          </Field>
         </>
       )}
-
-      <FieldSeparator />
-
-      <Field orientation="horizontal">
-        <FieldContent>
-          <FieldTitle>Live translation</FieldTitle>
-          <FieldDescription>
-            Translate the transcript as students speak.
-          </FieldDescription>
-        </FieldContent>
-        <Switch
-          checked={value.translation}
-          onCheckedChange={(checked) => update({ translation: checked })}
-          aria-label="Live translation"
-        />
-      </Field>
-
-      {value.translation && (
-        <Field orientation="responsive">
-          <FieldContent>
-            <FieldTitle>Translate to</FieldTitle>
-          </FieldContent>
-          <div className="sm:w-56">
-            <LanguageSelect
-              aria-label="Translate to"
-              value={value.translateTo}
-              onValueChange={(translateTo) =>
-                translateTo && update({ translateTo })
-              }
-              languages={languages}
-            />
-          </div>
-        </Field>
-      )}
-
-      <FieldSeparator />
-
-      <Field orientation="horizontal">
-        <FieldContent>
-          <FieldTitle>Profanity filter</FieldTitle>
-          <FieldDescription>
-            Mask profanity in transcripts and translations.
-          </FieldDescription>
-        </FieldContent>
-        <Switch
-          checked={value.profanityFilter ?? false}
-          onCheckedChange={(checked) => update({ profanityFilter: checked })}
-          aria-label="Profanity filter"
-        />
-      </Field>
     </FieldGroup>
   )
 }

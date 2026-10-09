@@ -42,6 +42,7 @@ export const Recording: Story = {
       sessionName="Physics · Period 3 — Aug 21"
       joinedAt="10:32 AM"
       students={["Student 1", "Student 2"]}
+      onDiscard={() => {}}
     />
   ),
 }

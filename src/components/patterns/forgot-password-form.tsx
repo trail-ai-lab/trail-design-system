@@ -14,6 +14,7 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { AppLink } from "@/components/patterns/link-provider"
 
 /**
  * Request a password-reset email. Moves from `idle` to `sending` to `sent`
@@ -48,7 +49,7 @@ function ForgotPasswordForm({
         {loginHref && (
           <CardContent>
             <Button asChild variant="outline" className="w-full">
-              <a href={loginHref}>Back to sign in</a>
+              <AppLink href={loginHref}>Back to sign in</AppLink>
             </Button>
           </CardContent>
         )}
@@ -96,12 +97,12 @@ function ForgotPasswordForm({
             </Button>
             {loginHref && (
               <p className="text-center text-sm text-muted-foreground">
-                <a
+                <AppLink
                   href={loginHref}
                   className="text-foreground underline underline-offset-4"
                 >
                   Back to sign in
-                </a>
+                </AppLink>
               </p>
             )}
           </FieldGroup>

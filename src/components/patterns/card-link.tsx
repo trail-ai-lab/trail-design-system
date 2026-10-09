@@ -1,10 +1,11 @@
 import { cn } from "@/lib/utils"
+import { AppLink } from "@/components/patterns/link-provider"
 
 /**
  * Makes a whole `Card` clickable: an invisible link stretched over the card,
  * with a visible focus ring for keyboard users. Put it first inside a
  * `relative` Card; interactive children that must stay clickable need
- * `relative z-10`.
+ * `relative z-10`. Renders with the `LinkProvider` component.
  */
 function CardLink({
   href,
@@ -17,7 +18,7 @@ function CardLink({
   label: string
 }) {
   return (
-    <a
+    <AppLink
       data-slot="card-link"
       href={href}
       aria-label={label}

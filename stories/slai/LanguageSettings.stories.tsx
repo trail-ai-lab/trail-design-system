@@ -42,6 +42,48 @@ export const AutoDetectMode: Story = {
   },
 }
 
+/**
+ * Separate code lists for speech-to-text and translation, as an app stores
+ * them; the stored value is shown under the form.
+ */
+export const WithLanguageCodes: Story = {
+  render: function WithCodes() {
+    const [value, setValue] = React.useState<LanguageSettingsValue>({
+      transcription: true,
+      mode: "specific",
+      language1: "es-US",
+      language2: "en-US",
+      translation: true,
+      translateTo: "en",
+      profanityFilter: false,
+    })
+    return (
+      <div className="flex w-full max-w-md flex-col gap-4">
+        <LanguageSettingsForm
+          value={value}
+          onValueChange={setValue}
+          spokenLanguages={[
+            { value: "en-US", label: "English (US)" },
+            { value: "es-US", label: "Spanish (US)" },
+            { value: "cmn-Hans-CN", label: "Chinese, Mandarin (Simplified)" },
+            { value: "mr-IN", label: "Marathi" },
+          ]}
+          translationLanguages={[
+            { value: "en", label: "English" },
+            { value: "es", label: "Spanish" },
+            { value: "zh-CN", label: "Chinese (Simplified)" },
+            { value: "mr", label: "Marathi" },
+          ]}
+        />
+        <pre className="rounded-md bg-muted p-3 text-xs">
+          {JSON.stringify(value, null, 2)}
+        </pre>
+      </div>
+    )
+  },
+}
+
+/** Transcription off: translation and the profanity filter are hidden. */
 export const TranscriptionDisabled: Story = {
   render: function Disabled() {
     const [value, setValue] = React.useState<LanguageSettingsValue>({

@@ -364,6 +364,7 @@ function SessionReviewPage() {
                 <AudioPlayerCard
                   title={`${activeGroup.name} recording`}
                   durationSeconds={activeGroup.durationSeconds}
+                  onDownload={() => {}}
                 />
               )}
 

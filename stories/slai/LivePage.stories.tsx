@@ -175,9 +175,15 @@ function ActiveSessionPage() {
     "activity" | "language" | "invite" | null
   >(null)
   const [activity, setActivity] = React.useState("none")
+  const [groups, setGroups] = React.useState(GROUPS)
   const [scope, setScope] = React.useState(GROUPS[0].id)
 
-  const activeGroup = GROUPS.find((group) => group.id === scope)
+  const activeGroup = groups.find((group) => group.id === scope)
+  const removeActiveGroup = () => {
+    const remaining = groups.filter((group) => group.id !== scope)
+    setGroups(remaining)
+    setScope(remaining[0]?.id ?? ALL_GROUPS)
+  }
   const scopeLabel = scope === ALL_GROUPS ? "All groups" : activeGroup?.name
 
   return (
@@ -191,7 +197,7 @@ function ActiveSessionPage() {
       toolbar={
         <>
           <GroupSwitcher
-            groups={GROUPS}
+            groups={groups}
             value={scope}
             onValueChange={setScope}
           />
@@ -202,6 +208,8 @@ function ActiveSessionPage() {
               onOpenLanguageSettings={() => setSheet("language")}
               onInviteStudents={() => setSheet("invite")}
               onEndSession={() => {}}
+              groupName={activeGroup?.name}
+              onRemoveGroup={removeActiveGroup}
             />
           </div>
         </>
@@ -226,7 +234,7 @@ function ActiveSessionPage() {
         />
         <TranscriptCard
           className="h-[60svh] lg:h-full"
-          groups={GROUPS}
+          groups={groups}
           scope={scope}
           status={activeGroup?.status ?? "recording"}
           translationLanguage="English"

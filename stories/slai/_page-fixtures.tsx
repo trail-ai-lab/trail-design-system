@@ -75,6 +75,8 @@ export function PageSidebar({
       students={showStudents ? STUDENTS : undefined}
       activeStudent={activeStudent}
       defaultOpenClass={activeSession?.className ?? "Physics"}
+      onDownload={() => {}}
+      onLogout={() => {}}
     />
   )
 }

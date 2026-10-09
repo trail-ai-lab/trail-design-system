@@ -48,3 +48,26 @@ export const WithSelection: Story = {
 export const Disabled: Story = {
   args: { disabled: true, value: ["Hindi"] },
 }
+
+/** `{ value, label }` options: `value` holds codes, badges show names. */
+export const WithCodes: Story = {
+  args: {
+    options: [
+      { value: "en", label: "English" },
+      { value: "es", label: "Spanish" },
+      { value: "zh", label: "Chinese" },
+      { value: "hi", label: "Hindi" },
+    ],
+  },
+  render: function Controlled(args) {
+    const [value, setValue] = React.useState<string[]>(["en", "es"])
+    return (
+      <div className="flex flex-col gap-2">
+        <LanguageMultiSelect {...args} value={value} onValueChange={setValue} />
+        <p className="text-xs text-muted-foreground">
+          Stored value: {value.join(", ") || "(none)"}
+        </p>
+      </div>
+    )
+  },
+}

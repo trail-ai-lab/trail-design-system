@@ -26,6 +26,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { Dropzone } from "@/components/patterns/dropzone"
 import { formatBytes } from "@/lib/format"
 import { LanguageMultiSelect } from "@/components/slai/language-multi-select"
+import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 /**
  * "Add source" card: drop a PDF or audio file, optionally rename it and set
@@ -38,7 +39,8 @@ function AddSourceForm({
   onUpload,
   className,
 }: {
-  languageOptions: string[]
+  /** Languages to offer; `{ value, label }` pairs report values */
+  languageOptions: LanguageOptions
   accept?: string
   uploading?: boolean
   /** `name` is empty when the user kept the original file name */

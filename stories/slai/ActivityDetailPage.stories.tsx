@@ -81,7 +81,8 @@ function ActivityDetailPage({
         </>
       }
     >
-      <div className="flex min-h-0 flex-1 flex-col p-(--shell-gap)">
+      {/* Edge to edge on phones: the viewer drops its frame there. */}
+      <div className="flex min-h-0 flex-1 flex-col sm:p-(--shell-gap)">
         <ActivityViewer
           variant={variant}
           title={name}

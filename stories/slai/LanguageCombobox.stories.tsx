@@ -45,3 +45,30 @@ export const WithOriginalOption: Story = {
 }
 
 export const Disabled: Story = { args: { disabled: true, value: "Spanish" } }
+
+/**
+ * `{ value, label }` options: the value (a code) is stored and reported,
+ * the label is shown. Search matches both, e.g. "es".
+ */
+export const WithCodes: Story = {
+  args: {
+    languages: [
+      { value: "en", label: "English" },
+      { value: "es", label: "Spanish" },
+      { value: "zh-CN", label: "Chinese (Simplified)" },
+      { value: "mr", label: "Marathi" },
+    ],
+    noneLabel: "Original",
+  },
+  render: function Controlled(args) {
+    const [value, setValue] = React.useState<string | undefined>("es")
+    return (
+      <div className="flex flex-col gap-2">
+        <LanguageCombobox {...args} value={value} onValueChange={setValue} />
+        <p className="text-xs text-muted-foreground">
+          Stored value: {value ?? "(original)"}
+        </p>
+      </div>
+    )
+  },
+}

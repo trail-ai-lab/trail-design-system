@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   AudioLinesIcon,
+  CaptionsOffIcon,
   ClockIcon,
   LanguagesIcon,
   QrCodeIcon,
@@ -31,6 +32,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
+import { NoisyAudioBanner } from "@/components/slai/noisy-audio-banner"
 import {
   SessionStatusBadge,
   type SessionStatus,
@@ -41,6 +43,10 @@ export interface TranscriptEntry {
   id: string
   /** Formatted time of the utterance, e.g. "3:42 PM" */
   timestamp?: string
+  /** Exact time (epoch ms or ISO string). Orders lines across groups and
+   * places the check-in divider; without it lines are ordered by
+   * `timestamp`, to the minute. */
+  at?: number | string
   /** Detected language of the utterance, e.g. "Marathi" — the speaker is unknown */
   language: string
   original: string
@@ -58,7 +64,42 @@ export interface TranscriptGroup {
   /** Formatted start time, e.g. "3:38 PM" */
   startedAt?: string
   students?: string[]
+  /** The group's audio was flagged as too noisy for reliable transcription */
+  noisyAudio?: boolean
   entries: TranscriptEntry[]
+}
+
+function toTime(at: number | string) {
+  return typeof at === "number" ? at : Date.parse(at)
+}
+
+/** Chronological order: exact times when both lines have one, else minutes. */
+function compareEntries(a: TranscriptEntry, b: TranscriptEntry) {
+  if (a.at !== undefined && b.at !== undefined) {
+    return toTime(a.at) - toTime(b.at)
+  }
+  return toMinutes(a.timestamp) - toMinutes(b.timestamp)
+}
+
+function CheckInDivider({ label }: { label: string }) {
+  return (
+    <div
+      role="separator"
+      aria-label={`Checked in at ${label}`}
+      className="flex items-center gap-2 text-xs text-muted-foreground"
+    >
+      <span aria-hidden className="flex-1 border-t border-dashed" />
+      Checked in · {label}
+      <span aria-hidden className="flex-1 border-t border-dashed" />
+    </div>
+  )
+}
+
+/** "Group 1", "Group 1 and Group 2", "Group 1, Group 2 and Group 3". */
+function joinNames(names: string[]) {
+  return names.length <= 1
+    ? (names[0] ?? "")
+    : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`
 }
 
 /** Parse a "3:41 PM" display time into minutes for chronological merging. */
@@ -105,10 +146,15 @@ function TranscriptRow({
 
 /**
  * Hero card for the live session. Shows the active group's transcript — or
- * every group's, interleaved and badged — with translations stacked below
- * each utterance. The speaker is not identified; the detected language leads.
- * Also used after a session (with `title="Transcript"`) to show the raw,
- * speaker-unknown transcript alongside the diarized one.
+ * every group's, interleaved in time order and badged — with translations
+ * stacked below each utterance. The speaker is not identified; the detected
+ * language leads. Also used after a session (with `title="Transcript"`) to
+ * show the raw, speaker-unknown transcript alongside the diarized one.
+ *
+ * Groups flagged `noisyAudio` get a warning above the lines; `checkIn` marks
+ * where the latest check-in happened; `interimText` shows words still being
+ * recognized; `transcriptionEnabled={false}` explains that live
+ * transcription is off.
  */
 function TranscriptCard({
   title = "Live transcript",
@@ -119,6 +165,10 @@ function TranscriptCard({
   allLabel = "All groups",
   autoScroll = true,
   highlightedEntryId,
+  checkIn,
+  interimText,
+  transcriptionEnabled = true,
+  onOpenLanguageSettings,
   className,
 }: {
   title?: React.ReactNode
@@ -134,6 +184,15 @@ function TranscriptCard({
   autoScroll?: boolean
   /** Entry to emphasize, e.g. the sentence a chat answer cites */
   highlightedEntryId?: string
+  /** The latest check-in: a divider marks where it falls among the lines
+   * (needs `at` on entries). `label` is the formatted time, e.g. "3:42 PM". */
+  checkIn?: { at: number | string; label: string }
+  /** Words still being recognized, shown muted after the last line */
+  interimText?: string
+  /** Live transcription is on for the session; when off, the card says so */
+  transcriptionEnabled?: boolean
+  /** Adds a "Language settings" button to the transcription-off state */
+  onOpenLanguageSettings?: () => void
   className?: string
 }) {
   const isAll = scope === ALL_GROUPS
@@ -145,9 +204,7 @@ function TranscriptCard({
     if (isAll) {
       return groups
         .flatMap((group) => group.entries.map((entry) => ({ entry, group })))
-        .sort(
-          (a, b) => toMinutes(a.entry.timestamp) - toMinutes(b.entry.timestamp)
-        )
+        .sort((a, b) => compareEntries(a.entry, b.entry))
     }
     return (activeGroup?.entries ?? []).map((entry) => ({
       entry,
@@ -155,13 +212,27 @@ function TranscriptCard({
     }))
   }, [isAll, groups, activeGroup])
 
+  // The divider goes before the first line after the check-in, or after the
+  // last line when nothing has been said since.
+  const checkInIndex = React.useMemo(() => {
+    if (!checkIn || rows.length === 0) return -1
+    if (!rows.every(({ entry }) => entry.at !== undefined)) return -1
+    const time = toTime(checkIn.at)
+    const index = rows.findIndex(({ entry }) => toTime(entry.at!) > time)
+    return index === -1 ? rows.length : index
+  }, [checkIn, rows])
+
+  const noisyGroups = (isAll ? groups : activeGroup ? [activeGroup] : [])
+    .filter((group) => group.noisyAudio)
+    .map((group) => group.name)
+
   React.useEffect(() => {
     if (!autoScroll) return
     const viewport = scrollRef.current?.querySelector(
       '[data-slot="scroll-area-viewport"]'
     )
     viewport?.scrollTo({ top: viewport.scrollHeight })
-  }, [autoScroll, scope, rows.length])
+  }, [autoScroll, scope, rows.length, interimText])
 
   return (
     <Card className={cn("flex min-h-0 flex-col", className)}>
@@ -208,8 +279,39 @@ function TranscriptCard({
         )}
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
+        {transcriptionEnabled && noisyGroups.length > 0 && (
+          <div className="px-(--card-spacing) pb-3">
+            <NoisyAudioBanner
+              title={
+                isAll
+                  ? `Audio may be too noisy in ${joinNames(noisyGroups)}`
+                  : undefined
+              }
+            />
+          </div>
+        )}
         <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
-          {rows.length === 0 ? (
+          {!transcriptionEnabled ? (
+            <Empty className="h-full">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <CaptionsOffIcon />
+                </EmptyMedia>
+                <EmptyTitle>Live transcription is off</EmptyTitle>
+                <EmptyDescription>
+                  Turn it on in language settings to see what groups say.
+                </EmptyDescription>
+              </EmptyHeader>
+              {onOpenLanguageSettings && (
+                <EmptyContent>
+                  <Button variant="outline" onClick={onOpenLanguageSettings}>
+                    <LanguagesIcon data-icon="inline-start" />
+                    Language settings
+                  </Button>
+                </EmptyContent>
+              )}
+            </Empty>
+          ) : rows.length === 0 && !interimText ? (
             <Empty className="h-full">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
@@ -228,14 +330,29 @@ function TranscriptCard({
               aria-label="Transcript"
               className="flex flex-col gap-5 px-(--card-spacing) py-1"
             >
-              {rows.map(({ entry, group }) => (
-                <TranscriptRow
-                  key={`${group?.id}-${entry.id}`}
-                  entry={entry}
-                  groupName={isAll ? group?.name : undefined}
-                  highlighted={entry.id === highlightedEntryId}
-                />
+              {rows.map(({ entry, group }, index) => (
+                <React.Fragment key={`${group?.id}-${entry.id}`}>
+                  {index === checkInIndex && checkIn && (
+                    <CheckInDivider label={checkIn.label} />
+                  )}
+                  <TranscriptRow
+                    entry={entry}
+                    groupName={isAll ? group?.name : undefined}
+                    highlighted={entry.id === highlightedEntryId}
+                  />
+                </React.Fragment>
               ))}
+              {checkInIndex === rows.length && checkIn && (
+                <CheckInDivider label={checkIn.label} />
+              )}
+              {interimText && (
+                <p
+                  data-slot="transcript-interim"
+                  className="pl-9 text-sm text-muted-foreground italic"
+                >
+                  {interimText}
+                </p>
+              )}
             </div>
           )}
         </ScrollArea>

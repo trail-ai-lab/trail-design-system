@@ -20,7 +20,7 @@ export const TwoLevels: Story = {
   args: { items: [{ label: "Physics" }, { label: "Period 3 — Aug 21" }] },
 }
 
-/** Ancestors with `href` render as links. */
+/** Ancestors with `href` render as links, using the `LinkProvider` component (Next.js `Link` in an app). */
 export const WithLinks: Story = {
   args: {
     items: [

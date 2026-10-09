@@ -1,6 +1,7 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
+import { LinkProvider } from "@/components/patterns/link-provider"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
 import { RenameDialog } from "@/components/slai/rename-dialog"
 import {
@@ -87,14 +88,22 @@ export const WithFileTypes: Story = {
   },
 }
 
-/** The Rename / Delete menu items report a target; the app opens the dialogs. */
+/**
+ * The row menus report a target (with its `id` when rows have one); the app
+ * opens the dialogs. Source rows get a Download item when `onDownload` is set.
+ */
 export const RowActions: Story = {
   render: function RowActionsStory(args) {
     const [rename, setRename] = React.useState<SidebarItemTarget | null>(null)
     const [remove, setRemove] = React.useState<SidebarItemTarget | null>(null)
     return (
       <>
-        <SlaiSidebar {...args} onRename={setRename} onDelete={setRemove} />
+        <SlaiSidebar
+          {...args}
+          onRename={setRename}
+          onDelete={setRemove}
+          onDownload={() => {}}
+        />
         <RenameDialog
           open={rename !== null}
           onOpenChange={(open) => !open && setRename(null)}
@@ -123,5 +132,55 @@ export const WithStudents: Story = {
       { id: "liam", name: "Liam", language: "English" },
       { id: "rosa", name: "Rosa", language: "Spanish" },
     ],
+  },
+}
+
+/**
+ * Rows with an `href` (and nav items in `navHrefs`) render as links. They use
+ * the component from `LinkProvider` — Next.js `Link` in an app — so
+ * navigation stays client-side and respects `basePath`.
+ */
+export const WithLinks: Story = {
+  args: {
+    activeNav: "live",
+    navHrefs: {
+      live: "#live",
+      record: "#record",
+      source: "#add-source",
+      activities: "#activities",
+    },
+    classes: [
+      {
+        id: "physics",
+        name: "Physics",
+        sessions: [
+          { id: "p1", name: "Period 1", href: "#session-p1" },
+          {
+            id: "p3",
+            name: "Period 3 — Aug 21",
+            href: "#session-p3",
+            active: true,
+          },
+        ],
+      },
+    ],
+    sources: SOURCES.map((name, i) => ({
+      id: `source-${i}`,
+      name,
+      href: `#source-${i}`,
+    })),
+  },
+  render: (args) => (
+    <LinkProvider component="a">
+      <SlaiSidebar {...args} />
+    </LinkProvider>
+  ),
+}
+
+/** `onLogout` adds the account menu; `avatarUrl` shows the profile photo. */
+export const AccountMenu: Story = {
+  args: {
+    user: { ...USER, avatarUrl: "https://github.com/shadcn.png" },
+    onLogout: () => {},
   },
 }

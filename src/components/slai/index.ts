@@ -21,8 +21,9 @@ export {
   type LanguageSettingsValue,
 } from "./language-settings-form"
 export { LanguageSettingsSheet } from "./language-settings-sheet"
+export type { LanguageOption, LanguageOptions } from "./lib/language-option"
 export { NewSessionForm } from "./new-session-form"
-export { RecordingControl } from "./recording-control"
+export { RecordingControl, type RecordingState } from "./recording-control"
 export { GroupSetupForm } from "./group-setup-form"
 export { StudentChip } from "./student-chip"
 export { MicPermissionError } from "./mic-permission-error"

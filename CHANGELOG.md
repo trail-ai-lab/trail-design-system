@@ -5,6 +5,120 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.1.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.1.0`.
+
+### Minor Changes
+
+- **`LinkProvider` (new pattern):** sets the component design-system links render with. Wrap the
+  app once — `<LinkProvider component={Link}>` with Next.js `Link` — so links navigate
+  client-side and respect the app's `basePath`. Without it, links stay plain `<a>` elements.
+  `AppLink` renders an in-app link with it; `useLinkComponent()` reads it; type `LinkComponent`.
+- **In-app links use `LinkProvider`:** `PageBreadcrumb` (`items[].href`), `CardLink`,
+  `PersonRow` (`href`), `LoginForm` (`forgotPasswordHref`, `signupHref`), `SignupForm` and
+  `ForgotPasswordForm` (`loginHref`). External links (`AuthLayout` home and tool links,
+  `ActivityViewer`'s "Open in new tab", the invite join link) stay plain `<a>`.
+- **`SlaiSidebar` navigates.** Every row was a button with no way to act on a click; now:
+  - `navHrefs` (`Partial<Record<SlaiNavId, string>>`) turns the nav items into links.
+  - `href` on `SidebarSession`, `SidebarSource` and `SidebarStudent` turns those rows into links.
+  - Links use the `LinkProvider` component. Items without an href render as before.
+- **`SlaiSidebar` row ids:** optional `id` on `SidebarClass`, `SidebarSession` and
+  `SidebarSource`, used as the row key and reported back in `SidebarItemTarget` (`id`, plus
+  `parentId` for a session's class), so apps don't have to look rows up by name. `activeSource`
+  and `defaultOpenClass` accept an id or a name.
+- **`SlaiSidebar` Download:** `onDownload(target)` adds a Download item to source rows' menu.
+- **`SlaiSidebar` account menu:** `onLogout()` turns the footer's "…" button into an account menu
+  with "Log out". `SidebarUser.avatarUrl` shows a profile photo (initials as the fallback).
+- **`RecordingControl` can be driven by a real recorder.** New `state` (`RecordingState`:
+  `"idle" | "recording" | "paused"`) and `seconds` props, and `onStart` / `onStop` / `onPause` /
+  `onResume` events. Without `state` it keeps its own state and clock as before; the events fire
+  either way. `pausable={false}` hides Pause / Resume for recorders that can't pause.
+- **`RecordingControl` layout and captions:** Pause / Resume is now a labeled button under the
+  record button (was an icon-only button beside it). One caption set for teacher and student
+  screens: "Tap to start recording" · "Recording…" · "Paused — resume to continue, or stop to
+  finish" (replaces "Tap to record" and the student "Tap to pause recording", which was wrong —
+  tapping stops). The caption is a polite live region.
+- **`StudentRecordingScreen` can be driven by a real recorder:** passes `state`, `seconds`,
+  `status` and the recording events through to `RecordingControl`. While recording or paused,
+  the header shows a `SessionStatusBadge` ("Recording" / "Paused") in place of Leave, so a
+  student can't leave mid-recording. New `onDiscard` adds "Discard recording" with a
+  confirmation ("Discard this recording?" · Keep recording / Discard). New `noAudioDetected`
+  shows a "No audio detected" warning above the controls while recording.
+- **`AudioPlayerCard` plays real audio.** New `src` plays the file on an `<audio>` element and
+  takes the length from it (including `MediaRecorder` WebM files that report no duration).
+  Without `src`, playback is simulated over `durationSeconds` as before. Also new: a mute button,
+  `downloading` (spinner on the download button), `error` (shown inline in place of the controls;
+  playback failures show "Audio playback failed."), and `audioRef` for seeking from outside, e.g.
+  when a transcript line is played.
+- **`AudioPlayerCard` layout:** the decorative waveform is removed (its bars didn't reflect the
+  audio). `compact` is now a single row — play, "0:12 / 5:00", scrubber, mute, download — and
+  keeps the download button.
+- **Language pickers take `{ value, label }` options** (new types `LanguageOption`,
+  `LanguageOptions`), so apps can store codes (e.g. `en-US`) and show names ("English (US)").
+  Plain strings still work as both value and label. Applies to `LanguageCombobox` (`languages`),
+  `LanguageMultiSelect` (`options`), `LanguageSettingsForm`, and the `languageOptions` of
+  `AddSourceForm`, `RecordingReadyPanel` and `SaveRecordingDialog`. Search matches labels and
+  codes.
+- **`LanguageSettingsForm` separate lists:** `spokenLanguages` (Language 1 / 2) and
+  `translationLanguages` ("Translate to"), for apps whose speech-to-text and translation
+  languages differ; `languages` still sets both. `LanguageSettingsSheet` forwards all three.
+- **`NewSessionForm`:** `defaultLanguages` seeds the language settings (e.g. the teacher's saved
+  preference) and the three language list props are forwarded to the form.
+- **`LanguageSettingsForm` with transcription off:** live translation and the profanity filter
+  are hidden (they apply to the transcript), and turning transcription off also turns
+  translation off.
+- **`ActivityViewer` hosts real activities:**
+  - `onMessage(data, event)` receives what the activity posts (e.g. simulation events). Only
+    messages from the activity's own frame arrive; other windows are ignored.
+  - `sandbox={null}` renders the iframe without a sandbox (Unity WebGL needs this). New `allow`
+    (default `"autoplay; fullscreen"`), and fullscreen is allowed.
+  - `variant="vidyamap"` takes `children`: the app's native activity fills the viewer in place
+    of the placeholder form.
+- **`ActivityViewer` on phones:** the iframe fills the area edge to edge (no card frame); place
+  the viewer without padding there (`sm:p-(--shell-gap)`).
+- **`TranscriptCard` live-session states:**
+  - `TranscriptEntry.at` (exact time, epoch ms or ISO string) orders the "All groups" view by
+    when lines were said. Without it lines are still ordered by `timestamp`, to the minute.
+  - `checkIn` (`{ at, label }`) adds a "Checked in · 3:42 PM" divider where the latest
+    check-in falls among the lines.
+  - `TranscriptGroup.noisyAudio` shows a noisy-audio warning above the lines; in "All groups" one
+    warning names every flagged group ("Audio may be too noisy in Group 1 and Group 2").
+  - `interimText` shows words still being recognized, muted, after the last line.
+  - `transcriptionEnabled={false}` shows "Live transcription is off"; `onOpenLanguageSettings`
+    adds a "Language settings" button to it.
+- **`NoisyAudioBanner` default copy:** "Repetitive output was removed, so this transcript may be
+  incomplete. Move the device closer or reduce background noise."
+- **`SessionActions` can remove a group:** with a single group selected, pass its name as
+  `groupName` and handle `onRemoveGroup`. The Session menu then offers "Remove {group}…" (set
+  apart, destructive), confirmed first: "Remove Group 2?" · "Group 2 leaves this session and its
+  transcript is no longer shown. Students in it go back to set up a new group." · Remove group.
+  The Session menu now also shows when removal is the only action.
+- **`InvitePanel` / `InviteStudentsSheet` while the link is created:** `joinUrl` is optional;
+  without it the QR code is a placeholder, the link field reads "Generating link…", and copy,
+  open and "Generate new link" are disabled.
+- **`GroupSetupForm`:** `loading` (the group is being created: "Joining…" with a spinner, button
+  disabled so it can't be submitted twice) and `notice` (a warning at the top of the card, e.g.
+  "Your group was removed by the teacher. Please set up a new group to continue.").
+
+### Deprecated
+
+- **`ActivityViewer` `onClose`:** the floating close button can cover the activity's own
+  controls. Put the activity's name and a "Close activity" button in the page toolbar instead.
+  Still works; removed in the next major version.
+
+### Patch Changes
+
+- **`SlaiSidebar`:** the footer's "…" button did nothing; it now only renders when `onLogout` is
+  set. Row menus separate Delete from the other items with a divider.
+- **`AudioPlayerCard`:** the download button rendered even without `onDownload` and did nothing;
+  it now only shows when `onDownload` is set. At the end of a recording the play button is
+  labeled "Replay".
+- **`SessionActions`:** the Session menu has a minimum width, so "Language settings" no longer
+  wraps onto two lines.
+- **`GroupSetupForm`:** the group name is trimmed before `onContinue`, and the same student can't
+  be added twice ("Mei is already in the group.").
+
 ## 1.0.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.0.0`.

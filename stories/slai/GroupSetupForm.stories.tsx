@@ -15,3 +15,14 @@ export default meta
 type Story = StoryObj<typeof GroupSetupForm>
 
 export const Default: Story = {}
+
+/** The group is being created: the button shows "Joining…" and is disabled. */
+export const Joining: Story = { args: { loading: true } }
+
+/** Why the student is back here, e.g. the teacher removed their group. */
+export const WithNotice: Story = {
+  args: {
+    notice:
+      "Your group was removed by the teacher. Please set up a new group to continue.",
+  },
+}

@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { AppLink } from "@/components/patterns/link-provider"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,7 +13,7 @@ import {
 
 export interface PageBreadcrumbItem {
   label: React.ReactNode
-  /** Link target; omit for a non-navigable ancestor */
+  /** Link target (rendered with the `LinkProvider` component); omit for a non-navigable ancestor */
   href?: string
 }
 
@@ -41,8 +42,8 @@ function PageBreadcrumb({
                     {item.label}
                   </BreadcrumbPage>
                 ) : item.href ? (
-                  <BreadcrumbLink href={item.href} className="truncate">
-                    {item.label}
+                  <BreadcrumbLink asChild className="truncate">
+                    <AppLink href={item.href}>{item.label}</AppLink>
                   </BreadcrumbLink>
                 ) : (
                   <span className="truncate">{item.label}</span>

@@ -18,11 +18,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  languageLabel,
+  toLanguageOptions,
+  type LanguageOptions,
+} from "@/components/slai/lib/language-option"
 
 /**
  * Searchable single-select language picker. `noneLabel` adds a leading
  * option that clears the value — e.g. "Original" for a translation picker
  * (show the untranslated text) or "None" for an optional second language.
+ * Options can be `{ value, label }` pairs (store a code, show a name);
+ * search matches both.
  */
 function LanguageCombobox({
   value,
@@ -35,10 +42,12 @@ function LanguageCombobox({
   "aria-label": ariaLabel,
   className,
 }: {
+  /** The chosen option's `value` */
   value?: string
-  /** Receives `undefined` when the `noneLabel` option is chosen */
+  /** Receives the chosen option's `value`, or `undefined` when the
+   * `noneLabel` option is chosen */
   onValueChange: (value: string | undefined) => void
-  languages: string[]
+  languages: LanguageOptions
   placeholder?: string
   noneLabel?: string
   disabled?: boolean
@@ -48,8 +57,8 @@ function LanguageCombobox({
   className?: string
 }) {
   const [open, setOpen] = React.useState(false)
-  const label =
-    value ?? (noneLabel && value === undefined ? noneLabel : undefined)
+  const options = toLanguageOptions(languages)
+  const label = value !== undefined ? languageLabel(options, value) : noneLabel
 
   const choose = (next: string | undefined) => {
     onValueChange(next)
@@ -99,14 +108,15 @@ function LanguageCombobox({
                   {value === undefined && <CheckIcon className="ml-auto" />}
                 </CommandItem>
               )}
-              {languages.map((language) => (
+              {options.map((option) => (
                 <CommandItem
-                  key={language}
-                  value={language}
-                  onSelect={() => choose(language)}
+                  key={option.value}
+                  value={option.label}
+                  keywords={[option.value]}
+                  onSelect={() => choose(option.value)}
                 >
-                  {language}
-                  {value === language && <CheckIcon className="ml-auto" />}
+                  {option.label}
+                  {value === option.value && <CheckIcon className="ml-auto" />}
                 </CommandItem>
               ))}
             </CommandGroup>

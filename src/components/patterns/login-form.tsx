@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { GoogleButton } from "@/components/patterns/google-button"
+import { AppLink } from "@/components/patterns/link-provider"
 
 /**
  * Email + password sign-in with a Google option. Presentational: the app
@@ -86,12 +87,12 @@ function LoginForm({
               <div className="flex items-center">
                 <FieldLabel htmlFor={`${uid}-password`}>Password</FieldLabel>
                 {forgotPasswordHref && (
-                  <a
+                  <AppLink
                     href={forgotPasswordHref}
                     className="ml-auto text-sm text-muted-foreground underline-offset-4 hover:underline"
                   >
                     Forgot password?
-                  </a>
+                  </AppLink>
                 )}
               </div>
               <Input
@@ -121,12 +122,12 @@ function LoginForm({
             {signupHref && (
               <p className="text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
-                <a
+                <AppLink
                   href={signupHref}
                   className="text-foreground underline underline-offset-4"
                 >
                   Sign up
-                </a>
+                </AppLink>
               </p>
             )}
           </FieldGroup>

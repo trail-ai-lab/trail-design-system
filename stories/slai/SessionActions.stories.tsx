@@ -32,3 +32,15 @@ export const WaitingForGroups: Story = {
     onEndSession: () => {},
   },
 }
+
+/** A single group selected: the Session menu offers to remove it, after confirming. */
+export const WithGroupSelected: Story = {
+  args: {
+    onAddActivity: () => {},
+    onOpenLanguageSettings: () => {},
+    onInviteStudents: () => {},
+    onEndSession: () => {},
+    groupName: "Group 2",
+    onRemoveGroup: () => {},
+  },
+}

@@ -10,6 +10,7 @@ import {
 import QRCode from "react-qr-code"
 
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { FieldLabel } from "@/components/ui/field"
 import {
   InputGroup,
@@ -29,13 +30,16 @@ import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
 /**
  * QR code + join link for students to enter the session.
  * Usable standalone (e.g. projected full screen) or inside the sheet below.
+ * Without a `joinUrl` (the link is still being created) it shows placeholders
+ * and "Generating link…", with the link actions disabled.
  */
 function InvitePanel({
   joinUrl,
   onGenerateNewLink,
   className,
 }: {
-  joinUrl: string
+  /** Omit while the link is being created */
+  joinUrl?: string
   onGenerateNewLink?: () => void
   className?: string
 }) {
@@ -43,6 +47,7 @@ function InvitePanel({
   const [copied, setCopied] = React.useState(false)
 
   const copyLink = async () => {
+    if (!joinUrl) return
     try {
       await navigator.clipboard.writeText(joinUrl)
       setCopied(true)
@@ -58,11 +63,15 @@ function InvitePanel({
         {/* QR quiet zone must stay white in both themes or scanners fail */}
         {/* eslint-disable-next-line trail/no-raw-colors -- QR codes need a white background to scan */}
         <div className="rounded-3xl border border-border bg-white p-6">
-          <QRCode
-            value={joinUrl}
-            size={192}
-            aria-label="Session join QR code"
-          />
+          {joinUrl ? (
+            <QRCode
+              value={joinUrl}
+              size={192}
+              aria-label="Session join QR code"
+            />
+          ) : (
+            <Skeleton className="size-48" />
+          )}
         </div>
         <p className="text-sm text-muted-foreground">
           Scan with a mobile device to join
@@ -75,33 +84,37 @@ function InvitePanel({
           <InputGroupInput
             id={`${uid}-join-link`}
             readOnly
-            value={joinUrl}
+            value={joinUrl ?? ""}
+            placeholder="Generating link…"
             className="font-mono text-xs"
           />
           <InputGroupAddon align="inline-end">
             <InputGroupButton
               size="icon-xs"
               aria-label="Copy join link"
+              disabled={!joinUrl}
               onClick={copyLink}
             >
               {copied ? <CheckIcon className="text-primary" /> : <CopyIcon />}
             </InputGroupButton>
-            <InputGroupButton
-              size="icon-xs"
-              aria-label="Open join link"
-              asChild
-            >
-              <a href={joinUrl} target="_blank" rel="noreferrer">
-                <ExternalLinkIcon />
-              </a>
-            </InputGroupButton>
+            {joinUrl && (
+              <InputGroupButton
+                size="icon-xs"
+                aria-label="Open join link"
+                asChild
+              >
+                <a href={joinUrl} target="_blank" rel="noreferrer">
+                  <ExternalLinkIcon />
+                </a>
+              </InputGroupButton>
+            )}
           </InputGroupAddon>
         </InputGroup>
       </div>
 
       <ConfirmDialog
         trigger={
-          <Button variant="outline" className="mt-4 w-full">
+          <Button variant="outline" className="mt-4 w-full" disabled={!joinUrl}>
             <RefreshCwIcon data-icon="inline-start" />
             Generate new link
           </Button>
@@ -128,7 +141,8 @@ function InviteStudentsSheet({
 }: {
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  joinUrl: string
+  /** Omit while the link is being created */
+  joinUrl?: string
   onGenerateNewLink?: () => void
   children?: React.ReactNode
 }) {

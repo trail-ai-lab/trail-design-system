@@ -33,6 +33,7 @@ import {
   defaultLanguageSettings,
   type LanguageSettingsValue,
 } from "@/components/slai/language-settings-form"
+import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 const NEW_CLASS = "__new_class__"
 
@@ -46,6 +47,10 @@ function NewSessionForm({
   onStartSession,
   loading = false,
   allowNewClass = false,
+  defaultLanguages = defaultLanguageSettings,
+  languages,
+  spokenLanguages,
+  translationLanguages,
   className,
 }: {
   classes: string[]
@@ -59,6 +64,12 @@ function NewSessionForm({
   loading?: boolean
   /** Adds a "+ New class" option that reveals a free-text class input */
   allowNewClass?: boolean
+  /** Initial language settings, e.g. the teacher's saved preference */
+  defaultLanguages?: LanguageSettingsValue
+  /** Language lists, passed to `LanguageSettingsForm` */
+  languages?: LanguageOptions
+  spokenLanguages?: LanguageOptions
+  translationLanguages?: LanguageOptions
   className?: string
 }) {
   const uid = React.useId()
@@ -67,9 +78,7 @@ function NewSessionForm({
   const [newClass, setNewClass] = React.useState("")
   const creatingClass = klass === NEW_CLASS
   const resolvedClass = creatingClass ? newClass.trim() : klass
-  const languagesRef = React.useRef<LanguageSettingsValue>(
-    defaultLanguageSettings
-  )
+  const languagesRef = React.useRef<LanguageSettingsValue>(defaultLanguages)
 
   return (
     <Card className={className}>
@@ -133,6 +142,10 @@ function NewSessionForm({
           <FieldSet>
             <FieldLegend variant="label">Languages</FieldLegend>
             <LanguageSettingsForm
+              defaultValue={defaultLanguages}
+              languages={languages}
+              spokenLanguages={spokenLanguages}
+              translationLanguages={translationLanguages}
               onValueChange={(value) => {
                 languagesRef.current = value
               }}

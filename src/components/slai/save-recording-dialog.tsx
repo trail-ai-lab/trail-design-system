@@ -13,6 +13,7 @@ import {
   RecordingUploadingPanel,
   UploadErrorPanel,
 } from "@/components/slai/recording-panels"
+import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 export type SaveRecordingPhase = "form" | "uploading" | "done" | "error"
 
@@ -44,7 +45,8 @@ function SaveRecordingDialog({
   durationSeconds: number
   sizeBytes: number
   defaultFilename: string
-  languageOptions: string[]
+  /** Languages to offer; `{ value, label }` pairs report values */
+  languageOptions: LanguageOptions
   uploadAttempt?: number
   uploadTotalAttempts?: number
   errorMessage?: string

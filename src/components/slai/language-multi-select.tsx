@@ -20,10 +20,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  languageLabel,
+  toLanguageOptions,
+  type LanguageOptions,
+} from "@/components/slai/lib/language-option"
 
 /**
  * Searchable multi-select for languages. Selected languages are listed as
  * removable badges under the trigger; `helperText` explains the field.
+ * Options can be `{ value, label }` pairs: `value` holds the option values,
+ * badges show the labels.
  */
 function LanguageMultiSelect({
   options,
@@ -37,7 +44,8 @@ function LanguageMultiSelect({
   "aria-label": ariaLabel,
   className,
 }: {
-  options: string[]
+  options: LanguageOptions
+  /** The selected options' values */
   value?: string[]
   defaultValue?: string[]
   onValueChange?: (value: string[]) => void
@@ -55,6 +63,8 @@ function LanguageMultiSelect({
     defaultValue,
     onChange: onValueChange,
   })
+
+  const choices = toLanguageOptions(options)
 
   const toggle = (language: string) =>
     setValue(
@@ -100,14 +110,15 @@ function LanguageMultiSelect({
             <CommandList>
               <CommandEmpty>No language found.</CommandEmpty>
               <CommandGroup>
-                {options.map((language) => (
+                {choices.map((option) => (
                   <CommandItem
-                    key={language}
-                    value={language}
-                    onSelect={() => toggle(language)}
+                    key={option.value}
+                    value={option.label}
+                    keywords={[option.value]}
+                    onSelect={() => toggle(option.value)}
                   >
-                    {language}
-                    {value.includes(language) && (
+                    {option.label}
+                    {value.includes(option.value) && (
                       <CheckIcon className="ml-auto" />
                     )}
                   </CommandItem>
@@ -122,10 +133,10 @@ function LanguageMultiSelect({
         <div className="flex flex-wrap gap-1.5">
           {value.map((language) => (
             <Badge key={language} variant="secondary" className="gap-1">
-              {language}
+              {languageLabel(choices, language)}
               <button
                 type="button"
-                aria-label={`Remove ${language}`}
+                aria-label={`Remove ${languageLabel(choices, language)}`}
                 disabled={disabled}
                 onClick={() => toggle(language)}
                 className="rounded-full outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"

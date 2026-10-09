@@ -11,6 +11,7 @@ import {
   LanguageSettingsForm,
   type LanguageSettingsValue,
 } from "@/components/slai/language-settings-form"
+import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 /**
  * Side panel for changing language settings on an active session.
@@ -22,6 +23,9 @@ function LanguageSettingsSheet({
   value,
   defaultValue,
   onValueChange,
+  languages,
+  spokenLanguages,
+  translationLanguages,
   children,
 }: {
   open?: boolean
@@ -30,6 +34,10 @@ function LanguageSettingsSheet({
   value?: LanguageSettingsValue
   defaultValue?: LanguageSettingsValue
   onValueChange?: (value: LanguageSettingsValue) => void
+  /** Language lists, passed to `LanguageSettingsForm` */
+  languages?: LanguageOptions
+  spokenLanguages?: LanguageOptions
+  translationLanguages?: LanguageOptions
   /** Optional trigger, e.g. <SheetTrigger asChild><Button/></SheetTrigger> */
   children?: React.ReactNode
 }) {
@@ -48,6 +56,9 @@ function LanguageSettingsSheet({
             value={value}
             defaultValue={defaultValue}
             onValueChange={onValueChange}
+            languages={languages}
+            spokenLanguages={spokenLanguages}
+            translationLanguages={translationLanguages}
           />
         </div>
       </SheetContent>

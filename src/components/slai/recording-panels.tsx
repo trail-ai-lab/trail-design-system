@@ -18,6 +18,7 @@ import { formatBytes, formatDuration } from "@/lib/format"
 import { LanguageMultiSelect } from "@/components/slai/language-multi-select"
 import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
 import { IconTile } from "@/components/patterns/icon-tile"
+import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 /** Splits "lesson.webm" into ["lesson", ".webm"] so the extension stays fixed. */
 function splitExtension(filename: string): [string, string] {
@@ -57,7 +58,8 @@ function RecordingReadyPanel({
   durationSeconds: number
   sizeBytes: number
   defaultFilename: string
-  languageOptions: string[]
+  /** Languages to offer; `{ value, label }` pairs report values */
+  languageOptions: LanguageOptions
   /** Receives the final file name (with extension) and spoken languages */
   onUpload: (filename: string, languages: string[]) => void
   onDiscard?: () => void

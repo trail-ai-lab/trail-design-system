@@ -6,7 +6,7 @@ import { InsightCallout } from "@/components/slai/insight-callout"
  */
 function NoisyAudioBanner({
   title = "Audio may be too noisy",
-  description = "Transcription accuracy may suffer. Move to a quieter spot or closer to the microphone.",
+  description = "Repetitive output was removed, so this transcript may be incomplete. Move the device closer or reduce background noise.",
   className,
 }: {
   title?: string
