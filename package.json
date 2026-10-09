@@ -1,6 +1,6 @@
 {
   "name": "@trail-ai-lab/trail-design-system",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": false,
   "license": "MIT",
   "description": "TRAIL Lab design system — shared foundations, primitives and patterns for TRAIL lab tools (SLAI, Lab Website).",

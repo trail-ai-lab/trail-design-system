@@ -5,6 +5,19 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.4.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.4.0`.
+
+### Minor Changes
+
+- **`ActivityLogCard` expandable events:** `ActivityLogEvent.details` (`{ label, value }[]`) adds a
+  "Show details" toggle that reveals them under the event, e.g. every setting and result of a run.
+- **`TranscriptCard` `action`:** a header action beside the scope badge, e.g. "Retranscribe…".
+- **`RecordedTranscriptCard` `manageSpeakers`:** set `false` when speaker names come from elsewhere
+  (e.g. assigned to students in a `ContributionPanel`). The card then hides its rename / add /
+  remove controls and shows `speakers` as passed; before, later changes to `speakers` were ignored.
+
 ## 1.3.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.3.0`.

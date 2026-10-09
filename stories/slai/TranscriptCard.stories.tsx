@@ -1,4 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { RefreshCwIcon } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import {
@@ -287,6 +290,23 @@ export const SingleStream: Story = {
     scope: "recording",
     translationLanguage: "English",
     interimText: "so the steeper ramp",
+    className: "h-full",
+  },
+}
+
+/** `action` adds a header button beside the scope badge, e.g. Retranscribe. */
+export const WithAction: Story = {
+  args: {
+    title: "Transcript",
+    groups: GROUPS,
+    scope: "group-1",
+    autoScroll: false,
+    action: (
+      <Button variant="outline" size="sm">
+        <RefreshCwIcon data-icon="inline-start" />
+        Retranscribe…
+      </Button>
+    ),
     className: "h-full",
   },
 }

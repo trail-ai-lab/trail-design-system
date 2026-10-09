@@ -148,6 +148,7 @@ function RecordedTranscriptCard({
   highlightedEntryId,
   playingEntryId,
   onPlayEntry,
+  manageSpeakers = true,
   className,
 }: {
   /** Detected speakers; `name` is blank until the teacher assigns one */
@@ -160,9 +161,14 @@ function RecordedTranscriptCard({
   playingEntryId?: string
   /** Adds a per-utterance play button; called with the entry to toggle */
   onPlayEntry?: (entry: RecordedEntry) => void
+  /** Offer renaming, adding and removing speakers here. Turn off when names
+   * come from elsewhere (e.g. assigned to students in a ContributionPanel):
+   * the card then shows `speakers` as passed, kept in sync. */
+  manageSpeakers?: boolean
   className?: string
 }) {
-  const [speakers, setSpeakers] = React.useState(speakersProp)
+  const [managed, setSpeakers] = React.useState(speakersProp)
+  const speakers = manageSpeakers ? managed : speakersProp
   const addedCount = React.useRef(0)
 
   const commit = (next: RecordedSpeaker[]) => {
@@ -198,14 +204,16 @@ function RecordedTranscriptCard({
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
         <CardTitle>Transcript</CardTitle>
-        <CardAction>
-          <ManageSpeakers
-            speakers={speakers}
-            onRename={rename}
-            onAdd={add}
-            onRemove={remove}
-          />
-        </CardAction>
+        {manageSpeakers && (
+          <CardAction>
+            <ManageSpeakers
+              speakers={speakers}
+              onRename={rename}
+              onAdd={add}
+              onRemove={remove}
+            />
+          </CardAction>
+        )}
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea className="min-h-0 flex-1">

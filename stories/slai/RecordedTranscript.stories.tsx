@@ -87,3 +87,12 @@ export const WithSegmentPlayback: Story = {
     onPlayEntry: () => {},
   },
 }
+
+/**
+ * `manageSpeakers={false}` when names come from elsewhere (e.g. speakers
+ * assigned to students in a ContributionPanel): no rename controls, and the
+ * card follows `speakers` as it changes.
+ */
+export const AssignedElsewhere: Story = {
+  args: { speakers: SPEAKERS, entries: ENTRIES, manageSpeakers: false },
+}

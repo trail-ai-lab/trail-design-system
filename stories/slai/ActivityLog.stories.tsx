@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { MapIcon, ShapesIcon, SlidersHorizontalIcon } from "lucide-react"
+import {
+  FlagIcon,
+  MapIcon,
+  ShapesIcon,
+  SlidersHorizontalIcon,
+} from "lucide-react"
 
 import { ActivityLogCard } from "@/components/slai/activity-log-card"
 
@@ -62,5 +67,41 @@ export const Empty: Story = {
   args: {
     scopeLabel: "Group 2",
     events: [],
+  },
+}
+
+/** Events with `details` expand to show every setting and result of a run. */
+export const WithDetails: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    events: [
+      {
+        id: "1",
+        icon: ShapesIcon,
+        title: "Inclined Plane started",
+        time: "3:40 PM",
+      },
+      {
+        id: "2",
+        icon: SlidersHorizontalIcon,
+        title: "Ramp angle",
+        detail: "15° → 30°",
+        time: "3:41 PM",
+      },
+      {
+        id: "3",
+        icon: FlagIcon,
+        title: "Trial 1 completed",
+        detail: "Ball reached the bottom in 1.8 s",
+        time: "3:42 PM",
+        details: [
+          { label: "Ramp angle", value: "30°" },
+          { label: "Mass", value: "0.5 kg" },
+          { label: "Friction", value: "0.1" },
+          { label: "Time", value: "1.8 s" },
+          { label: "Final speed", value: "3.1 m/s" },
+        ],
+      },
+    ],
   },
 }

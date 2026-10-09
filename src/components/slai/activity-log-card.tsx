@@ -1,8 +1,11 @@
 "use client"
 
-import { ListIcon, type LucideIcon } from "lucide-react"
+import * as React from "react"
+import { ChevronDownIcon, ListIcon, type LucideIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardAction,
@@ -31,11 +34,14 @@ export interface ActivityLogEvent {
   time?: string
   /** Optional trailing value, e.g. "3 runs" */
   value?: string
+  /** Expandable specifics, e.g. every setting and result of a run */
+  details?: { label: string; value: string }[]
 }
 
 /**
  * Log of what happened in the session's activity — which trails were run
- * and which simulation values students changed, in order.
+ * and which simulation values students changed, in order. Events with
+ * `details` expand to show them.
  */
 function ActivityLogCard({
   events,
@@ -47,6 +53,17 @@ function ActivityLogCard({
   scopeLabel?: string
   className?: string
 }) {
+  const uid = React.useId()
+  const [expanded, setExpanded] = React.useState<Set<string>>(new Set())
+  const toggle = (id: string) =>
+    setExpanded((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  const anyDetails = events.some((event) => event.details?.length)
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -76,32 +93,77 @@ function ActivityLogCard({
             <TableBody>
               {events.map((event) => {
                 const Icon = event.icon
+                const isExpanded = expanded.has(event.id)
+                const hasDetails = !!event.details?.length
                 return (
-                  <TableRow key={event.id}>
-                    <TableCell className="w-10">
-                      <IconTile>
-                        <Icon className="text-muted-foreground" />
-                      </IconTile>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{event.title}</span>
-                        {event.detail && (
-                          <span className="text-sm text-muted-foreground">
-                            {event.detail}
-                          </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground tabular-nums">
-                      {event.time}
-                    </TableCell>
-                    {event.value && (
-                      <TableCell className="text-right text-sm font-medium tabular-nums">
-                        {event.value}
+                  <React.Fragment key={event.id}>
+                    <TableRow>
+                      <TableCell className="w-10">
+                        <IconTile>
+                          <Icon className="text-muted-foreground" />
+                        </IconTile>
                       </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{event.title}</span>
+                          {event.detail && (
+                            <span className="text-sm text-muted-foreground">
+                              {event.detail}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground tabular-nums">
+                        {event.time}
+                      </TableCell>
+                      {event.value && (
+                        <TableCell className="text-right text-sm font-medium tabular-nums">
+                          {event.value}
+                        </TableCell>
+                      )}
+                      {anyDetails && (
+                        <TableCell className="w-10 text-right">
+                          {hasDetails && (
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-expanded={isExpanded}
+                              aria-controls={`${uid}-${event.id}`}
+                              aria-label={`${isExpanded ? "Hide" : "Show"} details for ${event.title}`}
+                              onClick={() => toggle(event.id)}
+                            >
+                              <ChevronDownIcon
+                                className={cn(
+                                  "transition-transform duration-fast",
+                                  isExpanded && "rotate-180"
+                                )}
+                              />
+                            </Button>
+                          )}
+                        </TableCell>
+                      )}
+                    </TableRow>
+                    {hasDetails && isExpanded && (
+                      <TableRow
+                        id={`${uid}-${event.id}`}
+                        className="hover:bg-transparent"
+                      >
+                        <TableCell />
+                        <TableCell colSpan={4} className="pt-0">
+                          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+                            {event.details!.map((row) => (
+                              <React.Fragment key={row.label}>
+                                <dt className="text-muted-foreground">
+                                  {row.label}
+                                </dt>
+                                <dd className="tabular-nums">{row.value}</dd>
+                              </React.Fragment>
+                            ))}
+                          </dl>
+                        </TableCell>
+                      </TableRow>
                     )}
-                  </TableRow>
+                  </React.Fragment>
                 )
               })}
             </TableBody>

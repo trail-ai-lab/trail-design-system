@@ -169,6 +169,7 @@ function TranscriptCard({
   interimText,
   transcriptionEnabled = true,
   onOpenLanguageSettings,
+  action,
   className,
 }: {
   title?: React.ReactNode
@@ -193,6 +194,8 @@ function TranscriptCard({
   transcriptionEnabled?: boolean
   /** Adds a "Language settings" button to the transcription-off state */
   onOpenLanguageSettings?: () => void
+  /** Header action beside the scope badge, e.g. a "Retranscribe…" button */
+  action?: React.ReactNode
   className?: string
 }) {
   const isAll = scope === ALL_GROUPS
@@ -275,9 +278,10 @@ function TranscriptCard({
             </span>
           )}
         </div>
-        {scopeLabel && (
-          <CardAction>
-            <Badge variant="secondary">{scopeLabel}</Badge>
+        {(scopeLabel || action) && (
+          <CardAction className="flex items-center gap-2">
+            {action}
+            {scopeLabel && <Badge variant="secondary">{scopeLabel}</Badge>}
           </CardAction>
         )}
       </CardHeader>
