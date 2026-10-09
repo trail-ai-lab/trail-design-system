@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { AuthAside, AuthLayout } from "@/components/patterns/auth-layout"
 import { LoginForm } from "@/components/patterns/login-form"
+import { Logo } from "@/components/patterns/logo"
 
 const TOOLS = [
   { name: "AIBAT", href: "#" },
@@ -52,4 +53,45 @@ export const WithoutAside: Story = {
 
 export const AsideOnly: Story = {
   render: () => <div className="h-svh w-full max-w-xl">{aside}</div>,
+}
+
+/**
+ * `header` (a small logo link, so phones still show the brand) and `footer`
+ * (e.g. a consent note) around the form; `description` tailors the card.
+ */
+export const WithHeaderAndFooter: Story = {
+  args: {
+    aside,
+    header: (
+      <a
+        href="https://trail.wcer.wisc.edu"
+        className="flex items-center gap-2 text-sm font-medium"
+      >
+        <Logo className="h-5 text-foreground" />
+        TRAIL Lab
+      </a>
+    ),
+    footer: (
+      <>
+        By selecting Sign in or Continue with Google, you acknowledge that your
+        usage may be recorded and used for research by the{" "}
+        <a
+          href="https://trail.wcer.wisc.edu"
+          className="underline underline-offset-4"
+        >
+          TRAIL Lab
+        </a>{" "}
+        at UW–Madison.
+      </>
+    ),
+    children: (
+      <LoginForm
+        description="Sign in to access SLAI and other TRAIL Lab tools"
+        onSubmit={() => {}}
+        onGoogle={() => {}}
+        forgotPasswordHref="#"
+        signupHref="#"
+      />
+    ),
+  },
 }

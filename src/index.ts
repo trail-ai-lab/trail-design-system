@@ -52,3 +52,5 @@ export * from "@/components/ui/tooltip"
 
 // Shared patterns (used across tools)
 export * from "@/components/patterns"
+// Class name helper configured with Trail's named scales
+export { cn } from "@/lib/utils"

@@ -35,9 +35,12 @@ function ResetPasswordCard({
   onSubmit,
   onRequestNewLink,
   error,
+  email,
   className,
 }: {
   status: ResetPasswordStatus
+  /** The account being reset, named in the form's description when known */
+  email?: string
   onSubmit?: (password: string) => void
   onRequestNewLink?: () => void
   error?: string
@@ -94,7 +97,14 @@ function ResetPasswordCard({
       <CardHeader className="text-center">
         <CardTitle className="text-h3">Set a new password</CardTitle>
         <CardDescription>
-          Choose a password you haven&apos;t used here.
+          {email ? (
+            <>
+              Choose a new password for{" "}
+              <span className="font-medium text-foreground">{email}</span>.
+            </>
+          ) : (
+            "Choose a password you haven't used here."
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>

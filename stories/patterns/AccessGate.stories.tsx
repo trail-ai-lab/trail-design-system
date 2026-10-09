@@ -35,3 +35,6 @@ export const Loading: Story = { args: { status: "loading" } }
 export const ErrorState: Story = {
   args: { status: "error", errorDetail: "The access service is unreachable." },
 }
+
+/** `messageMaxLength` caps the note and shows a character count. */
+export const WithMessageLimit: Story = { args: { messageMaxLength: 280 } }

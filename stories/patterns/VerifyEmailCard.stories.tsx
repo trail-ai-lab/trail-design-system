@@ -38,3 +38,6 @@ export const Checking: Story = { args: { checking: true } }
 export const LinkProcessing: Story = { args: { linkProcessing: true } }
 
 export const NoSession: Story = { args: { email: undefined } }
+
+/** No link sent yet (e.g. an unverified sign-in): offers to send one. */
+export const NotSentYet: Story = { args: { linkSent: false } }

@@ -76,13 +76,22 @@ function AuthAside({
 /**
  * Split-screen page for every auth route: the form on one side, the brand
  * `aside` (an AuthAside) on the other. The aside is hidden on small screens.
+ * `header` sits at the top of the form side (e.g. a small logo link, so
+ * phones still show the brand); `footer` sits under the form (e.g. a consent
+ * note).
  */
 function AuthLayout({
   aside,
+  header,
+  footer,
   children,
   className,
 }: {
   aside?: React.ReactNode
+  /** Top of the form side, e.g. a logo link */
+  header?: React.ReactNode
+  /** Under the form, e.g. a consent note */
+  footer?: React.ReactNode
   children: React.ReactNode
   className?: string
 }) {
@@ -91,8 +100,16 @@ function AuthLayout({
       data-slot="auth-layout"
       className={cn("grid min-h-svh bg-background lg:grid-cols-2", className)}
     >
-      <div className="flex items-center justify-center p-6 md:p-10">
-        <div className="w-full max-w-sm">{children}</div>
+      <div className="flex flex-col gap-6 p-6 md:p-10">
+        {header && <div className="flex justify-start">{header}</div>}
+        <div className="flex flex-1 flex-col items-center justify-center gap-6">
+          <div className="w-full max-w-sm">{children}</div>
+          {footer && (
+            <div className="w-full max-w-sm text-center text-xs text-balance text-muted-foreground">
+              {footer}
+            </div>
+          )}
+        </div>
       </div>
       {aside && <div className="hidden lg:block">{aside}</div>}
     </div>

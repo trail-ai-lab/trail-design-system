@@ -35,6 +35,7 @@ function AccessGate({
   onSubmit,
   submitting = false,
   submitError,
+  messageMaxLength,
   className,
 }: {
   status: AccessGateStatus
@@ -47,6 +48,8 @@ function AccessGate({
   onSubmit?: (message: string) => void
   submitting?: boolean
   submitError?: string
+  /** Longest message the request accepts; shows a character count */
+  messageMaxLength?: number
   className?: string
 }) {
   const [message, setMessage] = React.useState("")
@@ -146,8 +149,17 @@ function AccessGate({
                 rows={4}
                 disabled={submitting}
                 value={message}
+                maxLength={messageMaxLength}
                 onChange={(event) => setMessage(event.target.value)}
               />
+              {messageMaxLength !== undefined && (
+                <p
+                  aria-live="polite"
+                  className="text-right text-xs text-muted-foreground tabular-nums"
+                >
+                  {message.length}/{messageMaxLength}
+                </p>
+              )}
               {submitError && (
                 <Alert variant="destructive">
                   <AlertDescription>{submitError}</AlertDescription>

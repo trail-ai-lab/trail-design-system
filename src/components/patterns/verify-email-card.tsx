@@ -24,6 +24,7 @@ function VerifyEmailCard({
   linkProcessing = false,
   cooldownSeconds = 0,
   sentOnce = false,
+  linkSent = true,
   onResend,
   onCheck,
   onLogin,
@@ -37,6 +38,9 @@ function VerifyEmailCard({
   cooldownSeconds?: number
   /** A verification email has already been (re)sent this visit */
   sentOnce?: boolean
+  /** A verification link has been sent. When false the card offers to send
+   * one ("Send verification email", via `onResend`) instead. */
+  linkSent?: boolean
   onResend?: () => void
   onCheck?: () => void
   onLogin?: () => void
@@ -74,6 +78,31 @@ function VerifyEmailCard({
   }
 
   const cooling = cooldownSeconds > 0
+
+  if (!linkSent) {
+    return (
+      <Card className={className}>
+        <CardHeader className="items-center text-center">
+          <CardTitle className="text-h3">Verify your email</CardTitle>
+          <CardDescription>
+            We&apos;ll send a verification link to{" "}
+            <span className="font-medium text-foreground">{email}</span>.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <Button
+            className="w-full"
+            disabled={sending || cooling}
+            onClick={onResend}
+          >
+            {sending && <Spinner data-icon="inline-start" />}
+            {sending ? "Sending…" : "Send verification email"}
+          </Button>
+        </CardFooter>
+      </Card>
+    )
+  }
+
   return (
     <Card className={className}>
       <CardHeader className="items-center text-center">

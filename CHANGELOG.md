@@ -5,6 +5,30 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.2.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.2.0`.
+
+### Minor Changes
+
+- **`cn` is exported** from the main entry: the class-name helper configured with Trail's named
+  scales, so apps merging classes like `text-h2` or `shadow-raised` don't lose them (a plain
+  `tailwind-merge` mistakes `text-h2` for a text color).
+- **`AuthLayout` `header` and `footer`:** content at the top of the form side (e.g. a small logo
+  link, so phones still show the brand) and under the form (e.g. a consent note).
+- **`LoginForm` / `SignupForm` `description`:** the line under the title (defaults unchanged:
+  "Sign in to continue", "Get started in a minute").
+- **`VerifyEmailCard` `linkSent={false}`:** a "Send verification email" state for when no link
+  has been sent yet; it calls `onResend`.
+- **`ResetPasswordCard` `email`:** names the account in the description ("Choose a new password
+  for jane@school.edu.").
+- **`AccessGate` `messageMaxLength`:** caps the request note and shows a character count.
+
+### Patch Changes
+
+- **`LoginForm` / `SignupForm` in dark mode:** the "or continue with" label showed as a dark box
+  on the card (it masked the divider with the page background); it now uses the card color.
+
 ## 1.1.1
 
 Install with `github:trail-ai-lab/trail-design-system#v1.1.1`.

@@ -30,3 +30,6 @@ export const Invalid: Story = { args: { status: "invalid" } }
 export const Submitting: Story = { args: { status: "submitting" } }
 
 export const Done: Story = { args: { status: "done" } }
+
+/** Names the account when the email is known. */
+export const WithEmail: Story = { args: { email: "jane@school.edu" } }

@@ -35,6 +35,7 @@ function LoginForm({
   error,
   forgotPasswordHref,
   signupHref,
+  description = "Sign in to continue",
   className,
 }: {
   onSubmit: (values: { email: string; password: string }) => void
@@ -44,6 +45,8 @@ function LoginForm({
   error?: string
   forgotPasswordHref?: string
   signupHref?: string
+  /** Line under the title, e.g. "Sign in to access SLAI and other TRAIL Lab tools" */
+  description?: React.ReactNode
   className?: string
 }) {
   const uid = React.useId()
@@ -55,7 +58,7 @@ function LoginForm({
     <Card className={className}>
       <CardHeader className="text-center">
         <CardTitle className="text-h3">Welcome back</CardTitle>
-        <CardDescription>Sign in to continue</CardDescription>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <form
@@ -111,7 +114,11 @@ function LoginForm({
             </Button>
             {onGoogle && (
               <>
-                <FieldSeparator>or continue with</FieldSeparator>
+                {/* The label masks the line with a background; on a card that must be
+                    the card color, or it shows as a box in dark mode. */}
+                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                  or continue with
+                </FieldSeparator>
                 <GoogleButton
                   loading={googleLoading}
                   disabled={loading}

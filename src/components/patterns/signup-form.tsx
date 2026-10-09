@@ -31,6 +31,7 @@ function SignupForm({
   googleLoading = false,
   error,
   loginHref,
+  description = "Get started in a minute",
   className,
 }: {
   onSubmit: (values: { name: string; email: string; password: string }) => void
@@ -39,6 +40,8 @@ function SignupForm({
   googleLoading?: boolean
   error?: string
   loginHref?: string
+  /** Line under the title, e.g. "Sign up to access SLAI and other TRAIL Lab tools" */
+  description?: React.ReactNode
   className?: string
 }) {
   const uid = React.useId()
@@ -51,7 +54,7 @@ function SignupForm({
     <Card className={className}>
       <CardHeader className="text-center">
         <CardTitle className="text-h3">Create an account</CardTitle>
-        <CardDescription>Get started in a minute</CardDescription>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <form
@@ -112,7 +115,11 @@ function SignupForm({
             </Button>
             {onGoogle && (
               <>
-                <FieldSeparator>or continue with</FieldSeparator>
+                {/* The label masks the line with a background; on a card that must be
+                    the card color, or it shows as a box in dark mode. */}
+                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                  or continue with
+                </FieldSeparator>
                 <GoogleButton
                   loading={googleLoading}
                   disabled={loading}
