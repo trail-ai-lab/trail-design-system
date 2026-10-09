@@ -298,7 +298,9 @@ function NewSessionPage() {
     <AppShell
       sidebar={<PageSidebar activeNav="live" />}
       title={
-        <PageBreadcrumb items={[{ label: "Live" }, { label: "New session" }]} />
+        <PageBreadcrumb
+          items={[{ label: "Live session" }, { label: "New session" }]}
+        />
       }
     >
       <div className="flex flex-1 items-center-safe justify-center overflow-y-auto p-(--shell-gap)">

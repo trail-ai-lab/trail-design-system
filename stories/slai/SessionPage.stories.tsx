@@ -269,7 +269,7 @@ const SLAI_SIDEBAR = (
 function SessionReviewPage() {
   const [scope, setScope] = React.useState(GROUPS[0].id)
   const [audioVisible, setAudioVisible] = React.useState(false)
-  const [qaVisible, setQaVisible] = React.useState(false)
+  const [qaVisible, setQaVisible] = React.useState(true)
   const [dialog, setDialog] = React.useState<"rename" | "delete" | null>(null)
   const isAll = scope === ALL_GROUPS
   const activeGroup = GROUPS.find((group) => group.id === scope)

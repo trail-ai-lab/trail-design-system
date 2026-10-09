@@ -22,7 +22,7 @@
 
 - Object model, used in every label, prop and type: **Class** (Physics) → **Session** (one class meeting, e.g. "Period 3 — Aug 21") → **Group** → **Recording**. **Sources** are material outside a session (quick recordings, uploaded documents).
 - SLAI has two modes with different priorities:
-  - **Live** (nav item "Live", page stories `SLAI/Pages/Live`) — used during class: watching groups, live transcript, quick summary/Q&A. Glanceable and low-friction. The nav item shows a "Now" marker while a session runs.
+  - **Live** (nav item "Live session", page stories `SLAI/Pages/Live`) — used during class: watching groups, live transcript, quick summary/Q&A. Glanceable and low-friction. The nav item shows a "Now" marker while a session runs.
   - **Session review** (opened from the sidebar's "Sessions" tree, page stories `SLAI/Pages/Session`) — used after class: recordings, diarized transcripts and speakers, goals/WIDA verdicts, summary, Q&A. Deeper analysis.
 - Keep the two modes structurally consistent:
   - Layout: AI panels (Summary, Q&A) on the left, primary content (live transcript / analysis tabs) on the right.

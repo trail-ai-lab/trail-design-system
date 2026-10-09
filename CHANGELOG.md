@@ -14,6 +14,8 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ### Patch Changes
 
+- **`SlaiSidebar` nav:** the "Live" item is now labeled "Live session" (`id` stays `"live"`).
+- **`SlaiSidebar` nav:** "Record audio" is now labeled "Quick record" (`id` stays `"record"`).
 - **`NewSessionForm` section headings:** "Session details" and "Languages" now use `SectionLabel`,
   the same uppercase label as "Class overview" / "Session goal" / "Students" in `GoalsPanel`.
 - **Insight labels:** the `label` of `InsightItem` and `TranscriptQuote`, and "Academic language

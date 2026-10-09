@@ -56,7 +56,9 @@ export const TitleOnly: Story = {
     <AppShell
       sidebar={sidebar}
       title={
-        <PageBreadcrumb items={[{ label: "Live" }, { label: "New session" }]} />
+        <PageBreadcrumb
+          items={[{ label: "Live session" }, { label: "New session" }]}
+        />
       }
     >
       <Placeholder />

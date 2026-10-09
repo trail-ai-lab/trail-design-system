@@ -114,8 +114,8 @@ export interface SidebarUser {
 
 /** Top-level navigation items. `id` is matched against `activeNav`. */
 const NAV_ITEMS = [
-  { id: "live", label: "Live", icon: RadioIcon },
-  { id: "record", label: "Record audio", icon: MicIcon },
+  { id: "live", label: "Live session", icon: RadioIcon },
+  { id: "record", label: "Quick record", icon: MicIcon },
   { id: "source", label: "Add source", icon: UploadIcon },
   { id: "activities", label: "Activities", icon: ShapesIcon },
 ] as const
@@ -179,7 +179,7 @@ function SubRowAction({ label }: { label: string }) {
 }
 
 /**
- * The SLAI app sidebar: brand header, primary nav ("Live" for the in-class
+ * The SLAI app sidebar: brand header, primary nav ("Live session" for the in-class
  * view), the Sessions tree (classes → past sessions, opening a session's
  * review), the saved sources list, and the signed-in user footer.
  *
@@ -214,7 +214,7 @@ function SlaiSidebar({
   navHrefs?: Partial<Record<SlaiNavId, string>>
   /** Which primary nav item is highlighted. */
   activeNav?: SlaiNavId
-  /** A session is running now: shows a pulsing dot on the Live nav item */
+  /** A session is running now: shows a pulsing dot on the Live session nav item */
   liveSessionActive?: boolean
   /** Id (or name) of the source (quick recording) currently being viewed. */
   activeSource?: string
