@@ -2,6 +2,8 @@
    the same order, compiled as ONE Tailwind graph so every @theme/@utility
    (semantic.css, scales.css) generates its utilities. Fonts load from Google
    here instead of next/font. */
+/* Font files (instead of next/font); an @import must precede every rule. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&family=Geist+Mono:wght@100..900&display=swap");
 @import "../src/tokens/globals.css";
 @import "../src/tokens/semantic.css";
 @import "../src/tokens/scales.css";

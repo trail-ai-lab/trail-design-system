@@ -7,7 +7,13 @@
  * radius), then Trail's hand-maintained layers on top — semantic colors and
  * contrast fixes, scales (type, elevation, motion, stacking), page-chrome layout
  * and fonts. Finally tells Tailwind to scan the package's compiled components.
+ *
+ * The Google Fonts import must be the first rule: CSS ignores (and Next.js
+ * rejects) an @import that follows other rules, and Tailwind's own import
+ * expands into rules. The shadcn preset puts it inside globals.css, so remove
+ * it from there whenever globals.css is regenerated.
  */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap");
 @import "./globals.css";
 @import "./semantic.css";
 @import "./scales.css";

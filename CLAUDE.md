@@ -85,7 +85,7 @@
 
 - All colors must come from CSS variables in src/tokens/globals.css
 - Never hardcode hex values, rgba, or hsl values directly in components
-- Never modify globals.css — it is generated from the shadcn preset (components.json) and only ever replaced by regenerating it. Everything Trail adds or adjusts lives in hand-maintained files imported after it (all bundled by `styles.css`):
+- Never modify globals.css — it is generated from the shadcn preset (components.json) and only ever replaced by regenerating it. After regenerating, delete its Google Fonts `@import url(...)` line: that import lives at the top of `styles.css` (an @import after other rules breaks Next.js builds). Everything Trail adds or adjusts lives in hand-maintained files imported after it (all bundled by `styles.css`):
   - `semantic.css` — meaning colors (`success`/`warning`/`info`), status aliases, contrast fixes to preset values, the full-strength focus ring, `rounded-card`.
   - `scales.css` — type scale, elevation, motion, z-index utilities, reduced-motion handling.
   - `layout.css` — page-chrome spacing (`--shell-*`). `fonts.css` — default font families.

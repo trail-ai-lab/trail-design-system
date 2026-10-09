@@ -5,6 +5,17 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.1.1
+
+Install with `github:trail-ai-lab/trail-design-system#v1.1.1`.
+
+### Patch Changes
+
+- **Next.js dev builds failed on `styles.css`** ("@import rules must precede all rules"): the
+  Google Fonts `@import` sat in `globals.css` after `@import "tailwindcss"`, so once Tailwind
+  expanded its import the font import was no longer first. It now opens `styles.css`; fonts load
+  as before. Storybook's font import moved to the top of `storybook.css` the same way.
+
 ## 1.1.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.1.0`.
