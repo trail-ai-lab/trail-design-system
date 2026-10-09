@@ -272,3 +272,21 @@ export const TranscriptionOff: Story = {
     className: "h-full",
   },
 }
+
+/** One live stream with no known students (e.g. a teacher's quick recording): no member line. */
+export const SingleStream: Story = {
+  args: {
+    groups: [
+      {
+        id: "recording",
+        name: "This recording",
+        memberCount: 0,
+        entries: GROUPS[0].entries,
+      },
+    ],
+    scope: "recording",
+    translationLanguage: "English",
+    interimText: "so the steeper ramp",
+    className: "h-full",
+  },
+}

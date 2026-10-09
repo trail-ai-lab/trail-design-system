@@ -80,7 +80,11 @@ function ActivitiesPage() {
 
           <div className="grid gap-(--shell-gap) sm:grid-cols-2 xl:grid-cols-3">
             {ACTIVITIES.map((activity) => (
-              <ActivityCard key={activity.id} activity={activity} />
+              <ActivityCard
+                key={activity.id}
+                activity={activity}
+                href={`#${activity.id}`}
+              />
             ))}
           </div>
         </div>

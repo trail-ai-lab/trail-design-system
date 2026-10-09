@@ -257,12 +257,15 @@ function TranscriptCard({
                   Started {activeGroup.startedAt}
                 </span>
               )}
-              <span className="flex items-center gap-1">
-                <UsersIcon className="size-3.5" />
-                {activeGroup?.students?.length
-                  ? activeGroup.students.join(", ")
-                  : `${activeGroup?.memberCount ?? 0} students`}
-              </span>
+              {(activeGroup?.students?.length ||
+                (activeGroup?.memberCount ?? 0) > 0) && (
+                <span className="flex items-center gap-1">
+                  <UsersIcon className="size-3.5" />
+                  {activeGroup?.students?.length
+                    ? activeGroup.students.join(", ")
+                    : `${activeGroup?.memberCount} students`}
+                </span>
+              )}
             </>
           )}
           {translationLanguage && (

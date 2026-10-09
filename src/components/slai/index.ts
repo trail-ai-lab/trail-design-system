@@ -28,6 +28,7 @@ export { GroupSetupForm } from "./group-setup-form"
 export { StudentChip } from "./student-chip"
 export { MicPermissionError } from "./mic-permission-error"
 export { StudentRecordingScreen } from "./student-recording-screen"
+export { StudentActivityScreen } from "./student-activity-screen"
 export {
   TranscriptCard,
   GroupsEmptyState,

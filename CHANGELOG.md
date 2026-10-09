@@ -5,6 +5,27 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.3.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.3.0`.
+
+### Minor Changes
+
+- **`LanguageSettingsForm` / `LanguageSettingsSheet` `showProfanityFilter`:** set `false` to leave
+  out the profanity filter where it isn't supported (e.g. quick recordings).
+- **`StudentActivityScreen` (new):** the student's screen when a session has an activity — the
+  activity fills the phone under a compact bar with the group, timer, record / stop and pause.
+  Same rules as `StudentRecordingScreen`: status and Discard (confirmed) while recording, Leave
+  otherwise, and `noAudioDetected` shows a warning.
+- **`ActivityCard` `href`:** the whole card links to the activity (via `CardLink`), with a hover
+  state.
+- **`LanguageSettingsSheet` `description`:** the line under the title (default unchanged: "Changes
+  may take up to 5 minutes to apply to active recordings.").
+
+### Patch Changes
+
+- **`TranscriptCard`:** a group with no known students no longer says "0 students".
+
 ## 1.2.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.2.0`.

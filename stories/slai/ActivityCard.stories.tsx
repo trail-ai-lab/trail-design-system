@@ -49,3 +49,18 @@ export const NoTags: Story = {
     className: "w-80",
   },
 }
+
+/** With `href` the whole card is a link (hover and focus show it). */
+export const Linked: Story = {
+  args: {
+    activity: {
+      id: "pulley",
+      name: "Pulley",
+      description:
+        "Interactive pulley simulation exploring mechanical advantage and simple machines",
+      tags: ["physics"],
+    },
+    href: "#pulley",
+    className: "w-80",
+  },
+}

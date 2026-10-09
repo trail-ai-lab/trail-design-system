@@ -119,3 +119,12 @@ export const ProfanityFilterOn: Story = {
     />
   ),
 }
+
+/** `showProfanityFilter={false}` where filtering isn't supported, e.g. quick recordings. */
+export const WithoutProfanityFilter: Story = {
+  render: () => (
+    <div className="w-full max-w-md">
+      <LanguageSettingsForm showProfanityFilter={false} />
+    </div>
+  ),
+}

@@ -26,6 +26,8 @@ function LanguageSettingsSheet({
   languages,
   spokenLanguages,
   translationLanguages,
+  showProfanityFilter,
+  description = "Changes may take up to 5 minutes to apply to active recordings.",
   children,
 }: {
   open?: boolean
@@ -38,6 +40,9 @@ function LanguageSettingsSheet({
   languages?: LanguageOptions
   spokenLanguages?: LanguageOptions
   translationLanguages?: LanguageOptions
+  showProfanityFilter?: boolean
+  /** Line under the title */
+  description?: string
   /** Optional trigger, e.g. <SheetTrigger asChild><Button/></SheetTrigger> */
   children?: React.ReactNode
 }) {
@@ -47,9 +52,7 @@ function LanguageSettingsSheet({
       <SheetContent className="flex w-full flex-col gap-0 sm:max-w-md">
         <SheetHeader>
           <SheetTitle className="font-heading">Language settings</SheetTitle>
-          <SheetDescription>
-            Changes may take up to 5 minutes to apply to active recordings.
-          </SheetDescription>
+          <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-6 pt-1 pb-6">
           <LanguageSettingsForm
@@ -59,6 +62,7 @@ function LanguageSettingsSheet({
             languages={languages}
             spokenLanguages={spokenLanguages}
             translationLanguages={translationLanguages}
+            showProfanityFilter={showProfanityFilter}
           />
         </div>
       </SheetContent>

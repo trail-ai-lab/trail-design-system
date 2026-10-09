@@ -12,10 +12,10 @@ consumers install it from a git release tag and bump the tag themselves when the
 newer version. No registry config or auth token is needed.
 
 ```
-pnpm add github:trail-ai-lab/trail-design-system#v1.2.0
+pnpm add github:trail-ai-lab/trail-design-system#v1.3.0
 ```
 
-(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v1.2.0"`
+(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v1.3.0"`
 entry in `package.json`). Installing runs this repo's `prepare` script, which builds `dist/`.
 
 ### Requirements

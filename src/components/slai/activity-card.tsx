@@ -1,6 +1,7 @@
 import { ShapesIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { CardLink } from "@/components/patterns/card-link"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -13,18 +14,29 @@ import type { SessionActivity } from "@/components/slai/activity-picker"
 
 /**
  * A single interactive activity in the Activities catalog: icon + name,
- * description, and topic tags. Presentational — for selecting an activity in
- * a session, use ActivityPicker instead.
+ * description, and topic tags. With `href` the whole card links to the
+ * activity. For selecting an activity in a session, use ActivityPicker.
  */
 function ActivityCard({
   activity,
+  href,
   className,
 }: {
   activity: SessionActivity
+  /** Opens the activity; the whole card becomes the link */
+  href?: string
   className?: string
 }) {
   return (
-    <Card className={cn("h-full", className)}>
+    <Card
+      data-slot="activity-card"
+      className={cn(
+        "h-full",
+        href && "relative transition-colors hover:bg-accent",
+        className
+      )}
+    >
+      {href && <CardLink href={href} label={activity.name} />}
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ShapesIcon className="size-4 shrink-0 text-muted-foreground" />

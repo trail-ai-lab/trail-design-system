@@ -103,6 +103,7 @@ function LanguageSettingsForm({
   languages = DEFAULT_LANGUAGES,
   spokenLanguages = languages,
   translationLanguages = languages,
+  showProfanityFilter = true,
   className,
 }: {
   value?: LanguageSettingsValue
@@ -114,6 +115,8 @@ function LanguageSettingsForm({
   spokenLanguages?: LanguageOptions
   /** Options for "Translate to" */
   translationLanguages?: LanguageOptions
+  /** Offer the profanity filter; turn off where it isn't supported */
+  showProfanityFilter?: boolean
   className?: string
 }) {
   const uid = React.useId()
@@ -269,23 +272,27 @@ function LanguageSettingsForm({
             </Field>
           )}
 
-          <FieldSeparator />
+          {showProfanityFilter && (
+            <>
+              <FieldSeparator />
 
-          <Field orientation="horizontal">
-            <FieldContent>
-              <FieldTitle>Profanity filter</FieldTitle>
-              <FieldDescription>
-                Mask profanity in transcripts and translations.
-              </FieldDescription>
-            </FieldContent>
-            <Switch
-              checked={value.profanityFilter ?? false}
-              onCheckedChange={(checked) =>
-                update({ profanityFilter: checked })
-              }
-              aria-label="Profanity filter"
-            />
-          </Field>
+              <Field orientation="horizontal">
+                <FieldContent>
+                  <FieldTitle>Profanity filter</FieldTitle>
+                  <FieldDescription>
+                    Mask profanity in transcripts and translations.
+                  </FieldDescription>
+                </FieldContent>
+                <Switch
+                  checked={value.profanityFilter ?? false}
+                  onCheckedChange={(checked) =>
+                    update({ profanityFilter: checked })
+                  }
+                  aria-label="Profanity filter"
+                />
+              </Field>
+            </>
+          )}
         </>
       )}
     </FieldGroup>
