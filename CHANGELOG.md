@@ -5,6 +5,14 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+### Patch Changes
+
+- **`NewSessionForm` section headings:** "Session details" and "Languages" now use `SectionLabel`,
+  the same uppercase label as "Class overview" / "Session goal" / "Students" in `GoalsPanel`.
+- **Insight labels:** the `label` of `InsightItem` and `TranscriptQuote`, and "Academic language
+  used" in `StudentInsightCard`, now use `SectionLabel`, so the expanded student card's sub-headings
+  match the rest of the Goals tab. Also applies to the "Said" label in `SessionEvidenceStrip`.
+
 ## 1.4.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.4.0`.

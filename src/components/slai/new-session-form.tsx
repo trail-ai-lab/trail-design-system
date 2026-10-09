@@ -12,13 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@/components/ui/field"
+import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import {
@@ -28,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { SectionLabel } from "@/components/patterns/section-label"
 import {
   LanguageSettingsForm,
   defaultLanguageSettings,
@@ -92,7 +87,9 @@ function NewSessionForm({
       <CardContent>
         <FieldGroup>
           <FieldSet>
-            <FieldLegend variant="label">Session details</FieldLegend>
+            <SectionLabel asChild>
+              <legend className="mb-3">Session details</legend>
+            </SectionLabel>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
                 <FieldLabel htmlFor={`${uid}-new-session-class`}>
@@ -140,7 +137,9 @@ function NewSessionForm({
           </FieldSet>
 
           <FieldSet>
-            <FieldLegend variant="label">Languages</FieldLegend>
+            <SectionLabel asChild>
+              <legend className="mb-3">Languages</legend>
+            </SectionLabel>
             <LanguageSettingsForm
               defaultValue={defaultLanguages}
               languages={languages}
