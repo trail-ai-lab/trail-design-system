@@ -25,7 +25,16 @@ import {
 } from "@/components/slai/activity-picker"
 import { AppShell } from "@/components/slai/app-shell"
 import { LanguageSettingsSheet } from "@/components/slai/language-settings-sheet"
-import { RecordingControl } from "@/components/slai/recording-control"
+import { DEFAULT_LANGUAGES } from "@/components/slai/language-settings-form"
+import {
+  RecordingControl,
+  type RecordingState,
+} from "@/components/slai/recording-control"
+import {
+  SaveRecordingDialog,
+  type SaveRecordingPhase,
+} from "@/components/slai/save-recording-dialog"
+import { useSimulatedAudioStream } from "./_simulated-audio"
 import { PageSidebar } from "./_page-fixtures"
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
@@ -62,6 +71,18 @@ function QuickRecordingPage() {
   const [sheet, setSheet] = React.useState<"language" | "activity" | null>(null)
   const [activity, setActivity] = React.useState("none")
   const [dialog, setDialog] = React.useState<"rename" | "delete" | null>(null)
+  // The recorder: a simulated mic for the waveform, a clock, and the save
+  // dialog once Stop is tapped.
+  const stream = useSimulatedAudioStream()
+  const [state, setState] = React.useState<RecordingState>("idle")
+  const [seconds, setSeconds] = React.useState(0)
+  const [save, setSave] = React.useState<SaveRecordingPhase | null>(null)
+
+  React.useEffect(() => {
+    if (state !== "recording") return
+    const id = setInterval(() => setSeconds((value) => value + 1), 1000)
+    return () => clearInterval(id)
+  }, [state])
 
   return (
     <AppShell
@@ -122,9 +143,43 @@ function QuickRecordingPage() {
       {/* No card: like the student recording screen, the control stands alone
           in the content area; title and actions live in the shell. */}
       <div className="flex flex-1 items-center justify-center p-(--shell-gap)">
-        <RecordingControl />
+        <RecordingControl
+          state={state}
+          seconds={seconds}
+          audioStream={stream}
+          onStart={() => {
+            setSeconds(0)
+            setState("recording")
+          }}
+          onPause={() => setState("paused")}
+          onResume={() => setState("recording")}
+          onStop={() => {
+            setState("idle")
+            setSave("form")
+          }}
+        />
       </div>
 
+      <SaveRecordingDialog
+        open={save !== null}
+        onOpenChange={(open) => !open && setSave(null)}
+        phase={save ?? "form"}
+        durationSeconds={seconds}
+        sizeBytes={seconds * 16_000}
+        defaultFilename="recording-2026-08-21.webm"
+        languageOptions={DEFAULT_LANGUAGES}
+        uploadAttempt={1}
+        uploadTotalAttempts={4}
+        onUpload={() => {
+          setSave("uploading")
+          setTimeout(() => setSave("done"), 1800)
+        }}
+        onDiscard={() => setSave(null)}
+        onNewRecording={() => {
+          setSave(null)
+          setSeconds(0)
+        }}
+      />
       <LanguageSettingsSheet
         open={sheet === "language"}
         onOpenChange={(open) => setSheet(open ? "language" : null)}

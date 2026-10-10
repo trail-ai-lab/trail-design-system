@@ -40,6 +40,15 @@ import {
 import { type ChatMessage } from "@/components/slai/session-chat"
 import { PageSidebar } from "./_page-fixtures"
 import { SummaryQaPanel } from "@/components/slai/summary-qa-panel"
+import { type SummaryVersion } from "@/components/slai/summary-card"
+import {
+  DiarizationPanel,
+  type DiarizationState,
+} from "@/components/slai/diarization-panel"
+import {
+  SpeakerForm,
+  type SpeakerCountMode,
+} from "@/components/slai/speaker-form"
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
 import { RenameDialog } from "@/components/slai/rename-dialog"
@@ -165,6 +174,14 @@ const GROUP_1 = {
       content:
         "All three spoke. Aarav contributed the most (42% of turns) and drove the reasoning; Jordan participated least (25%) but ran the timing. Consider prompting Jordan to explain the 'why' next time.",
     },
+    { id: "3", role: "user", content: "How much faster was the steeper ramp?" },
+    {
+      id: "4",
+      role: "assistant",
+      content:
+        "About twice as fast: the run at thirty degrees took about one second, against two at fifteen. Click to see where they said it.",
+      highlight: "At thirty degrees it was way faster, about one second.",
+    },
   ] as ChatMessage[],
 }
 
@@ -205,23 +222,10 @@ const GROUP_2 = {
     { name: "Sam", percent: 55, turns: 8 },
     { name: "Priya", percent: 45, turns: 7 },
   ],
-  activity: [
-    {
-      id: "g2-a1",
-      icon: ShapesIcon,
-      title: "Inclined Plane",
-      detail: "Activity started",
-      time: "3:42 PM",
-    },
-    {
-      id: "g2-a2",
-      icon: SlidersHorizontalIcon,
-      title: "Ramp angle",
-      detail: "0° → 15°",
-      time: "3:46 PM",
-      value: "1 run",
-    },
-  ],
+  // No activity this session: the Activity tab is hidden.
+  activity: [] as typeof GROUP_1.activity,
+  // Speakers not analyzed yet: the Speakers tab starts with the analysis card.
+  speakersAnalyzed: false,
   summary:
     "Group 2 started by establishing a flat-ramp baseline before increasing the angle, timing a three-second baseline run to compare against steeper ramps.",
   chat: [
@@ -236,6 +240,39 @@ const GROUP_2 = {
 }
 
 const GROUPS = [GROUP_1, GROUP_2]
+
+/** Earlier summaries (newest first) per scope; the current one is the latest. */
+const EARLIER_SUMMARIES: Record<string, SummaryVersion[]> = {
+  "group-1": [
+    {
+      id: "g1-v2",
+      label: "Aug 21, 4:30 PM",
+      summary:
+        "Group 1 compared fifteen and thirty degrees and noticed the steeper run was faster.",
+    },
+    {
+      id: "g1-v1",
+      label: "Aug 21, 4:12 PM",
+      summary: "Group 1 set up the ramp and described their plan.",
+    },
+  ],
+  [ALL_GROUPS]: [
+    {
+      id: "all-v1",
+      label: "Aug 21, 4:15 PM",
+      summary:
+        "Both groups set up the Inclined Plane trail; Group 1 began comparing angles.",
+    },
+  ],
+}
+
+/** The latest summary first, then the earlier ones, for the history menu. */
+function summaryVersions(scope: string, summary: string): SummaryVersion[] {
+  const earlier = EARLIER_SUMMARIES[scope] ?? []
+  return earlier.length === 0
+    ? []
+    : [{ id: `${scope}-latest`, label: "Aug 21, 4:41 PM", summary }, ...earlier]
+}
 
 // The raw transcript: same utterances, but the speaker is unknown.
 const TRANSCRIPT_GROUPS: TranscriptGroup[] = GROUPS.map((group) => ({
@@ -276,6 +313,48 @@ function SessionReviewPage() {
   const scopeLabel = isAll ? "All groups" : (activeGroup?.name ?? "")
   const summary = isAll ? ALL_SUMMARY : (activeGroup?.summary ?? "")
   const chat = isAll ? ALL_CHAT : (activeGroup?.chat ?? [])
+  const versions = summaryVersions(scope, summary)
+  // Speaker analysis per group: Group 1's is done, Group 2's hasn't run.
+  const [analysis, setAnalysis] = React.useState<
+    Record<string, DiarizationState>
+  >(() =>
+    Object.fromEntries(
+      GROUPS.map((group) => [
+        group.id,
+        "speakersAnalyzed" in group && !group.speakersAnalyzed
+          ? "idle"
+          : "ready",
+      ])
+    )
+  )
+  const [speakerMode, setSpeakerMode] = React.useState<SpeakerCountMode>("auto")
+  const [speakerCount, setSpeakerCount] = React.useState(2)
+  const analyze = (groupId: string) => {
+    setAnalysis((prev) => ({ ...prev, [groupId]: "loading" }))
+    setTimeout(
+      () => setAnalysis((prev) => ({ ...prev, [groupId]: "ready" })),
+      2500
+    )
+  }
+  const hasActivity = (activeGroup?.activity.length ?? 0) > 0
+  // Clicking an answer opens the Transcript tab on the line it cites.
+  const [tabState, setTab] = React.useState("goals")
+  // A group without activity has no Activity tab to stay on.
+  const tab = tabState === "activity" && !hasActivity ? "goals" : tabState
+  const [highlight, setHighlight] = React.useState<{
+    scope: string
+    entryId?: string
+  }>()
+  const highlightedEntryId =
+    highlight?.scope === scope ? highlight.entryId : undefined
+  const showSource = (message: ChatMessage) => {
+    const entry = TRANSCRIPT_GROUPS.find(
+      (group) => group.id === scope
+    )?.entries.find((line) => line.original === message.highlight)
+    if (!entry) return
+    setHighlight({ scope, entryId: entry.id })
+    setTab("transcript")
+  }
 
   return (
     <AppShell
@@ -353,7 +432,7 @@ function SessionReviewPage() {
           <div className="flex p-(--shell-gap) lg:h-full">
             <SummaryQaPanel
               className="h-[60svh] flex-1 lg:h-full"
-              summary={{ scopeLabel, summary }}
+              summary={{ scopeLabel, summary, versions }}
               chat={{ scopeLabel, messages: chat }}
             />
           </div>
@@ -377,19 +456,26 @@ function SessionReviewPage() {
                 {qaVisible && (
                   <SummaryQaPanel
                     className="h-[60svh] lg:h-full"
-                    summary={{ scopeLabel, summary }}
-                    chat={{ scopeLabel, messages: chat }}
+                    summary={{ scopeLabel, summary, versions }}
+                    chat={{
+                      scopeLabel,
+                      messages: chat,
+                      onMessageClick: showSource,
+                    }}
                   />
                 )}
                 <Tabs
-                  defaultValue="goals"
+                  value={tab}
+                  onValueChange={setTab}
                   className="h-[60svh] min-h-0 lg:h-full"
                 >
                   <TabsList className="w-full">
                     <TabsTrigger value="goals">Goals</TabsTrigger>
                     <TabsTrigger value="transcript">Transcript</TabsTrigger>
                     <TabsTrigger value="speakers">Speakers</TabsTrigger>
-                    <TabsTrigger value="activity">Activity</TabsTrigger>
+                    {hasActivity && (
+                      <TabsTrigger value="activity">Activity</TabsTrigger>
+                    )}
                   </TabsList>
                   <TabsContent
                     value="goals"
@@ -419,31 +505,51 @@ function SessionReviewPage() {
                       translationToggle
                       translationLanguage="English"
                       autoScroll={false}
+                      highlightedEntryId={highlightedEntryId}
                     />
                   </TabsContent>
                   <TabsContent
                     value="speakers"
                     className="flex min-h-0 flex-col gap-(--shell-gap)"
                   >
-                    <ParticipationCard
-                      className="shrink-0"
+                    <DiarizationPanel
+                      className="min-h-0 flex-1"
+                      state={analysis[activeGroup.id]}
                       scopeLabel={scopeLabel}
-                      students={activeGroup.participation}
-                    />
-                    <RecordedTranscriptCard
-                      key={scope}
-                      className="min-h-80 flex-1"
-                      speakers={activeGroup.speakers}
-                      entries={activeGroup.entries}
-                    />
+                      elapsedSeconds={2}
+                      form={
+                        <SpeakerForm
+                          mode={speakerMode}
+                          onModeChange={setSpeakerMode}
+                          speakerCount={speakerCount}
+                          onSpeakerCountChange={setSpeakerCount}
+                          analyzed={analysis[activeGroup.id] === "ready"}
+                          onAnalyze={() => analyze(activeGroup.id)}
+                        />
+                      }
+                    >
+                      <ParticipationCard
+                        className="shrink-0"
+                        scopeLabel={scopeLabel}
+                        students={activeGroup.participation}
+                      />
+                      <RecordedTranscriptCard
+                        key={scope}
+                        className="min-h-80 flex-1"
+                        speakers={activeGroup.speakers}
+                        entries={activeGroup.entries}
+                      />
+                    </DiarizationPanel>
                   </TabsContent>
-                  <TabsContent value="activity" className="min-h-0">
-                    <ActivityLogCard
-                      className="h-full"
-                      scopeLabel={scopeLabel}
-                      events={activeGroup.activity}
-                    />
-                  </TabsContent>
+                  {hasActivity && (
+                    <TabsContent value="activity" className="min-h-0">
+                      <ActivityLogCard
+                        className="h-full"
+                        scopeLabel={scopeLabel}
+                        events={activeGroup.activity}
+                      />
+                    </TabsContent>
+                  )}
                 </Tabs>
               </div>
             </div>

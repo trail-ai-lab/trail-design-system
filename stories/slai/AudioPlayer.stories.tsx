@@ -60,7 +60,10 @@ const meta: Meta<typeof AudioPlayerCard> = {
 export default meta
 type Story = StoryObj<typeof AudioPlayerCard>
 
-/** Simulated playback (no `src`): play advances over `durationSeconds`. */
+/**
+ * Simulated playback (no `src`): play advances over `durationSeconds`, and
+ * the decorative bars fill in as it plays.
+ */
 export const Default: Story = {
   args: { durationSeconds: 1453, onDownload: () => {} },
 }
@@ -68,6 +71,11 @@ export const Default: Story = {
 /** A real file: pass `src` (e.g. a signed download URL); the length comes from the file. */
 export const WithAudioFile: Story = {
   args: { title: "Group 2 recording", src: TONE_URL, onDownload: () => {} },
+}
+
+/** `waveform={false}`: just the scrubber. */
+export const WithoutWaveform: Story = {
+  args: { durationSeconds: 1453, waveform: false, onDownload: () => {} },
 }
 
 export const ShortClip: Story = {

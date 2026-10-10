@@ -48,7 +48,12 @@ export {
   type SessionActivity,
 } from "./activity-picker"
 export { ActivityCard } from "./activity-card"
-export { SummaryCard, type SummaryPhase } from "./summary-card"
+export {
+  SummaryCard,
+  type SummaryPhase,
+  type SummaryRange,
+  type SummaryVersion,
+} from "./summary-card"
 export { SessionChatCard, type ChatMessage } from "./session-chat"
 
 // Post-session (review) components

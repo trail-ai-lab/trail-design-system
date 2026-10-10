@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { SummaryCard } from "@/components/slai/summary-card"
+import {
+  SummaryCard,
+  type SummaryVersion,
+} from "@/components/slai/summary-card"
 
 const meta: Meta<typeof SummaryCard> = {
   title: "SLAI/SummaryCard",
@@ -23,8 +26,8 @@ export const Empty: Story = {
   args: { scopeLabel: "Group 1" },
 }
 
-// `onCheckIn` adds the live-session "Check in" button; omit it (e.g. in
-// post-session) and only Regenerate shows.
+// `onCheckIn` adds the live-session "Check in & summarize" button; omit it (e.g. in
+// post-session) and only Summarize shows.
 export const WithSummary: Story = {
   args: {
     scopeLabel: "Group 1",
@@ -92,6 +95,70 @@ export const WithEarlierPhases: Story = {
         checkinAt: "10:42 AM",
         summary: "Group 1 brainstormed what could affect ball speed.",
       },
+    ],
+  },
+}
+
+const VERSIONS: SummaryVersion[] = [
+  {
+    id: "v3",
+    label: "Oct 9, 3:42 PM",
+    summary:
+      "- Compared three ramp angles\n- Connected steeper ramps to faster balls\n- Planned a trial with heavier balls",
+  },
+  {
+    id: "v2",
+    label: "Oct 9, 3:30 PM",
+    summary:
+      "- Compared three ramp angles\n- Still deciding how to measure speed",
+  },
+  {
+    id: "v1",
+    label: "Oct 9, 3:18 PM",
+    summary: "Group 1 brainstormed what could affect ball speed.",
+  },
+]
+
+/** Each generate is saved: the history menu (clock icon) lists them, newest first. */
+export const WithHistory: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    summary: VERSIONS[0].summary,
+    versions: VERSIONS,
+  },
+}
+
+/** An earlier version is shown with when it was made and a way back to the latest. */
+export const EarlierVersion: Story = {
+  args: { ...WithHistory.args, defaultVersionId: "v2" },
+}
+
+/** Summarize covered the whole session: the badge says so. */
+export const WholeSession: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    range: "whole-session",
+    summary:
+      "- Built the ramps and agreed on three angles\n- Compared the angles and connected steepness to speed\n- Moved on to graphing speed against angle",
+    onCheckIn: () => {},
+  },
+}
+
+/** Check-in summaries and whole-session summaries share one history. */
+export const MixedHistory: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    since: "3:30 PM",
+    summary: "- Moved on to graphing speed against angle",
+    onCheckIn: () => {},
+    versions: [
+      {
+        ...VERSIONS[0],
+        summary: "- Moved on to graphing speed against angle",
+        description: "Check-in",
+      },
+      { ...VERSIONS[1], description: "Whole session" },
+      { ...VERSIONS[2], description: "Check-in" },
     ],
   },
 }

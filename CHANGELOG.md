@@ -5,6 +5,38 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.8.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.8.0`.
+
+### Minor Changes
+
+- **`AudioPlayerCard` waveform:** a row of bars above the scrubber fills in with primary as it
+  plays (as in the SLAI prototype). The bars are decorative — an even pattern, not the
+  recording's loudness — unless you pass real `peaks` (0–1 per bar). `waveform={false}` hides
+  them; they're left out in `compact`.
+- **`TranscriptCard` translation switch:** `translationToggle` now renders a labelled
+  "Translation" `Switch` in the header (as in the Showcase's Kitchen Island card) instead of an
+  outline toggle button. Same props and behavior.
+- **`SummaryCard` history:** `versions` (newest first, `{ id, label, summary }`) adds a history
+  menu (clock icon) when there are two or more. Picking an earlier version shows it under an
+  "Earlier version · …" note with "Show latest". Control the shown version with `versionId` /
+  `defaultVersionId` / `onVersionIdChange` (`null` is the latest). New types `SummaryVersion`,
+  `SummaryRange`.
+- **`SummaryCard` "Summarize":** the header button reads "Summarize" (it read "Generate" /
+  "Regenerate"); the prop is still `onRegenerate`. The empty state reads "Summarize what …
+  discussed."
+- **`SummaryCard` live summaries:** the check-in button is an outline button reading "Check in &
+  summarize" (summarize what was said since the previous check-in, then start a new one);
+  Summarize covers the whole session. `range` labels the shown summary: "Whole session", or
+  "Since {since}" as before. `SummaryVersion.description` (e.g. "Check-in", "Whole session")
+  shows under each entry in the history menu.
+- **`TranscriptCard` highlighted line:** `highlightedEntryId` now scrolls that line into view. While
+  a line is highlighted, `autoScroll` pauses so new lines don't carry it away; new
+  `onHighlightedEntryIdChange` adds a "Back to latest" button that clears it and resumes
+  following. The Live and Session page stories show clicking an answer to find its line (the
+  session story switches to the Transcript tab).
+
 ## 1.7.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.7.0`.

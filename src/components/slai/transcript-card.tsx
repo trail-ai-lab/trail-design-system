@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import {
+  ArrowDownIcon,
   AudioLinesIcon,
   CaptionsOffIcon,
   ClockIcon,
@@ -31,7 +32,8 @@ import {
 } from "@/components/ui/empty"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { Toggle } from "@/components/ui/toggle"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import { NoisyAudioBanner } from "@/components/slai/noisy-audio-banner"
 import { RecordingTimer } from "@/components/slai/recording-timer"
@@ -166,8 +168,13 @@ function TranscriptRow({
  * transcription is off.
  *
  * After a session, pass `status={null}` to drop the status badge, and
- * `translationToggle` to add a "Translation" toggle that shows or hides the
+ * `translationToggle` to add a "Translation" switch that shows or hides the
  * translations (shown by default; control it with `showTranslations`).
+ *
+ * `highlightedEntryId` (e.g. the line a chat answer cites) scrolls that line
+ * into view and emphasizes it. While a line is highlighted, `autoScroll`
+ * pauses so new lines don't carry it away; with `onHighlightedEntryIdChange`
+ * a "Back to latest" button clears it and resumes following.
  */
 function TranscriptCard({
   title = "Live transcript",
@@ -178,6 +185,7 @@ function TranscriptCard({
   allLabel = "All groups",
   autoScroll = true,
   highlightedEntryId,
+  onHighlightedEntryIdChange,
   checkIn,
   interimText,
   transcriptionEnabled = true,
@@ -201,8 +209,11 @@ function TranscriptCard({
   allLabel?: string
   /** Keep the newest entries in view as they arrive */
   autoScroll?: boolean
-  /** Entry to emphasize, e.g. the sentence a chat answer cites */
+  /** Entry to emphasize, e.g. the sentence a chat answer cites; scrolled
+   * into view, and pauses `autoScroll` while set */
   highlightedEntryId?: string
+  /** Clears the highlight ("Back to latest" while following new lines) */
+  onHighlightedEntryIdChange?: (id: string | undefined) => void
   /** The latest check-in: a divider marks where it falls among the lines
    * (needs `at` on entries). `label` is the formatted time, e.g. "3:42 PM". */
   checkIn?: { at: number | string; label: string }
@@ -212,7 +223,7 @@ function TranscriptCard({
   transcriptionEnabled?: boolean
   /** Adds a "Language settings" button to the transcription-off state */
   onOpenLanguageSettings?: () => void
-  /** Adds a "Translation" toggle to the header that shows or hides translations */
+  /** Adds a "Translation" switch to the header that shows or hides translations */
   translationToggle?: boolean
   /** Translations are shown under each line (controlled) */
   showTranslations?: boolean
@@ -226,6 +237,7 @@ function TranscriptCard({
   const activeGroup = groups.find((group) => group.id === scope)
   const scopeLabel = isAll ? allLabel : activeGroup?.name
   const scrollRef = React.useRef<HTMLDivElement>(null)
+  const uid = React.useId()
   const [showTranslationsState, setShowTranslationsState] = React.useState(
     defaultShowTranslations
   )
@@ -261,13 +273,31 @@ function TranscriptCard({
     .filter((group) => group.noisyAudio)
     .map((group) => group.name)
 
+  // Follow new lines, except while a line is highlighted.
+  const following = autoScroll && !highlightedEntryId
   React.useEffect(() => {
-    if (!autoScroll) return
+    if (!following) return
     const viewport = scrollRef.current?.querySelector(
       '[data-slot="scroll-area-viewport"]'
     )
     viewport?.scrollTo({ top: viewport.scrollHeight })
-  }, [autoScroll, scope, rows.length, interimText])
+  }, [following, scope, rows.length, interimText])
+
+  // Bring the highlighted line into view (the page too, on small screens).
+  React.useEffect(() => {
+    if (!highlightedEntryId) return
+    const reduceMotion = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
+    scrollRef.current
+      ?.querySelector(
+        '[data-slot="transcript-utterance-row"][data-highlighted]'
+      )
+      ?.scrollIntoView({
+        block: "center",
+        behavior: reduceMotion ? "auto" : "smooth",
+      })
+  }, [highlightedEntryId, scope])
 
   const studentNames = (!isAll && activeGroup?.students) || []
 
@@ -326,15 +356,19 @@ function TranscriptCard({
         {(scopeLabel || action || translationToggle) && (
           <CardAction className="flex items-center gap-2">
             {translationToggle && (
-              <Toggle
-                variant="outline"
-                size="sm"
-                pressed={showTranslations}
-                onPressedChange={setShowTranslations}
-              >
-                <LanguagesIcon data-icon="inline-start" />
-                Translation
-              </Toggle>
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor={`${uid}-translation`}
+                  className="font-normal text-muted-foreground"
+                >
+                  Translation
+                </Label>
+                <Switch
+                  id={`${uid}-translation`}
+                  checked={showTranslations}
+                  onCheckedChange={setShowTranslations}
+                />
+              </div>
             )}
             {action}
             {scopeLabel && <Badge variant="secondary">{scopeLabel}</Badge>}
@@ -353,76 +387,89 @@ function TranscriptCard({
             />
           </div>
         )}
-        <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
-          {!transcriptionEnabled ? (
-            <Empty className="h-full">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <CaptionsOffIcon />
-                </EmptyMedia>
-                <EmptyTitle>Live transcription is off</EmptyTitle>
-                <EmptyDescription>
-                  Turn it on in language settings to see what groups say.
-                </EmptyDescription>
-              </EmptyHeader>
-              {onOpenLanguageSettings && (
-                <EmptyContent>
-                  <Button variant="outline" onClick={onOpenLanguageSettings}>
-                    <LanguagesIcon data-icon="inline-start" />
-                    Language settings
-                  </Button>
-                </EmptyContent>
-              )}
-            </Empty>
-          ) : rows.length === 0 && !interimText ? (
-            <Empty className="h-full">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <AudioLinesIcon />
-                </EmptyMedia>
-                <EmptyTitle>Waiting for students to speak</EmptyTitle>
-                <EmptyDescription>
-                  Lines appear here as each group talks.
-                </EmptyDescription>
-              </EmptyHeader>
-            </Empty>
-          ) : (
-            <div
-              role="log"
-              aria-live="polite"
-              aria-label="Transcript"
-              className="flex flex-col gap-5 px-(--card-spacing) py-1"
+        <div className="relative flex min-h-0 flex-1 flex-col">
+          <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
+            {!transcriptionEnabled ? (
+              <Empty className="h-full">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <CaptionsOffIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>Live transcription is off</EmptyTitle>
+                  <EmptyDescription>
+                    Turn it on in language settings to see what groups say.
+                  </EmptyDescription>
+                </EmptyHeader>
+                {onOpenLanguageSettings && (
+                  <EmptyContent>
+                    <Button variant="outline" onClick={onOpenLanguageSettings}>
+                      <LanguagesIcon data-icon="inline-start" />
+                      Language settings
+                    </Button>
+                  </EmptyContent>
+                )}
+              </Empty>
+            ) : rows.length === 0 && !interimText ? (
+              <Empty className="h-full">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <AudioLinesIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>Waiting for students to speak</EmptyTitle>
+                  <EmptyDescription>
+                    Lines appear here as each group talks.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+            ) : (
+              <div
+                role="log"
+                aria-live="polite"
+                aria-label="Transcript"
+                className="flex flex-col gap-5 px-(--card-spacing) py-1"
+              >
+                {rows.map(({ entry, group }, index) => (
+                  <React.Fragment key={`${group?.id}-${entry.id}`}>
+                    {index === checkInIndex && checkIn && (
+                      <CheckInDivider label={checkIn.label} />
+                    )}
+                    <TranscriptRow
+                      entry={
+                        showTranslations
+                          ? entry
+                          : { ...entry, translation: undefined }
+                      }
+                      groupName={isAll ? group?.name : undefined}
+                      highlighted={entry.id === highlightedEntryId}
+                    />
+                  </React.Fragment>
+                ))}
+                {checkInIndex === rows.length && checkIn && (
+                  <CheckInDivider label={checkIn.label} />
+                )}
+                {interimText && (
+                  <p
+                    data-slot="transcript-interim"
+                    className="pl-9 text-sm text-muted-foreground italic"
+                  >
+                    {interimText}
+                  </p>
+                )}
+              </div>
+            )}
+          </ScrollArea>
+          {autoScroll && highlightedEntryId && onHighlightedEntryIdChange && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="absolute bottom-3 left-1/2 -translate-x-1/2 shadow-raised"
+              onClick={() => onHighlightedEntryIdChange(undefined)}
             >
-              {rows.map(({ entry, group }, index) => (
-                <React.Fragment key={`${group?.id}-${entry.id}`}>
-                  {index === checkInIndex && checkIn && (
-                    <CheckInDivider label={checkIn.label} />
-                  )}
-                  <TranscriptRow
-                    entry={
-                      showTranslations
-                        ? entry
-                        : { ...entry, translation: undefined }
-                    }
-                    groupName={isAll ? group?.name : undefined}
-                    highlighted={entry.id === highlightedEntryId}
-                  />
-                </React.Fragment>
-              ))}
-              {checkInIndex === rows.length && checkIn && (
-                <CheckInDivider label={checkIn.label} />
-              )}
-              {interimText && (
-                <p
-                  data-slot="transcript-interim"
-                  className="pl-9 text-sm text-muted-foreground italic"
-                >
-                  {interimText}
-                </p>
-              )}
-            </div>
+              <ArrowDownIcon data-icon="inline-start" />
+              Back to latest
+            </Button>
           )}
-        </ScrollArea>
+        </div>
         <div className="px-(--card-spacing)">
           <Separator className="-mx-2 mt-1 w-auto!" />
           <p className="pt-3 text-center text-xs text-muted-foreground">

@@ -12,6 +12,10 @@ import { type ChatMessage } from "@/components/slai/session-chat"
 import { CLASSES, PageSidebar } from "./_page-fixtures"
 import { SummaryQaPanel } from "@/components/slai/summary-qa-panel"
 import {
+  type SummaryRange,
+  type SummaryVersion,
+} from "@/components/slai/summary-card"
+import {
   GroupsEmptyState,
   TranscriptCard,
   type TranscriptGroup,
@@ -139,6 +143,35 @@ const SUMMARIES: Record<string, string> = {
     "Group 2 is setting up their method: they decided to run the flattest ramp first to establish a baseline before comparing steeper angles.",
 }
 
+// Earlier summaries per scope, newest first (the current one is SUMMARIES).
+const EARLIER_SUMMARIES: Record<string, SummaryVersion[]> = {
+  [ALL_GROUPS]: [
+    {
+      id: "all-2",
+      label: "Aug 21, 3:50 PM",
+      description: "Whole session",
+      summary:
+        "Both groups set up their ramps; Group 1 has started timing runs while Group 2 is still choosing a starting angle.",
+    },
+  ],
+  "group-1": [
+    {
+      id: "g1-2",
+      label: "Aug 21, 3:50 PM",
+      description: "Check-in",
+      summary:
+        "Group 1 linked gravity to the ball speeding up and proposed testing three angles.",
+    },
+    {
+      id: "g1-1",
+      label: "Aug 21, 3:42 PM",
+      description: "Whole session",
+      summary: "Group 1 set up the ramp and started recording.",
+    },
+  ],
+  "group-2": [],
+}
+
 const CHATS: Record<string, ChatMessage[]> = {
   [ALL_GROUPS]: [
     {
@@ -163,7 +196,8 @@ const CHATS: Record<string, ChatMessage[]> = {
       id: "2",
       role: "assistant",
       content:
-        "Yes — they're varying ramp angle and measuring time per run while keeping the ball and ramp length fixed, which is a clean controlled comparison.",
+        "Yes — they're varying ramp angle and measuring time per run while keeping the ball and ramp length fixed, which is a clean controlled comparison. Click to see where they said it.",
+      highlight: "Let's test it with three different angles and time each run.",
     },
   ],
   "group-2": [],
@@ -186,6 +220,41 @@ function ActiveSessionPage() {
     setScope(remaining[0]?.id ?? ALL_GROUPS)
   }
   const scopeLabel = scope === ALL_GROUPS ? "All groups" : activeGroup?.name
+  // Summarize covers the whole session; Check in & summarize covers the time
+  // since the previous check-in (3:50 PM here) and starts a new one.
+  const [range, setRange] = React.useState<SummaryRange>("whole-session")
+  const [checkingIn, setCheckingIn] = React.useState(false)
+  const checkIn = () => {
+    setCheckingIn(true)
+    setTimeout(() => {
+      setCheckingIn(false)
+      setRange("since-checkin")
+    }, 1200)
+  }
+  const versions: SummaryVersion[] = [
+    {
+      id: `${scope}-latest`,
+      label: "Aug 21, 4:02 PM",
+      description: range === "whole-session" ? "Whole session" : "Check-in",
+      summary: SUMMARIES[scope],
+    },
+    ...(EARLIER_SUMMARIES[scope] ?? []),
+  ]
+  // Clicking an answer highlights the line it cites; new lines stop
+  // scrolling it away until "Back to latest".
+  const [highlight, setHighlight] = React.useState<{
+    scope: string
+    entryId?: string
+  }>()
+  const highlightedEntryId =
+    highlight?.scope === scope ? highlight.entryId : undefined
+  const showSource = (message: ChatMessage) => {
+    const entry = groups
+      .filter((group) => scope === ALL_GROUPS || group.id === scope)
+      .flatMap((group) => group.entries)
+      .find((line) => line.original === message.highlight)
+    if (entry) setHighlight({ scope, entryId: entry.id })
+  }
 
   return (
     <AppShell
@@ -221,11 +290,17 @@ function ActiveSessionPage() {
           summary={{
             scopeLabel,
             summary: SUMMARIES[scope],
-            onCheckIn: () => {},
+            range,
+            since: range === "since-checkin" ? "3:50 PM" : undefined,
+            versions,
+            onRegenerate: () => setRange("whole-session"),
+            onCheckIn: checkIn,
+            checkingIn,
           }}
           chat={{
             scopeLabel,
             messages: CHATS[scope],
+            onMessageClick: showSource,
             suggestions: [
               "Which group needs help?",
               "Summarize misconceptions",
@@ -238,6 +313,10 @@ function ActiveSessionPage() {
           scope={scope}
           status={activeGroup?.status ?? "recording"}
           translationLanguage="English"
+          highlightedEntryId={highlightedEntryId}
+          onHighlightedEntryIdChange={(entryId) =>
+            setHighlight({ scope, entryId })
+          }
         />
       </div>
 

@@ -18,6 +18,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Slider } from "@/components/ui/slider"
 import { Spinner } from "@/components/ui/spinner"
+/**
+ * Decorative bar heights: an even, gently rolling pattern. It isn't the
+ * recording's loudness, and shouldn't look like it (no speech-like spikes).
+ */
+const DECORATIVE_PEAKS = Array.from(
+  { length: 72 },
+  (_, i) => 0.5 + 0.22 * Math.sin(i * 0.45) + 0.1 * Math.sin(i * 1.3 + 1)
+)
 
 type PlayerProps = {
   src?: string
@@ -28,6 +36,42 @@ type PlayerProps = {
   compact: boolean
   error?: string
   audioRef?: React.Ref<HTMLAudioElement>
+  peaks?: number[]
+  waveform: boolean
+}
+
+/**
+ * Bars above the scrubber, filling in with primary as it plays — the slider
+ * below is the control.
+ */
+function WaveformBars({
+  peaks,
+  progress,
+}: {
+  peaks: number[]
+  /** Played fraction, 0–1 */
+  progress: number
+}) {
+  return (
+    <div
+      data-slot="audio-waveform"
+      aria-hidden
+      className="flex h-8 items-end gap-0.5"
+    >
+      {peaks.map((peak, index) => (
+        <div
+          key={index}
+          className={cn(
+            "flex-1 rounded-full transition-colors duration-fast",
+            (index + 0.5) / peaks.length <= progress
+              ? "bg-primary"
+              : "bg-muted-foreground/25"
+          )}
+          style={{ height: `${Math.max(0.1, peak) * 100}%` }}
+        />
+      ))}
+    </div>
+  )
 }
 
 /** Assigns a node to a callback or object ref. */
@@ -45,7 +89,10 @@ function Player({
   compact,
   error: errorProp,
   audioRef,
+  peaks,
+  waveform,
 }: PlayerProps) {
+  const showWaveform = waveform && !compact
   const audio = React.useRef<HTMLAudioElement | null>(null)
   // A ref, not state, so the timeupdate handler sees it mid-drag.
   const seeking = React.useRef(false)
@@ -227,6 +274,12 @@ function Player({
         </>
       ) : (
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          {showWaveform && (
+            <WaveformBars
+              peaks={peaks ?? DECORATIVE_PEAKS}
+              progress={duration > 0 ? current / duration : 0}
+            />
+          )}
           {slider}
           <div className="flex justify-between text-xs text-muted-foreground tabular-nums">
             <span>{formatClock(current)}</span>
@@ -240,8 +293,12 @@ function Player({
 }
 
 /**
- * Playback of a recording: play / pause, a scrubber with the current and
- * total time, mute and download.
+ * Playback of a recording: play / pause, a row of bars that fills in as it
+ * plays, a scrubber with the current and total time, mute and download.
+ *
+ * The bars are decorative (an even pattern, not the recording's loudness)
+ * unless you pass real `peaks`. They're left out in `compact` and with
+ * `waveform={false}`.
  *
  * Pass `src` (e.g. a signed download URL) to play the real file; recordings
  * from `MediaRecorder` that report no duration are handled. Without `src`,
@@ -258,6 +315,8 @@ function AudioPlayerCard({
   loading = false,
   error,
   audioRef,
+  peaks,
+  waveform = true,
   className,
 }: {
   /** Audio file URL to play */
@@ -279,6 +338,11 @@ function AudioPlayerCard({
   error?: string
   /** The underlying `<audio>` element, for seeking from outside */
   audioRef?: React.Ref<HTMLAudioElement>
+  /** Real loudness per bar (0–1), e.g. computed on the server; without it
+   * the bars are a decorative pattern */
+  peaks?: number[]
+  /** Show the waveform above the scrubber (not in `compact`) */
+  waveform?: boolean
   className?: string
 }) {
   return (
@@ -302,6 +366,8 @@ function AudioPlayerCard({
           compact={compact}
           error={error}
           audioRef={audioRef}
+          peaks={peaks}
+          waveform={waveform}
         />
       )}
     </Card>
