@@ -415,7 +415,9 @@ function SessionReviewPage() {
                       title="Transcript"
                       groups={TRANSCRIPT_GROUPS}
                       scope={scope}
-                      status={activeGroup.status}
+                      status={null}
+                      translationToggle
+                      translationLanguage="English"
                       autoScroll={false}
                     />
                   </TabsContent>

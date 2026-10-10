@@ -18,6 +18,7 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -79,11 +80,13 @@ function VidyaMapPlaceholder({
               <SelectValue placeholder="Select a subject…" />
             </SelectTrigger>
             <SelectContent>
-              {subjects.map((name) => (
-                <SelectItem key={name} value={name}>
-                  {name}
-                </SelectItem>
-              ))}
+              <SelectGroup>
+                {subjects.map((name) => (
+                  <SelectItem key={name} value={name}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
             </SelectContent>
           </Select>
         </Field>

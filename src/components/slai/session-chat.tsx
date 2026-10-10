@@ -149,7 +149,7 @@ function SessionChatCard({
   return (
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
-        <CardTitle>Q&amp;A</CardTitle>
+        <CardTitle>Ask SLAI</CardTitle>
         {scopeLabel && (
           <CardAction>
             <Badge variant="secondary">{scopeLabel}</Badge>

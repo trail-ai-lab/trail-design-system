@@ -12,7 +12,7 @@ const meta: Meta<typeof StudentActivityScreen> = {
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   args: {
-    groupName: "bbb",
+    groupName: "Team Alpha",
     students: ["Student 1", "Student 2"],
     activityName: "Inclined Plane",
     onDiscard: () => {},

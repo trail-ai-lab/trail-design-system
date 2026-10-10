@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/empty"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Toggle } from "@/components/ui/toggle"
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import { NoisyAudioBanner } from "@/components/slai/noisy-audio-banner"
 import { RecordingTimer } from "@/components/slai/recording-timer"
@@ -38,6 +39,7 @@ import {
   SessionStatusBadge,
   type SessionStatus,
 } from "@/components/slai/session-status-badge"
+import { StudentChip } from "@/components/slai/student-chip"
 import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
 
 export interface TranscriptEntry {
@@ -155,11 +157,17 @@ function TranscriptRow({
  * language leads. Also used after a session (with `title="Transcript"`) to
  * show the raw, speaker-unknown transcript alongside the diarized one.
  *
+ * A single group's students show as `StudentChip`s under the header, as on
+ * the student's recording screen; without names, the meta line counts them.
  * A single group's `recordedSeconds` shows as a timer after the status badge.
  * Groups flagged `noisyAudio` get a warning above the lines; `checkIn` marks
  * where the latest check-in happened; `interimText` shows words still being
  * recognized; `transcriptionEnabled={false}` explains that live
  * transcription is off.
+ *
+ * After a session, pass `status={null}` to drop the status badge, and
+ * `translationToggle` to add a "Translation" toggle that shows or hides the
+ * translations (shown by default; control it with `showTranslations`).
  */
 function TranscriptCard({
   title = "Live transcript",
@@ -174,6 +182,10 @@ function TranscriptCard({
   interimText,
   transcriptionEnabled = true,
   onOpenLanguageSettings,
+  translationToggle = false,
+  showTranslations: showTranslationsProp,
+  defaultShowTranslations = true,
+  onShowTranslationsChange,
   action,
   className,
 }: {
@@ -181,7 +193,8 @@ function TranscriptCard({
   groups: TranscriptGroup[]
   /** Active group id, or `ALL_GROUPS` for the combined view */
   scope?: string
-  status?: SessionStatus
+  /** Audio state shown as a badge beside the title; `null` hides it */
+  status?: SessionStatus | null
   /** Language translations are rendered in, e.g. "English" */
   translationLanguage?: string
   /** Label for the combined view, shown in the scope badge */
@@ -199,6 +212,12 @@ function TranscriptCard({
   transcriptionEnabled?: boolean
   /** Adds a "Language settings" button to the transcription-off state */
   onOpenLanguageSettings?: () => void
+  /** Adds a "Translation" toggle to the header that shows or hides translations */
+  translationToggle?: boolean
+  /** Translations are shown under each line (controlled) */
+  showTranslations?: boolean
+  defaultShowTranslations?: boolean
+  onShowTranslationsChange?: (show: boolean) => void
   /** Header action beside the scope badge, e.g. a "Retranscribe…" button */
   action?: React.ReactNode
   className?: string
@@ -207,6 +226,14 @@ function TranscriptCard({
   const activeGroup = groups.find((group) => group.id === scope)
   const scopeLabel = isAll ? allLabel : activeGroup?.name
   const scrollRef = React.useRef<HTMLDivElement>(null)
+  const [showTranslationsState, setShowTranslationsState] = React.useState(
+    defaultShowTranslations
+  )
+  const showTranslations = showTranslationsProp ?? showTranslationsState
+  const setShowTranslations = (show: boolean) => {
+    setShowTranslationsState(show)
+    onShowTranslationsChange?.(show)
+  }
 
   const rows = React.useMemo(() => {
     if (isAll) {
@@ -242,12 +269,14 @@ function TranscriptCard({
     viewport?.scrollTo({ top: viewport.scrollHeight })
   }, [autoScroll, scope, rows.length, interimText])
 
+  const studentNames = (!isAll && activeGroup?.students) || []
+
   return (
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2.5">
           {title}
-          <SessionStatusBadge status={status} />
+          {status && <SessionStatusBadge status={status} />}
           {!isAll && activeGroup?.recordedSeconds !== undefined && (
             <RecordingTimer
               seconds={activeGroup.recordedSeconds}
@@ -272,26 +301,41 @@ function TranscriptCard({
                   Started {activeGroup.startedAt}
                 </span>
               )}
-              {(activeGroup?.students?.length ||
-                (activeGroup?.memberCount ?? 0) > 0) && (
+              {!studentNames.length && (activeGroup?.memberCount ?? 0) > 0 && (
                 <span className="flex items-center gap-1">
                   <UsersIcon className="size-3.5" />
-                  {activeGroup?.students?.length
-                    ? activeGroup.students.join(", ")
-                    : `${activeGroup?.memberCount} students`}
+                  {activeGroup?.memberCount} students
                 </span>
               )}
             </>
           )}
-          {translationLanguage && (
+          {translationLanguage && showTranslations && (
             <span className="flex items-center gap-1">
               <LanguagesIcon className="size-3.5" />
               Translated to {translationLanguage}
             </span>
           )}
         </div>
-        {(scopeLabel || action) && (
+        {studentNames.length > 0 && (
+          <div className="col-span-full mt-1 flex flex-wrap gap-2">
+            {studentNames.map((name, index) => (
+              <StudentChip key={`${name}-${index}`} name={name} />
+            ))}
+          </div>
+        )}
+        {(scopeLabel || action || translationToggle) && (
           <CardAction className="flex items-center gap-2">
+            {translationToggle && (
+              <Toggle
+                variant="outline"
+                size="sm"
+                pressed={showTranslations}
+                onPressedChange={setShowTranslations}
+              >
+                <LanguagesIcon data-icon="inline-start" />
+                Translation
+              </Toggle>
+            )}
             {action}
             {scopeLabel && <Badge variant="secondary">{scopeLabel}</Badge>}
           </CardAction>
@@ -355,7 +399,11 @@ function TranscriptCard({
                     <CheckInDivider label={checkIn.label} />
                   )}
                   <TranscriptRow
-                    entry={entry}
+                    entry={
+                      showTranslations
+                        ? entry
+                        : { ...entry, translation: undefined }
+                    }
                     groupName={isAll ? group?.name : undefined}
                     highlighted={entry.id === highlightedEntryId}
                   />

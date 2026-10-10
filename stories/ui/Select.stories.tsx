@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -22,12 +23,14 @@ export const Default: Story = {
         <SelectValue placeholder="Select a tool" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="slai">SLAI</SelectItem>
-        <SelectItem value="aibat">AIBAT</SelectItem>
-        <SelectItem value="casting-lab">Casting Lab</SelectItem>
-        <SelectItem value="murder-mystery">Murder Mystery</SelectItem>
-        <SelectItem value="trail-console">Trail Console</SelectItem>
-        <SelectItem value="bias-audit">Bias Audit</SelectItem>
+        <SelectGroup>
+          <SelectItem value="slai">SLAI</SelectItem>
+          <SelectItem value="aibat">AIBAT</SelectItem>
+          <SelectItem value="casting-lab">Casting Lab</SelectItem>
+          <SelectItem value="murder-mystery">Murder Mystery</SelectItem>
+          <SelectItem value="trail-console">Trail Console</SelectItem>
+          <SelectItem value="bias-audit">Bias Audit</SelectItem>
+        </SelectGroup>
       </SelectContent>
     </Select>
   ),
@@ -42,8 +45,10 @@ export const WithLabel: Story = {
           <SelectValue placeholder="Choose…" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="slai">SLAI</SelectItem>
-          <SelectItem value="aibat">AIBAT</SelectItem>
+          <SelectGroup>
+            <SelectItem value="slai">SLAI</SelectItem>
+            <SelectItem value="aibat">AIBAT</SelectItem>
+          </SelectGroup>
         </SelectContent>
       </Select>
     </div>
@@ -57,7 +62,9 @@ export const Disabled: Story = {
         <SelectValue placeholder="Disabled" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="x">Item</SelectItem>
+        <SelectGroup>
+          <SelectItem value="x">Item</SelectItem>
+        </SelectGroup>
       </SelectContent>
     </Select>
   ),

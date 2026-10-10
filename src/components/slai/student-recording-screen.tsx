@@ -33,6 +33,7 @@ function StudentRecordingScreen({
   defaultState = "idle",
   seconds,
   status,
+  audioStream,
   noAudioDetected = false,
   onStart,
   onStop,
@@ -56,6 +57,8 @@ function StudentRecordingScreen({
   seconds?: number
   /** In-flight phase: "connecting" while starting, "stopping" while saving */
   status?: "connecting" | "stopping"
+  /** The recorder's microphone stream, for the live waveform (see RecordingControl) */
+  audioStream?: MediaStream | null
   /** The mic has picked up no sound for a while: shows a warning while recording */
   noAudioDetected?: boolean
   onStart?: () => void
@@ -126,6 +129,7 @@ function StudentRecordingScreen({
           state={state}
           seconds={seconds}
           status={status}
+          audioStream={audioStream}
           onStart={() => {
             setState("recording")
             onStart?.()

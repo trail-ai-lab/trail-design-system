@@ -1,5 +1,6 @@
 "use client"
 
+import { cn } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
@@ -71,7 +72,8 @@ function SaveRecordingDialog({
           if (phase === "uploading") event.preventDefault()
         }}
       >
-        <DialogHeader>
+        {/* Status phases show their own title in the panel, under its icon */}
+        <DialogHeader className={cn(phase !== "form" && "sr-only")}>
           <DialogTitle>{titles[phase]}</DialogTitle>
           <DialogDescription className="sr-only">
             Save the recording to your account.
@@ -89,12 +91,14 @@ function SaveRecordingDialog({
         )}
         {phase === "uploading" && (
           <RecordingUploadingPanel
+            className="p-0"
             attempt={uploadAttempt}
             totalAttempts={uploadTotalAttempts}
           />
         )}
         {phase === "done" && (
           <RecordingDonePanel
+            className="p-0"
             name={defaultFilename}
             durationSeconds={durationSeconds}
             sizeBytes={sizeBytes}
@@ -103,6 +107,7 @@ function SaveRecordingDialog({
         )}
         {phase === "error" && (
           <UploadErrorPanel
+            className="p-0"
             message={errorMessage}
             onRetryUpload={onRetryUpload}
             onDiscard={onDiscard}

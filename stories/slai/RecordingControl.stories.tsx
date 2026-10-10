@@ -5,6 +5,7 @@ import {
   RecordingControl,
   type RecordingState,
 } from "@/components/slai/recording-control"
+import { useSimulatedAudioStream } from "./_simulated-audio"
 
 const meta: Meta<typeof RecordingControl> = {
   title: "SLAI/RecordingControl",
@@ -38,6 +39,18 @@ export const Connecting: Story = {
 
 export const Stopping: Story = {
   args: { defaultState: "recording", seconds: 754, status: "stopping" },
+}
+
+/**
+ * With `audioStream`, a live waveform of the mic level sits under the timer
+ * (a simulated voice here; click the page if the bars stay flat). Tap to
+ * start, pause and stop.
+ */
+export const WithWaveform: Story = {
+  render: function WithWaveformStory() {
+    const stream = useSimulatedAudioStream()
+    return <RecordingControl audioStream={stream} />
+  },
 }
 
 /**

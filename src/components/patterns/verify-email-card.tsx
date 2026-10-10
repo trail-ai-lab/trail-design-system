@@ -9,6 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { Spinner } from "@/components/ui/spinner"
 
 /**
@@ -49,11 +56,17 @@ function VerifyEmailCard({
   if (linkProcessing) {
     return (
       <Card className={className}>
-        <CardHeader className="items-center text-center">
-          <Spinner className="mb-2 size-6" />
-          <CardTitle className="text-h3">Verifying your email…</CardTitle>
-          <CardDescription>This only takes a moment.</CardDescription>
-        </CardHeader>
+        <CardContent className="p-0">
+          <Empty className="p-4" role="status">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Spinner />
+              </EmptyMedia>
+              <EmptyTitle>Verifying your email…</EmptyTitle>
+              <EmptyDescription>This only takes a moment.</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </CardContent>
       </Card>
     )
   }

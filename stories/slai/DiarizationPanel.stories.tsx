@@ -10,6 +10,7 @@ const meta: Meta<typeof DiarizationPanel> = {
   component: DiarizationPanel,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
+  args: { scopeLabel: "Group 1" },
   decorators: [
     (Story) => (
       <div className="w-full max-w-lg">

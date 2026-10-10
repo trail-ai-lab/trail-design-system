@@ -10,6 +10,14 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
@@ -17,7 +25,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { formatBytes, formatDuration } from "@/lib/format"
 import { LanguageMultiSelect } from "@/components/slai/language-multi-select"
 import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
-import { IconTile } from "@/components/patterns/icon-tile"
+import { DetailList } from "@/components/patterns/detail-list"
 import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 /** Splits "lesson.webm" into ["lesson", ".webm"] so the extension stays fixed. */
@@ -26,19 +34,6 @@ function splitExtension(filename: string): [string, string] {
   return dot > 0
     ? [filename.slice(0, dot), filename.slice(dot)]
     : [filename, ""]
-}
-
-function SummaryRows({ rows }: { rows: Array<[string, React.ReactNode]> }) {
-  return (
-    <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
-      {rows.map(([label, value]) => (
-        <div key={label} className="contents">
-          <dt className="text-muted-foreground">{label}</dt>
-          <dd className="text-right text-foreground tabular-nums">{value}</dd>
-        </div>
-      ))}
-    </dl>
-  )
 }
 
 /**
@@ -75,10 +70,10 @@ function RecordingReadyPanel({
       data-slot="recording-ready-panel"
       className={cn("flex flex-col gap-5", className)}
     >
-      <SummaryRows
-        rows={[
-          ["Duration", formatDuration(durationSeconds)],
-          ["Size", formatBytes(sizeBytes)],
+      <DetailList
+        items={[
+          { label: "Duration", value: formatDuration(durationSeconds) },
+          { label: "Size", value: formatBytes(sizeBytes) },
         ]}
       />
       <FieldGroup>
@@ -133,31 +128,44 @@ function RecordingReadyPanel({
   )
 }
 
-/** In-flight upload with retry progress ("Attempt 2 of 4"). */
+/**
+ * In-flight upload, laid out like an empty state: spinner, title, and a
+ * reminder to keep the page open. Retry progress ("Attempt 2 of 4") shows
+ * below once there are retries; `showAttempts={false}` hides it, e.g. on the
+ * student's screen where it isn't useful. Place it in
+ * `Card` → `CardContent className="p-0"`, or a dialog with `className="p-0"`.
+ */
 function RecordingUploadingPanel({
+  title = "Uploading recording",
   attempt = 1,
   totalAttempts = 1,
+  showAttempts = true,
   className,
 }: {
+  title?: string
   attempt?: number
   totalAttempts?: number
+  /** Show the retry progress bar and "Attempt N of M" once there are retries */
+  showAttempts?: boolean
   className?: string
 }) {
   return (
-    <div
+    <Empty
       data-slot="recording-uploading-panel"
       role="status"
-      className={cn(
-        "flex flex-col items-center gap-4 py-4 text-center",
-        className
-      )}
+      className={cn("p-4", className)}
     >
-      <Spinner className="size-8 text-primary" />
-      <p className="text-sm text-muted-foreground">
-        Please keep this page open while your recording uploads.
-      </p>
-      {totalAttempts > 1 && (
-        <div className="flex w-full max-w-xs flex-col gap-1.5">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Spinner />
+        </EmptyMedia>
+        <EmptyTitle>{title}</EmptyTitle>
+        <EmptyDescription>
+          Please keep this page open while your recording uploads.
+        </EmptyDescription>
+      </EmptyHeader>
+      {showAttempts && totalAttempts > 1 && (
+        <EmptyContent className="max-w-xs gap-1.5">
           <Progress
             value={(attempt / totalAttempts) * 100}
             aria-label={`Upload attempt ${attempt} of ${totalAttempts}`}
@@ -165,73 +173,84 @@ function RecordingUploadingPanel({
           <p className="text-xs text-muted-foreground tabular-nums">
             Attempt {attempt} of {totalAttempts}
           </p>
-        </div>
+        </EmptyContent>
       )}
-    </div>
+    </Empty>
   )
 }
 
-/** Upload finished: summary of the saved recording and a next action. */
+/**
+ * Upload finished, laid out like an empty state: success icon, title, an
+ * optional note, then the saved recording's details and a next action.
+ */
 function RecordingDonePanel({
+  title = "Recording saved",
   name,
   durationSeconds,
   sizeBytes,
   note,
   actionLabel = "New recording",
+  actionVariant = "default",
   onAction,
   className,
 }: {
+  title?: string
   name: string
   durationSeconds: number
   sizeBytes: number
-  /** Extra line under the summary, e.g. where to find the recording */
+  /** Line under the title, e.g. where to find the recording */
   note?: string
   actionLabel?: string
+  /** Use "outline" when the action is a fallback you don't want to promote */
+  actionVariant?: Extract<
+    React.ComponentProps<typeof Button>["variant"],
+    "default" | "outline"
+  >
   onAction?: () => void
   className?: string
 }) {
   return (
-    <div
-      data-slot="recording-done-panel"
-      className={cn("flex flex-col items-center gap-4 text-center", className)}
-    >
-      <IconTile variant="success" size="lg">
-        <CheckCircle2Icon />
-      </IconTile>
-      <div className="w-full max-w-xs">
-        <SummaryRows
-          rows={[
-            [
-              "Name",
-              <span key="n" className="break-all">
-                {name}
-              </span>,
-            ],
-            ["Duration", formatDuration(durationSeconds)],
-            ["Size", formatBytes(sizeBytes)],
+    <Empty data-slot="recording-done-panel" className={cn("p-4", className)}>
+      <EmptyHeader>
+        <EmptyMedia variant="icon" className="bg-success/10 text-success">
+          <CheckCircle2Icon />
+        </EmptyMedia>
+        <EmptyTitle>{title}</EmptyTitle>
+        {note && <EmptyDescription>{note}</EmptyDescription>}
+      </EmptyHeader>
+      <EmptyContent>
+        <DetailList
+          className="w-full"
+          items={[
+            { label: "Name", value: name },
+            { label: "Duration", value: formatDuration(durationSeconds) },
+            { label: "Size", value: formatBytes(sizeBytes) },
           ]}
         />
-      </div>
-      {note && <p className="text-sm text-muted-foreground">{note}</p>}
-      <Button onClick={onAction}>{actionLabel}</Button>
-    </div>
+        <Button variant={actionVariant} onClick={onAction}>
+          {actionLabel}
+        </Button>
+      </EmptyContent>
+    </Empty>
   )
 }
 
 /**
- * Upload failed. Retrying the upload keeps the recording. `onDiscard` adds a
- * "Discard" button that confirms first, since the recording is lost;
- * `onRetryFlow` adds an unconfirmed "Start over" for flows where starting
- * again keeps nothing to lose. Mic-permission failures use
- * MicPermissionError instead.
+ * Upload failed, laid out like an empty state. Retrying the upload keeps the
+ * recording. `onDiscard` adds a "Discard" button that confirms first, since
+ * the recording is lost; `onRetryFlow` adds an unconfirmed "Start over" for
+ * flows where starting again keeps nothing to lose. Mic-permission failures
+ * use MicPermissionError instead.
  */
 function UploadErrorPanel({
+  title = "Upload failed",
   message = "We couldn't upload your recording.",
   onRetryUpload,
   onRetryFlow,
   onDiscard,
   className,
 }: {
+  title?: string
   message?: string
   onRetryUpload?: () => void
   onRetryFlow?: () => void
@@ -240,38 +259,46 @@ function UploadErrorPanel({
   className?: string
 }) {
   return (
-    <div
+    <Empty
       data-slot="upload-error-panel"
       role="alert"
-      className={cn("flex flex-col items-center gap-4 text-center", className)}
+      className={cn("p-4", className)}
     >
-      <IconTile variant="destructive" size="lg">
-        <XCircleIcon />
-      </IconTile>
-      <p className="text-sm text-muted-foreground">{message}</p>
-      <div className="flex gap-2">
-        {onDiscard && (
-          <ConfirmDialog
-            trigger={<Button variant="outline">Discard</Button>}
-            title="Discard this recording?"
-            description="It hasn't been uploaded yet, so it will be lost. This cannot be undone."
-            confirmLabel="Discard"
-            onConfirm={onDiscard}
-          />
-        )}
-        {onRetryFlow && (
-          <Button variant="outline" onClick={onRetryFlow}>
-            Start over
-          </Button>
-        )}
-        {onRetryUpload && (
-          <Button onClick={onRetryUpload}>
-            <RefreshCwIcon data-icon="inline-start" />
-            Retry upload
-          </Button>
-        )}
-      </div>
-    </div>
+      <EmptyHeader>
+        <EmptyMedia
+          variant="icon"
+          className="bg-destructive/10 text-destructive"
+        >
+          <XCircleIcon />
+        </EmptyMedia>
+        <EmptyTitle>{title}</EmptyTitle>
+        <EmptyDescription>{message}</EmptyDescription>
+      </EmptyHeader>
+      {(onDiscard || onRetryFlow || onRetryUpload) && (
+        <EmptyContent className="flex-row justify-center gap-2">
+          {onDiscard && (
+            <ConfirmDialog
+              trigger={<Button variant="outline">Discard</Button>}
+              title="Discard this recording?"
+              description="It hasn't been uploaded yet, so it will be lost. This cannot be undone."
+              confirmLabel="Discard"
+              onConfirm={onDiscard}
+            />
+          )}
+          {onRetryFlow && (
+            <Button variant="outline" onClick={onRetryFlow}>
+              Start over
+            </Button>
+          )}
+          {onRetryUpload && (
+            <Button onClick={onRetryUpload}>
+              <RefreshCwIcon data-icon="inline-start" />
+              Retry upload
+            </Button>
+          )}
+        </EmptyContent>
+      )}
+    </Empty>
   )
 }
 

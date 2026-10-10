@@ -34,7 +34,7 @@ function MicPermissionError({
         >
           <MicOffIcon />
         </EmptyMedia>
-        <EmptyTitle className="text-h3">Microphone access required</EmptyTitle>
+        <EmptyTitle>Microphone access required</EmptyTitle>
         <EmptyDescription>
           Your browser has blocked microphone access. To fix this:
         </EmptyDescription>
@@ -59,7 +59,7 @@ function MicPermissionError({
         <div className="flex w-full flex-col gap-2">
           <Button size="lg" className="w-full" onClick={onReload}>
             <RefreshCwIcon data-icon="inline-start" />
-            Reload Page
+            Reload page
           </Button>
           <Button
             size="lg"
@@ -67,7 +67,7 @@ function MicPermissionError({
             className="w-full"
             onClick={onRetry}
           >
-            Try Again
+            Try again
           </Button>
         </div>
       </EmptyContent>

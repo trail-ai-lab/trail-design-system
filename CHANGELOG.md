@@ -5,6 +5,69 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.7.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.7.0`.
+
+### Minor Changes
+
+- **`TranscriptCard` students:** a single group's `students` now show as `StudentChip`s under the
+  header (the same initials-avatar pills as `StudentRecordingScreen`) instead of a comma-separated
+  line. Without names, the meta line still reads "N students". Applies to Live transcript and the
+  session review "Transcript" tab.
+- **`SessionChatCard` title:** reads "Ask SLAI" instead of "Q&A". The `SummaryQaPanel` tab stays
+  "Q&A".
+- **`SlaiSidebar` live marker:** the pulsing marker on "Live session" (`liveSessionActive`) reads
+  "Running" instead of "Now".
+- **`NewSessionForm` class picker:** a separator now sits between the class list and "+ New class"
+  (when there are classes), matching `SpeakerAssignDropdown`'s "Add" item.
+- **`RecordingUploadingPanel` `showAttempts`:** `false` hides the retry progress bar and
+  "Attempt N of M" (default `true`). SLAI's student screen hides it.
+- **`RecordingDonePanel` `actionVariant`:** `"outline"` shows the action as a secondary button
+  (default `"default"`), for fallback actions such as the student's "Join as a new group".
+- **`DetailList` pattern:** label–value facts in a muted box (muted labels left, `font-medium`
+  tabular values right), matching the Showcase's Claimable Balance card. `RecordingReadyPanel`
+  and `RecordingDonePanel` (name, duration, size) and `ActivityLogCard`'s expanded details now
+  use it in place of their plain grids.
+- **Status cards follow the Showcase "Syncing your accounts" card:** icon tile, then title,
+  description and actions, built from `Empty` inside `Card` → `CardContent className="p-0"`.
+  - `RecordingUploadingPanel`, `RecordingDonePanel` and `UploadErrorPanel` now show their own
+    title under the icon, with a new `title` prop (defaults "Uploading recording", "Recording
+    saved", "Upload failed"). Put them in `CardContent className="p-0"`, not under a `CardTitle`.
+    `RecordingDonePanel`'s `note` moves above the details as the description.
+  - `SaveRecordingDialog` hides its header visually in the uploading, done and error phases,
+    since the panel shows the title.
+  - `VerifyEmailCard` (verifying), `ResetPasswordCard` (checking link, password updated) and
+    `AccessGate` (error, unverified, pending) use the same layout in place of a loose icon
+    above a `CardTitle`. "Password updated" gains a success icon.
+  - `MicPermissionError` uses the default empty-state title size, like the other status cards,
+    and its buttons read "Reload page" and "Try again" (sentence case).
+- **`SummaryCard` Generate / Regenerate** moves from the footer to the header, beside the scope
+  badge, like `TranscriptCard`'s header action. The footer now only holds "Check in" (when
+  `onCheckIn` is set).
+- **`DiarizationPanel` card:** until speakers are found (idle, analyzing, failed, no speech) the
+  form and status sit in a "Speakers" card, like the other review tabs. New `scopeLabel` prop
+  shows the scope badge. Once `ready`, the form still sits above `children`.
+- **`TranscriptCard` after a session:**
+  - `status={null}` hides the status badge (no "Uploaded" badge in session review).
+  - `translationToggle` adds a "Translation" toggle to the header that shows or hides each
+    line's translation; on by default. Control it with `showTranslations` /
+    `defaultShowTranslations` / `onShowTranslationsChange`. "Translated to …" hides with them.
+- **`LiveWaveform`** (new, SLAI): scrolling bars of the microphone level, modeled on the
+  Showcase's live audio waveform. It reads the recorder's own `stream` (never opens the mic or
+  stops its tracks): a dotted line while idle, red bars while recording, frozen and dimmed while
+  paused, a gentle wave while `loading`. Decorative (`aria-hidden`); the timer and caption carry
+  the state.
+- **`RecordingControl` `audioStream`** (and `StudentRecordingScreen` `audioStream`): pass the
+  recorder's mic stream (`null` until it has one) to show a `LiveWaveform` under the timer.
+
+### Patch Changes
+
+- **Select padding:** `NewSessionForm`, `GlobalSearch` and `VidyaMapPlaceholder` selects now wrap
+  their items in `SelectGroup`, which carries the list's padding, so the items are inset like
+  the Showcase examples instead of touching the popup's edges. When you build a `Select`, always
+  put its items inside a `SelectGroup`.
+
 ## 1.6.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.6.0`.

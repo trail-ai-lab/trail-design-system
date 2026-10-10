@@ -62,7 +62,7 @@ const meta: Meta<typeof SlaiSidebar> = {
 export default meta
 type Story = StoryObj<typeof SlaiSidebar>
 
-/** Live context: "Live session" highlighted, with the "Now" marker while a session runs. */
+/** Live context: "Live session" highlighted, with the "Running" marker while a session runs. */
 export const Live: Story = {
   args: { activeNav: "live", liveSessionActive: true },
 }

@@ -214,7 +214,7 @@ function SlaiSidebar({
   navHrefs?: Partial<Record<SlaiNavId, string>>
   /** Which primary nav item is highlighted. */
   activeNav?: SlaiNavId
-  /** A session is running now: shows a pulsing dot on the Live session nav item */
+  /** A session is running: shows a pulsing "Running" marker on the Live session nav item */
   liveSessionActive?: boolean
   /** Id (or name) of the source (quick recording) currently being viewed. */
   activeSource?: string
@@ -260,7 +260,7 @@ function SlaiSidebar({
                         aria-hidden
                         className="size-1.5 animate-pulse rounded-full bg-status-recording"
                       />
-                      Now
+                      Running
                     </span>
                   )}
                 </>

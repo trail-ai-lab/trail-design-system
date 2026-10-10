@@ -13,6 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
@@ -72,51 +80,62 @@ function AccessGate({
         )}
 
         {status === "error" && (
-          <>
-            <CardHeader className="items-center text-center">
-              <ShieldAlertIcon className="mb-2 size-8 text-destructive" />
-              <CardTitle className="text-h3">
-                Couldn&apos;t verify your access
-              </CardTitle>
-              <CardDescription>
-                {errorDetail ?? "Something went wrong. Please try again."}
-              </CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Button className="w-full" onClick={onRetry}>
-                Try again
-              </Button>
-            </CardFooter>
-          </>
+          <CardContent className="p-0">
+            <Empty className="p-4" role="alert">
+              <EmptyHeader>
+                <EmptyMedia
+                  variant="icon"
+                  className="bg-destructive/10 text-destructive"
+                >
+                  <ShieldAlertIcon />
+                </EmptyMedia>
+                <EmptyTitle>Couldn&apos;t verify your access</EmptyTitle>
+                <EmptyDescription>
+                  {errorDetail ?? "Something went wrong. Please try again."}
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button onClick={onRetry}>Try again</Button>
+              </EmptyContent>
+            </Empty>
+          </CardContent>
         )}
 
         {status === "unverified" && (
-          <>
-            <CardHeader className="items-center text-center">
-              <MailWarningIcon className="mb-2 size-8 text-muted-foreground" />
-              <CardTitle className="text-h3">Verify your email</CardTitle>
-              <CardDescription>
-                Confirm {email ?? "your email address"} using the link we sent,
-                then check again.
-              </CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Button className="w-full" onClick={onRetry}>
-                Check again
-              </Button>
-            </CardFooter>
-          </>
+          <CardContent className="p-0">
+            <Empty className="p-4">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <MailWarningIcon />
+                </EmptyMedia>
+                <EmptyTitle>Verify your email</EmptyTitle>
+                <EmptyDescription>
+                  Confirm {email ?? "your email address"} using the link we
+                  sent, then check again.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button onClick={onRetry}>Check again</Button>
+              </EmptyContent>
+            </Empty>
+          </CardContent>
         )}
 
         {status === "pending" && (
-          <CardHeader className="items-center text-center">
-            <ClockIcon className="mb-2 size-8 text-muted-foreground" />
-            <CardTitle className="text-h3">Request pending</CardTitle>
-            <CardDescription>
-              Your request is being reviewed. You&apos;ll get access once
-              it&apos;s approved.
-            </CardDescription>
-          </CardHeader>
+          <CardContent className="p-0">
+            <Empty className="p-4">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <ClockIcon />
+                </EmptyMedia>
+                <EmptyTitle>Request pending</EmptyTitle>
+                <EmptyDescription>
+                  Your request is being reviewed. You&apos;ll get access once
+                  it&apos;s approved.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          </CardContent>
         )}
 
         {status === "none" && (

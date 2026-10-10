@@ -48,6 +48,17 @@ export const UploadingRetry: Story = {
   render: () => <RecordingUploadingPanel attempt={2} totalAttempts={4} />,
 }
 
+/** Student screen: no retry progress, even while retrying. */
+export const UploadingRetryHidden: Story = {
+  render: () => (
+    <RecordingUploadingPanel
+      attempt={2}
+      totalAttempts={4}
+      showAttempts={false}
+    />
+  ),
+}
+
 export const Done: Story = {
   render: () => (
     <RecordingDonePanel
@@ -55,6 +66,21 @@ export const Done: Story = {
       durationSeconds={754}
       sizeBytes={4_400_000}
       note="Find it under Sources in the sidebar."
+      onAction={() => {}}
+    />
+  ),
+}
+
+/** Student screen: a fallback action as an outline button. */
+export const DoneStudent: Story = {
+  render: () => (
+    <RecordingDonePanel
+      name="Team Alpha"
+      durationSeconds={754}
+      sizeBytes={4_400_000}
+      note="You may now close this window. Each group can only submit one recording per session."
+      actionLabel="Join as a new group"
+      actionVariant="outline"
       onAction={() => {}}
     />
   ),

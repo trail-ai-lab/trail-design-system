@@ -159,17 +159,26 @@ export const Paused: Story = {
   },
 }
 
-/** After the session: the uploaded, speaker-unknown transcript with a static title. */
+/**
+ * After the session: the speaker-unknown transcript with a static title, no
+ * status badge (`status={null}`), and a "Translation" toggle, on by default.
+ */
 export const SessionReview: Story = {
   args: {
     title: "Transcript",
     groups: GROUPS,
     scope: "group-1",
-    status: "uploaded",
+    status: null,
+    translationToggle: true,
     autoScroll: false,
     translationLanguage: "English",
     className: "h-full",
   },
+}
+
+/** The "Translation" toggle off: only the original lines. */
+export const SessionReviewTranslationsHidden: Story = {
+  args: { ...SessionReview.args, defaultShowTranslations: false },
 }
 
 /** `highlightedEntryId` emphasizes the row a chat answer or search result cites. */

@@ -4,6 +4,7 @@ import * as React from "react"
 import { ChevronDownIcon, ListIcon, type LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { DetailList } from "@/components/patterns/detail-list"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -150,16 +151,7 @@ function ActivityLogCard({
                       >
                         <TableCell />
                         <TableCell colSpan={4} className="pt-0">
-                          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-                            {event.details!.map((row) => (
-                              <React.Fragment key={row.label}>
-                                <dt className="text-muted-foreground">
-                                  {row.label}
-                                </dt>
-                                <dd className="tabular-nums">{row.value}</dd>
-                              </React.Fragment>
-                            ))}
-                          </dl>
+                          <DetailList items={event.details!} />
                         </TableCell>
                       </TableRow>
                     )}

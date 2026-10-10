@@ -306,6 +306,7 @@ function NewSessionPage() {
       <div className="flex flex-1 items-center-safe justify-center overflow-y-auto p-(--shell-gap)">
         <NewSessionForm
           classes={CLASSES.map((c) => c.name)}
+          allowNewClass
           className="w-full max-w-lg"
         />
       </div>

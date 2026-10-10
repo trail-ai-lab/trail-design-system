@@ -18,7 +18,9 @@ import { Spinner } from "@/components/ui/spinner"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -103,13 +105,22 @@ function NewSessionForm({
                     <SelectValue placeholder="Select a class…" />
                   </SelectTrigger>
                   <SelectContent>
-                    {classes.map((name) => (
-                      <SelectItem key={name} value={name}>
-                        {name}
-                      </SelectItem>
-                    ))}
+                    {classes.length > 0 && (
+                      <SelectGroup>
+                        {classes.map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    )}
                     {allowNewClass && (
-                      <SelectItem value={NEW_CLASS}>+ New class</SelectItem>
+                      <>
+                        {classes.length > 0 && <SelectSeparator />}
+                        <SelectGroup>
+                          <SelectItem value={NEW_CLASS}>+ New class</SelectItem>
+                        </SelectGroup>
+                      </>
                     )}
                   </SelectContent>
                 </Select>

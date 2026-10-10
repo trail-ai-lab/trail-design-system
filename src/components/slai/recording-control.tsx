@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
 import { formatDuration } from "@/lib/format"
 import { useControllableState } from "@/lib/use-controllable-state"
+import { LiveWaveform } from "@/components/slai/live-waveform"
 
 export type RecordingState = "idle" | "recording" | "paused"
 
@@ -26,12 +27,15 @@ const DEFAULT_CAPTIONS = {
  * Drive it from your recorder by passing `state` and `seconds` and handling
  * `onStart` / `onStop` / `onPause` / `onResume`. Without `state` it keeps its
  * own state and clock (stories, prototypes); the events fire either way.
+ * Pass `audioStream` (the recorder's microphone stream, `null` until it has
+ * one) to show a LiveWaveform of the mic level under the timer.
  */
 function RecordingControl({
   state: stateProp,
   defaultState = "idle",
   seconds,
   status,
+  audioStream,
   pausable = true,
   captions = DEFAULT_CAPTIONS,
   onStart,
@@ -51,6 +55,9 @@ function RecordingControl({
   /** In-flight phase: "connecting" while starting, "stopping" while saving.
    * Disables the buttons and shows a spinner. */
   status?: "connecting" | "stopping"
+  /** The recorder's microphone stream: shows a live waveform under the
+   * timer. `null` while there's no stream yet; omit to hide the waveform. */
+  audioStream?: MediaStream | null
   /** Show Pause / Resume while recording; turn off when the recorder can't
    * pause (e.g. live transcription). */
   pausable?: boolean
@@ -109,6 +116,15 @@ function RecordingControl({
       >
         {formatDuration(seconds ?? (state === "idle" ? 0 : elapsed))}
       </span>
+
+      {audioStream !== undefined && (
+        <LiveWaveform
+          stream={audioStream}
+          state={state}
+          loading={busy}
+          className="max-w-xs"
+        />
+      )}
 
       <Button
         type="button"

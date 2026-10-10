@@ -43,7 +43,8 @@ export interface SummaryPhase {
 
 /**
  * AI summary of the live transcript. The scope (a single group or all
- * groups) is driven by the workspace GroupSwitcher and shown as a badge.
+ * groups) is driven by the workspace GroupSwitcher and shown as a badge;
+ * Generate / Regenerate sits beside it, like TranscriptCard's header action.
  */
 function SummaryCard({
   scopeLabel,
@@ -79,11 +80,18 @@ function SummaryCard({
     <Card className={className}>
       <CardHeader>
         <CardTitle>Summary</CardTitle>
-        {scopeLabel && (
-          <CardAction>
-            <Badge variant="secondary">{scopeLabel}</Badge>
-          </CardAction>
-        )}
+        <CardAction className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRegenerate}
+            disabled={loading}
+          >
+            <RefreshCwIcon data-icon="inline-start" />
+            {summary ? "Regenerate" : "Generate"}
+          </Button>
+          {scopeLabel && <Badge variant="secondary">{scopeLabel}</Badge>}
+        </CardAction>
       </CardHeader>
       <CardContent className="flex-1" aria-live="polite" aria-busy={loading}>
         {loading ? (
@@ -145,17 +153,8 @@ function SummaryCard({
           </Collapsible>
         )}
       </CardContent>
-      <CardFooter className="gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRegenerate}
-          disabled={loading}
-        >
-          <RefreshCwIcon data-icon="inline-start" />
-          {summary ? "Regenerate" : "Generate"}
-        </Button>
-        {onCheckIn && (
+      {onCheckIn && (
+        <CardFooter>
           <Button
             variant="ghost"
             size="sm"
@@ -169,8 +168,8 @@ function SummaryCard({
             )}
             {checkingIn ? "Checking in…" : "Check in"}
           </Button>
-        )}
-      </CardFooter>
+        </CardFooter>
+      )}
     </Card>
   )
 }

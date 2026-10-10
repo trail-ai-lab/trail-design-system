@@ -22,7 +22,7 @@
 
 - Object model, used in every label, prop and type: **Class** (Physics) → **Session** (one class meeting, e.g. "Period 3 — Aug 21") → **Group** → **Recording**. **Sources** are material outside a session (quick recordings, uploaded documents).
 - SLAI has two modes with different priorities:
-  - **Live** (nav item "Live session", page stories `SLAI/Pages/Live`) — used during class: watching groups, live transcript, quick summary/Q&A. Glanceable and low-friction. The nav item shows a "Now" marker while a session runs.
+  - **Live** (nav item "Live session", page stories `SLAI/Pages/Live`) — used during class: watching groups, live transcript, quick summary/Q&A. Glanceable and low-friction. The nav item shows a "Running" marker while a session runs.
   - **Session review** (opened from the sidebar's "Sessions" tree, page stories `SLAI/Pages/Session`) — used after class: recordings, diarized transcripts and speakers, goals/WIDA verdicts, summary, Q&A. Deeper analysis.
 - Keep the two modes structurally consistent:
   - Layout: AI panels (Summary, Q&A) on the left, primary content (live transcript / analysis tabs) on the right.
@@ -53,10 +53,13 @@
 - **Page frames:** single-card task pages center the card vertically and horizontally (`flex items-center-safe justify-center overflow-y-auto p-(--shell-gap)`; `-safe` keeps tall cards scrollable), forms `max-w-lg`; student (phone) screens `max-w-sm`, centered the same way. Content areas pad with `--shell-gap`.
 - **Card headers** are text only (`CardTitle` + `CardDescription`) — no icon tiles above the title.
 - **Headings** use the type scale by role: page title `text-h2 md:text-h1` (marketing `md:text-display`, home hero `lg:text-hero`), section `text-h2 md:text-h1`, subsection and dialog/auth card titles `text-h3`, card titles default `CardTitle`.
+- **Status cards** (loading, saving, saved, failed, pending — anything without a form) follow the Showcase's "Syncing your accounts": `Card` → `CardContent className="p-0"` → `Empty className="p-4"` with icon → title → description → actions. Never a `CardTitle` above an icon.
 - **Empty states:** always `Empty` (`EmptyMedia variant="icon"` + `EmptyTitle` + `EmptyDescription`, actions in `EmptyContent`). Inside a listbox (cmdk), render states outside the list — only options belong in it.
 - **Errors:** inline → `Alert variant="destructive"`; blocking → `Empty` with `EmptyMedia` tinted `bg-destructive/10 text-destructive`. Status icons outside an `Empty` use `IconTile` (`destructive` / `success` variants).
 - **Scroll containers:** `Card`'s ring and shadow (and focus rings) paint outside the box, so any `overflow-*-auto` box clips them where its content sits flush. Give the scroller an inset on every edge content can touch — `p-1`, or `-mx-1 px-1` / `-mt-1 pt-1` to keep alignment. A horizontal scroller clips vertically too.
 - **No nesting:** a card never renders inside another card — give the inner one an `embedded` variant. A dialog's title isn't repeated in its body.
+- **Select items** always sit inside a `SelectGroup` (it carries the list's padding; `SelectContent` has none), as in the Showcase. An action item at the end ("+ New class") goes in its own `SelectGroup` after a `SelectSeparator`.
+- **Label–value facts** (a recording's name/duration/size, event details) use `DetailList` — not a hand-rolled `dl` grid.
 - **People in lists** get an `Avatar size="sm"` (or `PersonRow`); color dots only where color is the key (speaker mapping).
 - **AI panel:** Summary and Q&A live together in `SummaryQaPanel`, always in the left column, in both Live and Session review.
 

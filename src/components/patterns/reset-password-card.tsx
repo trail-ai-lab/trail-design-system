@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { CheckCircle2Icon } from "lucide-react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -11,6 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import {
   Field,
   FieldDescription,
@@ -56,19 +64,34 @@ function ResetPasswordCard({
   if (status === "validating" || status === "done") {
     return (
       <Card className={className}>
-        <CardHeader className="items-center text-center">
-          {status === "validating" ? <Spinner className="mb-2 size-6" /> : null}
-          <CardTitle className="text-h3">
-            {status === "validating"
-              ? "Checking your link…"
-              : "Password updated"}
-          </CardTitle>
-          <CardDescription>
-            {status === "validating"
-              ? "One moment while we verify your reset link."
-              : "Redirecting you to sign in…"}
-          </CardDescription>
-        </CardHeader>
+        <CardContent className="p-0">
+          <Empty className="p-4" role="status">
+            <EmptyHeader>
+              {status === "validating" ? (
+                <EmptyMedia variant="icon">
+                  <Spinner />
+                </EmptyMedia>
+              ) : (
+                <EmptyMedia
+                  variant="icon"
+                  className="bg-success/10 text-success"
+                >
+                  <CheckCircle2Icon />
+                </EmptyMedia>
+              )}
+              <EmptyTitle>
+                {status === "validating"
+                  ? "Checking your link…"
+                  : "Password updated"}
+              </EmptyTitle>
+              <EmptyDescription>
+                {status === "validating"
+                  ? "One moment while we verify your reset link."
+                  : "Redirecting you to sign in…"}
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </CardContent>
       </Card>
     )
   }
