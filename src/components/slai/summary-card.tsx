@@ -160,7 +160,7 @@ function SummaryCard({
                   <HistoryIcon />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="min-w-56">
                 <DropdownMenuLabel>Summary history</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup
@@ -172,7 +172,9 @@ function SummaryCard({
                   {versions.map((version, index) => (
                     <DropdownMenuRadioItem key={version.id} value={version.id}>
                       <span className="flex flex-col">
-                        <span className="tabular-nums">{version.label}</span>
+                        <span className="whitespace-nowrap tabular-nums">
+                          {version.label}
+                        </span>
                         {version.description && (
                           <span className="text-xs text-muted-foreground">
                             {version.description}

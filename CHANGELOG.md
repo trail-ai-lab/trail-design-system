@@ -5,6 +5,15 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.8.1
+
+Install with `github:trail-ai-lab/trail-design-system#v1.8.1`.
+
+### Patch Changes
+
+- **`SummaryCard` history menu:** dates like "Oct 10, 11:44 AM" no longer wrap; the menu grows to
+  fit them.
+
 ## 1.8.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.8.0`.
