@@ -5,6 +5,29 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.6.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.6.0`.
+
+### Minor Changes
+
+- **`UploadErrorPanel` `onDiscard`:** a "Discard" button that confirms before throwing the
+  recording away, like `RecordingReadyPanel`'s.
+- **`GroupSetupForm` `maxStudents`:** caps how many students a group can add (default 6, matching
+  SLAI's API). At the cap the student input locks with "Groups can have up to 6 students." and the
+  counter reads "6/6 added".
+
+### Patch Changes
+
+- **`SaveRecordingDialog` upload error:** the error phase showed an unconfirmed "Start over" wired
+  to `onDiscard`, so one click after a failed upload deleted the recording. It now shows "Discard"
+  behind the same confirmation as the form phase.
+
+## 1.5.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.5.0`. (This tag's `package.json` still
+reads `1.4.0`; the code is 1.5.0.)
+
 ### Minor Changes
 
 - **`TranscriptGroup.recordedSeconds`:** a group's recording time (pauses excluded, from your own

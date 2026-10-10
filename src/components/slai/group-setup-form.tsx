@@ -57,6 +57,7 @@ function GroupSetupForm({
   onContinue,
   loading = false,
   notice,
+  maxStudents = 6,
   className,
 }: {
   /** Receives the trimmed group name and the students added */
@@ -66,6 +67,8 @@ function GroupSetupForm({
   /** A warning shown at the top of the card, e.g. "Your group was removed by
    * the teacher. Please set up a new group to continue." */
   notice?: React.ReactNode
+  /** Most students a group can hold; adding stops there */
+  maxStudents?: number
   className?: string
 }) {
   const uid = React.useId()
@@ -75,10 +78,11 @@ function GroupSetupForm({
 
   const pendingStudent = studentInput.trim()
   const alreadyAdded = students.includes(pendingStudent)
+  const isFull = students.length >= maxStudents
 
   const addStudent = () => {
     const name = studentInput.trim()
-    if (!name || students.includes(name)) return
+    if (!name || students.includes(name) || isFull) return
     setStudents((prev) => [...prev, name])
     setStudentInput("")
   }
@@ -130,8 +134,8 @@ function GroupSetupForm({
                 </span>
               </FieldLabel>
               {students.length > 0 && (
-                <span className="text-sm text-muted-foreground">
-                  {students.length} added
+                <span className="text-sm text-muted-foreground tabular-nums">
+                  {students.length}/{maxStudents} added
                 </span>
               )}
             </div>
@@ -139,6 +143,7 @@ function GroupSetupForm({
               <Input
                 id={`${uid}-student-name`}
                 placeholder="Enter a student name"
+                disabled={isFull}
                 value={studentInput}
                 onChange={(event) => setStudentInput(event.target.value)}
                 onKeyDown={(event) => {
@@ -153,16 +158,22 @@ function GroupSetupForm({
                 variant="outline"
                 size="icon"
                 onClick={addStudent}
-                disabled={!pendingStudent || alreadyAdded}
+                disabled={!pendingStudent || alreadyAdded || isFull}
                 aria-label="Add student"
               >
                 <PlusIcon />
               </Button>
             </div>
-            {alreadyAdded && (
+            {isFull ? (
               <FieldDescription>
-                {pendingStudent} is already in the group.
+                Groups can have up to {maxStudents} students.
               </FieldDescription>
+            ) : (
+              alreadyAdded && (
+                <FieldDescription>
+                  {pendingStudent} is already in the group.
+                </FieldDescription>
+              )
             )}
 
             {students.length > 0 && (
@@ -183,7 +194,12 @@ function GroupSetupForm({
         <Button
           className="w-full"
           disabled={!groupName.trim() || loading}
-          onClick={() => onContinue?.({ name: groupName.trim(), students })}
+          onClick={() =>
+            onContinue?.({
+              name: groupName.trim(),
+              students: students.slice(0, maxStudents),
+            })
+          }
         >
           {loading ? (
             <>

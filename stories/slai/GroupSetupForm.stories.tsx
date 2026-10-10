@@ -26,3 +26,17 @@ export const WithNotice: Story = {
       "Your group was removed by the teacher. Please set up a new group to continue.",
   },
 }
+
+/**
+ * At `maxStudents` (6 by default) the student input locks and says why.
+ * Shown with `maxStudents={2}`; the play function adds both students.
+ */
+export const GroupFull: Story = {
+  args: { maxStudents: 2 },
+  play: async ({ canvas, userEvent }) => {
+    const input = canvas.getByLabelText(/students/i)
+    for (const name of ["Mei", "Aarav"]) {
+      await userEvent.type(input, `${name}{Enter}`)
+    }
+  },
+}

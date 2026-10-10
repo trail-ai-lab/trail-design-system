@@ -69,3 +69,14 @@ export const UploadFailed: Story = {
     />
   ),
 }
+
+/** `onDiscard` confirms before throwing the recording away (used by `SaveRecordingDialog`). */
+export const UploadFailedWithDiscard: Story = {
+  render: () => (
+    <UploadErrorPanel
+      message="The connection dropped before the upload finished."
+      onRetryUpload={() => {}}
+      onDiscard={() => {}}
+    />
+  ),
+}

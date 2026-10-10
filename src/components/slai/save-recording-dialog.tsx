@@ -105,7 +105,7 @@ function SaveRecordingDialog({
           <UploadErrorPanel
             message={errorMessage}
             onRetryUpload={onRetryUpload}
-            onRetryFlow={onDiscard}
+            onDiscard={onDiscard}
           />
         )}
       </DialogContent>

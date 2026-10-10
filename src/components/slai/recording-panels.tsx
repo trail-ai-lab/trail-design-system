@@ -219,19 +219,24 @@ function RecordingDonePanel({
 }
 
 /**
- * Upload failed. Retrying the upload keeps the recording; "Start over"
- * (via `onRetryFlow`) discards it. Mic-permission failures use
+ * Upload failed. Retrying the upload keeps the recording. `onDiscard` adds a
+ * "Discard" button that confirms first, since the recording is lost;
+ * `onRetryFlow` adds an unconfirmed "Start over" for flows where starting
+ * again keeps nothing to lose. Mic-permission failures use
  * MicPermissionError instead.
  */
 function UploadErrorPanel({
   message = "We couldn't upload your recording.",
   onRetryUpload,
   onRetryFlow,
+  onDiscard,
   className,
 }: {
   message?: string
   onRetryUpload?: () => void
   onRetryFlow?: () => void
+  /** Throws the recording away, after a confirmation */
+  onDiscard?: () => void
   className?: string
 }) {
   return (
@@ -245,6 +250,15 @@ function UploadErrorPanel({
       </IconTile>
       <p className="text-sm text-muted-foreground">{message}</p>
       <div className="flex gap-2">
+        {onDiscard && (
+          <ConfirmDialog
+            trigger={<Button variant="outline">Discard</Button>}
+            title="Discard this recording?"
+            description="It hasn't been uploaded yet, so it will be lost. This cannot be undone."
+            confirmLabel="Discard"
+            onConfirm={onDiscard}
+          />
+        )}
         {onRetryFlow && (
           <Button variant="outline" onClick={onRetryFlow}>
             Start over
