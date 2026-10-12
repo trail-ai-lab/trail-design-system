@@ -64,6 +64,17 @@ export const WithCourseMaterials: Story = {
 }
 
 /**
+ * Before a class is picked the section still shows, so teachers know it's
+ * there; the picker and Upload wait for a class.
+ */
+export const CourseMaterialsBeforeClass: Story = {
+  args: {
+    materials: { Physics: PHYSICS_MATERIALS, Biology: [] },
+    onUploadMaterials: () => {},
+  },
+}
+
+/**
  * Upload while creating the session: the Upload button (or "Upload new…" in
  * the picker) opens `UploadMaterialsSheet` for the picked class. New files
  * join the class library and are pre-selected for this session. Try Biology,

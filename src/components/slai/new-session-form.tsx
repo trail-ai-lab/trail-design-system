@@ -40,7 +40,8 @@ const NEW_CLASS = "__new_class__"
 /**
  * "Start a new session" card shown when no session is active.
  * Collects class, session name, language settings and — with `materials` —
- * the course materials this session's answers should look at first.
+ * the course materials this session's answers should look at first. The
+ * materials section always shows; its picker and Upload wait for a class.
  */
 function NewSessionForm({
   classes,
@@ -78,7 +79,7 @@ function NewSessionForm({
   languages?: LanguageOptions
   spokenLanguages?: LanguageOptions
   translationLanguages?: LanguageOptions
-  /** Each class's course materials, keyed by class name; shows the "Course materials" section */
+  /** Each class's course materials, keyed by class name; shows the "Course materials" section (disabled until a class is picked) */
   materials?: Record<string, CourseMaterial[]>
   /** Picked materials' ids. Control it to pre-select files uploaded from here */
   materialIds?: string[]
@@ -182,7 +183,7 @@ function NewSessionForm({
             </div>
           </FieldSet>
 
-          {materials && resolvedClass && (
+          {materials && (
             <FieldSet>
               <SectionLabel asChild>
                 <legend className="mb-3">Course materials</legend>
@@ -200,6 +201,7 @@ function NewSessionForm({
                       type="button"
                       variant="outline"
                       size="xs"
+                      disabled={!resolvedClass}
                       onClick={() => onUploadMaterials(resolvedClass)}
                     >
                       <UploadIcon data-icon="inline-start" />
@@ -212,10 +214,13 @@ function NewSessionForm({
                   materials={classMaterials}
                   value={materialIds}
                   onValueChange={setMaterialIds}
+                  disabled={!resolvedClass}
                   placeholder={
-                    classMaterials.length === 0
-                      ? `No materials in ${resolvedClass} yet`
-                      : "Select materials"
+                    !resolvedClass
+                      ? "Pick a class first"
+                      : classMaterials.length === 0
+                        ? `No materials in ${resolvedClass} yet`
+                        : "Select materials"
                   }
                   onUploadNew={
                     onUploadMaterials

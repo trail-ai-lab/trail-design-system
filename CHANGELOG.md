@@ -5,6 +5,17 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.10.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.10.0`.
+
+### Minor Changes
+
+- **`NewSessionForm` course materials always visible:** with `materials`, the "Course materials"
+  section now shows before a class is picked, so teachers see it while filling in the form. Until
+  a class is chosen, the picker reads "Pick a class first" and it and Upload are disabled. (It used
+  to appear only once a class was picked.)
+
 ## 1.9.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.9.0`.
