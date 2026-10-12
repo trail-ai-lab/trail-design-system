@@ -1,6 +1,11 @@
 export { Logo, type LogoProps } from "./logo"
 export { ModeToggle, type ModeToggleProps } from "./mode-toggle"
 export { Dropzone, type DropzoneProps } from "./dropzone"
+export {
+  FileUploadItem,
+  UploadStatusBadge,
+  type UploadStatus,
+} from "./file-upload-item"
 export { GoogleButton } from "./google-button"
 export { AuthLayout, AuthAside, type AuthTool } from "./auth-layout"
 export { LoginForm } from "./login-form"

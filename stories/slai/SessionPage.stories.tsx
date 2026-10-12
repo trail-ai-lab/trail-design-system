@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import {
   AudioLinesIcon,
   DownloadIcon,
+  LibraryIcon,
   MessagesSquareIcon,
   MoreHorizontalIcon,
   PencilIcon,
@@ -52,6 +53,8 @@ import {
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
 import { RenameDialog } from "@/components/slai/rename-dialog"
+import { UploadMaterialsSheet } from "@/components/slai/upload-materials-sheet"
+import { useSessionMaterials } from "./_material-fixtures"
 
 const GROUP_1 = {
   id: "group-1",
@@ -179,8 +182,11 @@ const GROUP_1 = {
       id: "4",
       role: "assistant",
       content:
-        "About twice as fast: the run at thirty degrees took about one second, against two at fifteen. Click to see where they said it.",
+        "About twice as fast: the run at thirty degrees took about one second, against two at fifteen. That matches the lab handout's prediction. Click to see where they said it.",
       highlight: "At thirty degrees it was way faster, about one second.",
+      materials: [
+        { name: "Inclined plane lab handout.docx", location: "p. 2" },
+      ],
     },
   ] as ChatMessage[],
 }
@@ -293,7 +299,10 @@ const ALL_CHAT: ChatMessage[] = [
     id: "2",
     role: "assistant",
     content:
-      "Group 2 moved slower and only reached the baseline, so they'd benefit from a nudge to vary the angle next session. Group 1 finished the comparison and is ready for a harder question, like predicting the time at 60°.",
+      "Group 2 moved slower and only reached the baseline, so they'd benefit from a nudge to vary the angle next session. Group 1 finished the comparison and is ready for a harder question, like predicting the time at 60° — the extension on slide 18 of Unit 3.",
+    materials: [
+      { name: "Unit 3 — Forces and motion.pptx", location: "slide 18" },
+    ],
   },
 ]
 
@@ -307,7 +316,15 @@ function SessionReviewPage() {
   const [scope, setScope] = React.useState(GROUPS[0].id)
   const [audioVisible, setAudioVisible] = React.useState(false)
   const [qaVisible, setQaVisible] = React.useState(true)
-  const [dialog, setDialog] = React.useState<"rename" | "delete" | null>(null)
+  const [dialog, setDialog] = React.useState<
+    "rename" | "delete" | "materials" | null
+  >(null)
+  // Course materials: what this session's Q&A uses; add what you forgot after class.
+  const sessionMaterials = useSessionMaterials("Period 3 — Aug 21")
+  const chatMaterials = {
+    materials: sessionMaterials.counts,
+    onMaterialsClick: () => setDialog("materials"),
+  }
   const isAll = scope === ALL_GROUPS
   const activeGroup = GROUPS.find((group) => group.id === scope)
   const scopeLabel = isAll ? "All groups" : (activeGroup?.name ?? "")
@@ -407,6 +424,10 @@ function SessionReviewPage() {
                   <DownloadIcon />
                   Export
                 </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setDialog("materials")}>
+                  <LibraryIcon />
+                  Course materials
+                </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => setDialog("rename")}>
                   <PencilIcon />
                   Rename session
@@ -433,7 +454,7 @@ function SessionReviewPage() {
             <SummaryQaPanel
               className="h-[60svh] flex-1 lg:h-full"
               summary={{ scopeLabel, summary, versions }}
-              chat={{ scopeLabel, messages: chat }}
+              chat={{ scopeLabel, messages: chat, ...chatMaterials }}
             />
           </div>
         ) : (
@@ -461,6 +482,7 @@ function SessionReviewPage() {
                       scopeLabel,
                       messages: chat,
                       onMessageClick: showSource,
+                      ...chatMaterials,
                     }}
                   />
                 )}
@@ -556,6 +578,12 @@ function SessionReviewPage() {
           )
         )}
       </div>
+      <UploadMaterialsSheet
+        open={dialog === "materials"}
+        onOpenChange={(open) => !open && setDialog(null)}
+        klass="Physics"
+        {...sessionMaterials.sheetProps}
+      />
       <RenameDialog
         open={dialog === "rename"}
         onOpenChange={(open) => !open && setDialog(null)}

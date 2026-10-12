@@ -16,6 +16,7 @@ type Story = StoryObj<typeof SessionActions>
 export const ActiveSession: Story = {
   args: {
     onAddActivity: () => {},
+    onOpenMaterials: () => {},
     onOpenLanguageSettings: () => {},
     onInviteStudents: () => {},
     onEndSession: () => {},

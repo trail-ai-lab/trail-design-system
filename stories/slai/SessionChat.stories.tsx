@@ -24,11 +24,18 @@ const MESSAGES: ChatMessage[] = [
   },
 ]
 
+// a11y: scrollable-region-focusable disabled. Upstream: Radix ScrollArea's viewport isn't keyboard-focusable.
+const A11Y = {
+  config: {
+    rules: [{ id: "scrollable-region-focusable", enabled: false }],
+  },
+}
+
 const meta: Meta<typeof SessionChatCard> = {
   title: "SLAI/SessionChat",
   component: SessionChatCard,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", a11y: A11Y },
   decorators: [
     // Full-height component: needs a sized parent or h-full collapses.
     (Story) => (
@@ -65,6 +72,46 @@ export const Loading: Story = {
     scopeLabel: "Group 1",
     loading: true,
     className: "h-full",
+  },
+}
+
+/** Answers cite course materials (with page or slide) alongside transcript sources. */
+export const MaterialCitations: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    className: "h-full",
+    materials: { ready: 3, processing: 1 },
+    onMaterialsClick: () => {},
+    messages: [
+      {
+        id: "1",
+        role: "user",
+        content: "Is Group 1's explanation of acceleration correct?",
+      },
+      {
+        id: "2",
+        role: "assistant",
+        content:
+          "Mostly. They say a steeper ramp makes the ball faster, which matches the Unit 3 slides, but they haven't separated speed from acceleration yet — the lab handout asks them to compare times over equal distances to see it.",
+        sources: ["Group 1 · 3:40 PM"],
+        materials: [
+          { name: "Unit 3 — Forces and motion.pptx", location: "slide 14" },
+          { name: "Inclined plane lab handout.docx", location: "p. 2" },
+        ],
+      },
+    ],
+  },
+}
+
+/** No materials yet: the header says answers use the transcript only and links to add some. */
+export const NoMaterials: Story = {
+  args: {
+    messages: [],
+    scopeLabel: "All groups",
+    className: "h-full",
+    materials: { ready: 0 },
+    onMaterialsClick: () => {},
+    suggestions: ["Which group needs help?", "Summarize misconceptions"],
   },
 }
 

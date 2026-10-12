@@ -7,6 +7,7 @@ export {
   type SidebarStudent,
   type SidebarItemTarget,
   type SidebarClass,
+  type SidebarClassMaterials,
   type SidebarUser,
   type SlaiNavId,
 } from "./slai-sidebar"
@@ -54,7 +55,11 @@ export {
   type SummaryRange,
   type SummaryVersion,
 } from "./summary-card"
-export { SessionChatCard, type ChatMessage } from "./session-chat"
+export {
+  SessionChatCard,
+  type ChatMessage,
+  type ChatMaterialSource,
+} from "./session-chat"
 
 // Post-session (review) components
 export { AudioPlayerCard } from "./audio-player-card"
@@ -105,6 +110,19 @@ export {
   type SaveRecordingPhase,
 } from "./save-recording-dialog"
 export { AddSourceForm } from "./add-source-form"
+
+// Course materials (documents SLAI's Q&A answers from)
+export {
+  MATERIAL_ACCEPT,
+  MATERIAL_TYPE_LABELS,
+  materialIcon,
+  materialScopeLabel,
+  type CourseMaterial,
+  type MaterialType,
+} from "./lib/course-material"
+export { MaterialsTable } from "./materials-table"
+export { UploadMaterialsSheet } from "./upload-materials-sheet"
+export { SessionMaterialsPicker } from "./session-materials-picker"
 
 // Activities
 export { VidyaMapPlaceholder } from "./vidya-map-placeholder"

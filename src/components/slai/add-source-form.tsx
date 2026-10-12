@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { FileIcon, UploadIcon, XIcon } from "lucide-react"
+import { UploadIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,17 +14,9 @@ import {
 } from "@/components/ui/card"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
 import { Spinner } from "@/components/ui/spinner"
 import { Dropzone } from "@/components/patterns/dropzone"
-import { formatBytes } from "@/lib/format"
+import { FileUploadItem } from "@/components/patterns/file-upload-item"
 import { LanguageMultiSelect } from "@/components/slai/language-multi-select"
 import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
@@ -66,28 +58,12 @@ function AddSourceForm({
       <CardContent>
         {file ? (
           <FieldGroup>
-            <Item variant="outline" size="sm">
-              <ItemMedia variant="icon">
-                <FileIcon className="text-muted-foreground" />
-              </ItemMedia>
-              <ItemContent className="min-w-0">
-                <ItemTitle className="w-full truncate">{file.name}</ItemTitle>
-                <ItemDescription className="tabular-nums">
-                  {formatBytes(file.size)}
-                </ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label="Remove file"
-                  disabled={uploading}
-                  onClick={() => setFile(null)}
-                >
-                  <XIcon />
-                </Button>
-              </ItemActions>
-            </Item>
+            <FileUploadItem
+              name={file.name}
+              size={file.size}
+              disabled={uploading}
+              onRemove={() => setFile(null)}
+            />
             <Field>
               <FieldLabel htmlFor={`${uid}-source-name`}>
                 Name

@@ -78,6 +78,26 @@ export const Empty: Story = {
   args: { classes: [], sources: [] },
 }
 
+/**
+ * A class with `materials` shows a "Course materials" row first in its folder
+ * (with the ready count), linking to the class's materials page.
+ */
+export const WithCourseMaterials: Story = {
+  args: {
+    classes: CLASSES.map((klass) => ({
+      ...klass,
+      sessions: klass.sessions.map((session) => ({
+        ...session,
+        active: false,
+      })),
+      materials: {
+        count: klass.name === "Physics" ? 3 : 0,
+        active: klass.name === "Physics",
+      },
+    })),
+  },
+}
+
 /** Sources can be objects to pick a file-type icon (audio by default). */
 export const WithFileTypes: Story = {
   args: {

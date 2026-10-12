@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CornerDownLeftIcon, SparklesIcon } from "lucide-react"
+import { CornerDownLeftIcon, FileTextIcon, SparklesIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -10,6 +10,7 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -31,6 +32,14 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Spinner } from "@/components/ui/spinner"
 
+/** A course material an answer drew on, e.g. "Unit 3 slides", "p. 12". */
+export interface ChatMaterialSource {
+  id?: string
+  name: string
+  /** Where in it, e.g. "p. 12" or "slide 4" */
+  location?: string
+}
+
 export interface ChatMessage {
   id: string
   role: "user" | "assistant"
@@ -38,6 +47,8 @@ export interface ChatMessage {
   timestamp?: string
   /** Transcript excerpts or groups the answer drew on, shown as chips */
   sources?: string[]
+  /** Course materials the answer drew on, shown as chips with a document icon */
+  materials?: ChatMaterialSource[]
   /** Transcript entry id the answer points to; makes the row clickable */
   highlight?: string
 }
@@ -80,17 +91,67 @@ function ChatRow({
             {message.content}
           </p>
         )}
-        {message.sources && message.sources.length > 0 && (
+        {((message.sources && message.sources.length > 0) ||
+          (message.materials && message.materials.length > 0)) && (
           <div className="flex flex-wrap gap-1">
-            {message.sources.map((source) => (
+            {message.sources?.map((source) => (
               <Badge key={source} variant="outline" className="font-normal">
                 {source}
+              </Badge>
+            ))}
+            {message.materials?.map((material) => (
+              <Badge
+                key={`${material.id ?? material.name}-${material.location ?? ""}`}
+                variant="outline"
+                className="max-w-full font-normal"
+              >
+                <FileTextIcon data-icon="inline-start" aria-hidden />
+                <span className="truncate">{material.name}</span>
+                {material.location && (
+                  <span className="text-muted-foreground">
+                    · {material.location}
+                  </span>
+                )}
               </Badge>
             ))}
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+function MaterialsLine({
+  materials,
+  onClick,
+}: {
+  materials: { ready: number; processing?: number }
+  onClick?: () => void
+}) {
+  const { ready, processing = 0 } = materials
+  const label =
+    ready === 0 && processing === 0
+      ? "Transcript only"
+      : `Transcript + ${ready} course material${ready === 1 ? "" : "s"}`
+  const action =
+    ready === 0 && processing === 0 ? "Add course materials" : undefined
+  return (
+    <span data-slot="materials-line" className="flex flex-wrap gap-x-1">
+      <span>
+        {label}
+        {processing > 0 && ` · ${processing} processing`}
+        {onClick && " ·"}
+      </span>
+      {onClick && (
+        <button
+          type="button"
+          onClick={onClick}
+          className="cursor-pointer rounded-sm text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {action ?? "Manage"}
+        </button>
+      )}
+    </span>
   )
 }
 
@@ -108,6 +169,8 @@ function SessionChatCard({
   welcomeMessage,
   onMessageClick,
   showDisclaimer = false,
+  materials,
+  onMaterialsClick,
   className,
 }: {
   messages: ChatMessage[]
@@ -125,6 +188,10 @@ function SessionChatCard({
   onMessageClick?: (message: ChatMessage) => void
   /** Footer reminding that AI answers can be wrong */
   showDisclaimer?: boolean
+  /** Course materials Q&A can draw on; shows a line under the title */
+  materials?: { ready: number; processing?: number }
+  /** Makes the materials line a button, e.g. to open `UploadMaterialsSheet` */
+  onMaterialsClick?: () => void
   className?: string
 }) {
   const resolvedPlaceholder =
@@ -150,6 +217,11 @@ function SessionChatCard({
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
         <CardTitle>Ask SLAI</CardTitle>
+        {materials && (
+          <CardDescription>
+            <MaterialsLine materials={materials} onClick={onMaterialsClick} />
+          </CardDescription>
+        )}
         {scopeLabel && (
           <CardAction>
             <Badge variant="secondary">{scopeLabel}</Badge>

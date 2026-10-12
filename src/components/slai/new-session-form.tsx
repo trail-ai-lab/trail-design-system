@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { PlayIcon } from "lucide-react"
+import { PlayIcon, UploadIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -15,6 +15,7 @@ import {
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { useControllableState } from "@/lib/use-controllable-state"
 import {
   Select,
   SelectContent,
@@ -31,12 +32,15 @@ import {
   type LanguageSettingsValue,
 } from "@/components/slai/language-settings-form"
 import type { LanguageOptions } from "@/components/slai/lib/language-option"
+import type { CourseMaterial } from "@/components/slai/lib/course-material"
+import { SessionMaterialsPicker } from "@/components/slai/session-materials-picker"
 
 const NEW_CLASS = "__new_class__"
 
 /**
  * "Start a new session" card shown when no session is active.
- * Collects class, session name, and language settings.
+ * Collects class, session name, language settings and — with `materials` —
+ * the course materials this session's answers should look at first.
  */
 function NewSessionForm({
   classes,
@@ -48,6 +52,11 @@ function NewSessionForm({
   languages,
   spokenLanguages,
   translationLanguages,
+  materials,
+  materialIds: materialIdsProp,
+  defaultMaterialIds = [],
+  onMaterialIdsChange,
+  onUploadMaterials,
   className,
 }: {
   classes: string[]
@@ -56,6 +65,8 @@ function NewSessionForm({
     klass: string
     session: string
     languages: LanguageSettingsValue
+    /** Picked course materials' ids; empty without `materials` */
+    materialIds: string[]
   }) => void
   /** Session is being created; disables the form and shows a spinner */
   loading?: boolean
@@ -67,6 +78,18 @@ function NewSessionForm({
   languages?: LanguageOptions
   spokenLanguages?: LanguageOptions
   translationLanguages?: LanguageOptions
+  /** Each class's course materials, keyed by class name; shows the "Course materials" section */
+  materials?: Record<string, CourseMaterial[]>
+  /** Picked materials' ids. Control it to pre-select files uploaded from here */
+  materialIds?: string[]
+  defaultMaterialIds?: string[]
+  onMaterialIdsChange?: (materialIds: string[]) => void
+  /**
+   * Shows an Upload button beside the materials picker (and "Upload new…" in
+   * it); open `UploadMaterialsSheet` for `klass` and add the new files to
+   * `materialIds` so this session uses them
+   */
+  onUploadMaterials?: (klass: string) => void
   className?: string
 }) {
   const uid = React.useId()
@@ -76,6 +99,12 @@ function NewSessionForm({
   const creatingClass = klass === NEW_CLASS
   const resolvedClass = creatingClass ? newClass.trim() : klass
   const languagesRef = React.useRef<LanguageSettingsValue>(defaultLanguages)
+  const [materialIds, setMaterialIds] = useControllableState({
+    value: materialIdsProp,
+    defaultValue: defaultMaterialIds,
+    onChange: onMaterialIdsChange,
+  })
+  const classMaterials = materials?.[resolvedClass] ?? []
 
   return (
     <Card className={className}>
@@ -97,7 +126,13 @@ function NewSessionForm({
                 <FieldLabel htmlFor={`${uid}-new-session-class`}>
                   Class
                 </FieldLabel>
-                <Select value={klass} onValueChange={setKlass}>
+                <Select
+                  value={klass}
+                  onValueChange={(next) => {
+                    setKlass(next)
+                    setMaterialIds([])
+                  }}
+                >
                   <SelectTrigger
                     id={`${uid}-new-session-class`}
                     className="w-full"
@@ -147,6 +182,51 @@ function NewSessionForm({
             </div>
           </FieldSet>
 
+          {materials && resolvedClass && (
+            <FieldSet>
+              <SectionLabel asChild>
+                <legend className="mb-3">Course materials</legend>
+              </SectionLabel>
+              <Field>
+                <div className="flex items-center justify-between gap-2">
+                  <FieldLabel htmlFor={`${uid}-new-session-materials`}>
+                    For this session
+                    <span className="font-normal text-muted-foreground">
+                      — optional
+                    </span>
+                  </FieldLabel>
+                  {onUploadMaterials && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="xs"
+                      onClick={() => onUploadMaterials(resolvedClass)}
+                    >
+                      <UploadIcon data-icon="inline-start" />
+                      Upload
+                    </Button>
+                  )}
+                </div>
+                <SessionMaterialsPicker
+                  id={`${uid}-new-session-materials`}
+                  materials={classMaterials}
+                  value={materialIds}
+                  onValueChange={setMaterialIds}
+                  placeholder={
+                    classMaterials.length === 0
+                      ? `No materials in ${resolvedClass} yet`
+                      : "Select materials"
+                  }
+                  onUploadNew={
+                    onUploadMaterials
+                      ? () => onUploadMaterials(resolvedClass)
+                      : undefined
+                  }
+                />
+              </Field>
+            </FieldSet>
+          )}
+
           <FieldSet>
             <SectionLabel asChild>
               <legend className="mb-3">Languages</legend>
@@ -172,6 +252,7 @@ function NewSessionForm({
               klass: resolvedClass,
               session,
               languages: languagesRef.current,
+              materialIds,
             })
           }
         >

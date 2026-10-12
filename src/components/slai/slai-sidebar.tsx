@@ -8,6 +8,7 @@ import {
   EllipsisVerticalIcon,
   FileTextIcon,
   FolderIcon,
+  LibraryIcon,
   LogOutIcon,
   MicIcon,
   MoreHorizontalIcon,
@@ -57,6 +58,18 @@ export interface SidebarClass {
   id?: string
   name: string
   sessions: SidebarSession[]
+  /** Shows a "Course materials" row first in the class folder */
+  materials?: SidebarClassMaterials
+}
+
+/** The class folder's "Course materials" row. */
+export interface SidebarClassMaterials {
+  /** Opens the class's materials page; the row is a link when set */
+  href?: string
+  /** Marks the materials page as the one being viewed */
+  active?: boolean
+  /** Ready materials, shown muted at the row's end */
+  count?: number
 }
 
 /** One class meeting, e.g. "Period 3 — Aug 21". */
@@ -178,10 +191,24 @@ function SubRowAction({ label }: { label: string }) {
   )
 }
 
+function MaterialsRowLabel({ count }: { count?: number }) {
+  return (
+    <>
+      <LibraryIcon />
+      <span className="truncate">Course materials</span>
+      {count !== undefined && (
+        <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+          {count}
+        </span>
+      )}
+    </>
+  )
+}
+
 /**
  * The SLAI app sidebar: brand header, primary nav ("Live session" for the in-class
- * view), the Sessions tree (classes → past sessions, opening a session's
- * review), the saved sources list, and the signed-in user footer.
+ * view), the Sessions tree (classes → their course materials and past
+ * sessions, opening a session's review), the saved sources list, and the signed-in user footer.
  *
  * Shared by every SLAI page (live session, session review, new session)
  * so the navigation never drifts between them — pass page-specific data and
@@ -344,6 +371,26 @@ function SlaiSidebar({
                     />
                     <CollapsibleContent>
                       <SidebarMenuSub className="mr-0 pr-0">
+                        {klass.materials && (
+                          <SidebarMenuSubItem>
+                            <SidebarMenuSubButton
+                              isActive={klass.materials.active}
+                              asChild={klass.materials.href !== undefined}
+                            >
+                              {klass.materials.href !== undefined ? (
+                                <AppLink href={klass.materials.href}>
+                                  <MaterialsRowLabel
+                                    count={klass.materials.count}
+                                  />
+                                </AppLink>
+                              ) : (
+                                <MaterialsRowLabel
+                                  count={klass.materials.count}
+                                />
+                              )}
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        )}
                         {klass.sessions.map((session) => {
                           const target: SidebarItemTarget = {
                             kind: "session",

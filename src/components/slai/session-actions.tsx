@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   LanguagesIcon,
+  LibraryIcon,
   OctagonXIcon,
   PlusIcon,
   QrCodeIcon,
@@ -23,7 +24,7 @@ import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
 
 /**
  * The live-session action cluster: Invite, a Session menu (add activity /
- * language settings), and End session, which asks for confirmation first.
+ * course materials / language settings), and End session, which asks for confirmation first.
  * Rendered in the AppShell toolbar on the Live pages. Each handler is optional so pages can expose only
  * the actions that apply to their state (e.g. waiting-for-groups omits the
  * Session menu).
@@ -33,6 +34,7 @@ import { ConfirmDialog } from "@/components/patterns/confirm-dialog"
  */
 function SessionActions({
   onAddActivity,
+  onOpenMaterials,
   onOpenLanguageSettings,
   onInviteStudents,
   onEndSession,
@@ -41,6 +43,8 @@ function SessionActions({
   className,
 }: {
   onAddActivity?: () => void
+  /** Adds "Course materials", e.g. to open `UploadMaterialsSheet` */
+  onOpenMaterials?: () => void
   onOpenLanguageSettings?: () => void
   onInviteStudents?: () => void
   /** Called after the teacher confirms ending the session */
@@ -63,7 +67,10 @@ function SessionActions({
         <QrCodeIcon data-icon="inline-start" />
         Invite
       </Button>
-      {(onAddActivity || onOpenLanguageSettings || canRemoveGroup) && (
+      {(onAddActivity ||
+        onOpenMaterials ||
+        onOpenLanguageSettings ||
+        canRemoveGroup) && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
@@ -78,6 +85,12 @@ function SessionActions({
                 Add activity
               </DropdownMenuItem>
             )}
+            {onOpenMaterials && (
+              <DropdownMenuItem onClick={onOpenMaterials}>
+                <LibraryIcon />
+                Course materials
+              </DropdownMenuItem>
+            )}
             {onOpenLanguageSettings && (
               <DropdownMenuItem onClick={onOpenLanguageSettings}>
                 <LanguagesIcon />
@@ -86,9 +99,9 @@ function SessionActions({
             )}
             {canRemoveGroup && (
               <>
-                {(onAddActivity || onOpenLanguageSettings) && (
-                  <DropdownMenuSeparator />
-                )}
+                {(onAddActivity ||
+                  onOpenMaterials ||
+                  onOpenLanguageSettings) && <DropdownMenuSeparator />}
                 <DropdownMenuItem
                   variant="destructive"
                   onSelect={() => setConfirmRemove(true)}

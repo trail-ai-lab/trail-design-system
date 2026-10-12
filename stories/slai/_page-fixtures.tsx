@@ -15,6 +15,9 @@ export const CLASSES: SidebarClass[] = [
   { name: "Science", sessions: [] },
 ]
 
+/** Ready course materials per class, shown on each folder's "Course materials" row. */
+const MATERIAL_COUNTS: Record<string, number> = { Biology: 2, Physics: 3 }
+
 export const SOURCES = [
   "Inclined Plane Lab",
   "Photosynthesis Discussion",
@@ -40,6 +43,7 @@ export const STUDENTS: SidebarStudent[] = [
 export function PageSidebar({
   activeNav,
   activeSession,
+  activeMaterials,
   activeSource,
   activeStudent,
   showStudents = false,
@@ -48,6 +52,8 @@ export function PageSidebar({
   activeNav?: SlaiNavId
   /** Highlights a session in the tree, e.g. { className: "Physics", session: "Period 3 — Aug 21" } */
   activeSession?: { className: string; session: string }
+  /** Highlights a class's "Course materials" row, e.g. "Physics" */
+  activeMaterials?: string
   activeSource?: string
   activeStudent?: string
   /** Show the Students group (student progress pages) */
@@ -57,6 +63,10 @@ export function PageSidebar({
 }) {
   const classes = CLASSES.map((klass) => ({
     ...klass,
+    materials: {
+      count: MATERIAL_COUNTS[klass.name] ?? 0,
+      active: klass.name === activeMaterials,
+    },
     sessions: klass.sessions.map((session) => ({
       ...session,
       active:
@@ -74,7 +84,9 @@ export function PageSidebar({
       activeSource={activeSource}
       students={showStudents ? STUDENTS : undefined}
       activeStudent={activeStudent}
-      defaultOpenClass={activeSession?.className ?? "Physics"}
+      defaultOpenClass={
+        activeSession?.className ?? activeMaterials ?? "Physics"
+      }
       onDownload={() => {}}
       onLogout={() => {}}
     />

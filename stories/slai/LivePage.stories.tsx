@@ -6,7 +6,6 @@ import { AppShell } from "@/components/slai/app-shell"
 import { ALL_GROUPS, GroupSwitcher } from "@/components/slai/group-switcher"
 import { InviteStudentsSheet } from "@/components/slai/invite-students-sheet"
 import { LanguageSettingsSheet } from "@/components/slai/language-settings-sheet"
-import { NewSessionForm } from "@/components/slai/new-session-form"
 import { SessionActions } from "@/components/slai/session-actions"
 import { type ChatMessage } from "@/components/slai/session-chat"
 import { CLASSES, PageSidebar } from "./_page-fixtures"
@@ -21,6 +20,9 @@ import {
   type TranscriptGroup,
 } from "@/components/slai/transcript-card"
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
+import { UploadMaterialsSheet } from "@/components/slai/upload-materials-sheet"
+import { useSessionMaterials } from "./_material-fixtures"
+import { NewSessionWithMaterials } from "./_new-session-with-materials"
 
 const JOIN_URL =
   "https://trail.wcer.wisc.edu/slai/student-view?token=mn1pCSGtJnd0ZWC0"
@@ -184,6 +186,9 @@ const CHATS: Record<string, ChatMessage[]> = {
       role: "assistant",
       content:
         "Group 1 — they linked a steeper ramp angle to the ball speeding up and are now timing runs at three angles, which sets up a comparison of how speed changes over time. Group 2 is still establishing their baseline.",
+      materials: [
+        { name: "Unit 3 — Forces and motion.pptx", location: "slide 14" },
+      ],
     },
   ],
   "group-1": [
@@ -207,8 +212,10 @@ const SLAI_SIDEBAR = <PageSidebar activeNav="live" liveSessionActive />
 
 function ActiveSessionPage() {
   const [sheet, setSheet] = React.useState<
-    "activity" | "language" | "invite" | null
+    "activity" | "materials" | "language" | "invite" | null
   >(null)
+  // Course materials: the class library and what this session uses.
+  const sessionMaterials = useSessionMaterials("Period 3 — Aug 21")
   const [activity, setActivity] = React.useState("none")
   const [groups, setGroups] = React.useState(GROUPS)
   const [scope, setScope] = React.useState(GROUPS[0].id)
@@ -274,6 +281,7 @@ function ActiveSessionPage() {
           <div className="ml-auto flex items-center gap-3">
             <SessionActions
               onAddActivity={() => setSheet("activity")}
+              onOpenMaterials={() => setSheet("materials")}
               onOpenLanguageSettings={() => setSheet("language")}
               onInviteStudents={() => setSheet("invite")}
               onEndSession={() => {}}
@@ -301,6 +309,8 @@ function ActiveSessionPage() {
             scopeLabel,
             messages: CHATS[scope],
             onMessageClick: showSource,
+            materials: sessionMaterials.counts,
+            onMaterialsClick: () => setSheet("materials"),
             suggestions: [
               "Which group needs help?",
               "Summarize misconceptions",
@@ -326,6 +336,12 @@ function ActiveSessionPage() {
         activities={ACTIVITIES}
         value={activity}
         onValueChange={setActivity}
+      />
+      <UploadMaterialsSheet
+        open={sheet === "materials"}
+        onOpenChange={(open) => setSheet(open ? "materials" : null)}
+        klass="Physics"
+        {...sessionMaterials.sheetProps}
       />
       <LanguageSettingsSheet
         open={sheet === "language"}
@@ -383,9 +399,9 @@ function NewSessionPage() {
       }
     >
       <div className="flex flex-1 items-center-safe justify-center overflow-y-auto p-(--shell-gap)">
-        <NewSessionForm
+        <NewSessionWithMaterials
           classes={CLASSES.map((c) => c.name)}
-          allowNewClass
+          defaultClass="Physics"
           className="w-full max-w-lg"
         />
       </div>

@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { NewSessionForm } from "@/components/slai/new-session-form"
+import { PHYSICS_MATERIALS } from "./_material-fixtures"
+import { NewSessionWithMaterials } from "./_new-session-with-materials"
 
 const CLASSES = [
   "Bio 1",
@@ -46,4 +48,33 @@ export const Starting: Story = {
 
 export const AllowNewClass: Story = {
   args: { allowNewClass: true },
+}
+
+/**
+ * With `materials`, picking a class reveals an optional "Course materials"
+ * section: which of the class's materials this session looks at first.
+ * Biology has none yet — the picker offers only "Upload new…".
+ */
+export const WithCourseMaterials: Story = {
+  args: {
+    defaultClass: "Physics",
+    materials: { Physics: PHYSICS_MATERIALS, Biology: [] },
+    onUploadMaterials: () => {},
+  },
+}
+
+/**
+ * Upload while creating the session: the Upload button (or "Upload new…" in
+ * the picker) opens `UploadMaterialsSheet` for the picked class. New files
+ * join the class library and are pre-selected for this session. Try Biology,
+ * which has no materials yet.
+ */
+export const UploadWhileCreating: Story = {
+  render: (args) => (
+    <NewSessionWithMaterials
+      classes={args.classes}
+      defaultClass="Physics"
+      className={args.className}
+    />
+  ),
 }

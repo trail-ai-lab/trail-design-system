@@ -5,6 +5,49 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.9.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.9.0`.
+
+### Minor Changes
+
+- **Course materials (SLAI):** teachers can upload a class's syllabus, slides, readings and
+  rubrics for Q&A to answer from. Materials belong to a class; a session can link the ones it
+  should check first. New types `CourseMaterial` and `MaterialType`, with the helpers
+  `MATERIAL_TYPE_LABELS`, `MATERIAL_ACCEPT`, `materialIcon` and `materialScopeLabel`.
+  - `MaterialsTable`: a class's materials with name and size, type, "Used in" (whole class or
+    sessions) and status. Row menus offer Retry, Download, Rename, a Type submenu and Delete; each
+    appears only when you pass its handler. Includes empty and loading states. Page story
+    `SLAI/Pages/ClassMaterials`.
+  - `UploadMaterialsSheet`: a side sheet for uploading several files at once. Files start
+    uploading as soon as they're dropped and report back through `uploads`, so there's no submit
+    step. With `session`, a "Link to {session}" checkbox (on by default) links new files to that
+    session. Also pass the class library as `materials` and the sheet opens with a "Used in
+    {session}" picker for linking existing materials (`linkedIds` / `defaultLinkedIds` /
+    `onLinkedIdsChange`); its title then reads "Course materials". The Live and Session review page
+    stories open it from the Session / More actions menu and the Q&A "Manage" link, and their answers
+    cite materials.
+  - `SessionMaterialsPicker`: a searchable multi-select over the class library, with "Upload
+    new…" at the end. It notes when picked materials are still processing.
+- **`FileUploadItem` and `UploadStatusBadge` patterns:** a file row (icon, name, size) with a
+  progress bar while uploading and an Uploading / Processing / Ready / Failed badge under the name,
+  plus optional retry and remove buttons. Without `status` it's a plain selected file.
+  `AddSourceForm` now uses it; its remove button reads "Remove {file name}".
+- **`NewSessionForm` `materials`:** pass each class's materials (keyed by class name) to add an
+  optional "Course materials" section, between Session details and Languages, once a class is
+  picked. `onStartSession` now also receives `materialIds`. With `onUploadMaterials(klass)`, an
+  Upload button beside the picker (and "Upload new…" in it) lets teachers upload while creating the
+  session: open `UploadMaterialsSheet`, then add the new ids through the controllable
+  `materialIds` / `defaultMaterialIds` / `onMaterialIdsChange` so they're pre-selected.
+- **`SessionChatCard` materials:** `materials` (`{ ready, processing? }`) adds a line under "Ask
+  SLAI", e.g. "Transcript + 3 course materials · 1 processing", or "Transcript only" when there
+  are none. With `onMaterialsClick`, that line gets a "Manage" or "Add course materials" link.
+  `ChatMessage.materials` (`ChatMaterialSource[]`: `name`, optional `location` like "slide 14")
+  shows the materials an answer cited as chips next to its transcript `sources`.
+- **`SessionActions` `onOpenMaterials`:** adds "Course materials" to the Session menu.
+- **`SlaiSidebar` class materials:** `SidebarClass.materials` (`SidebarClassMaterials`: `href`,
+  `active`, `count`) adds a "Course materials" row at the top of the class folder.
+
 ## 1.8.1
 
 Install with `github:trail-ai-lab/trail-design-system#v1.8.1`.
