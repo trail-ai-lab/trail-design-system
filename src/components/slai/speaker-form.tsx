@@ -3,6 +3,7 @@
 import { MinusIcon, PlusIcon, RefreshCwIcon, UsersIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useControllableState } from "@/lib/use-controllable-state"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -16,20 +17,29 @@ const MAX_SPEAKERS = 6
  * Controls for speaker diarization: let the model pick the number of
  * speakers (`auto`) or set it yourself (`manual`, 2 to 6), then analyze.
  * Once a result exists, `analyzed` relabels the button "Re-analyze".
+ *
+ * The mode (`value`) and `speakerCount` are each controlled or left to the
+ * form (`defaultValue`, `defaultSpeakerCount`).
  */
 function SpeakerForm({
-  mode,
-  onModeChange,
-  speakerCount,
+  value: valueProp,
+  defaultValue = "auto",
+  onValueChange,
+  speakerCount: speakerCountProp,
+  defaultSpeakerCount = MIN_SPEAKERS,
   onSpeakerCountChange,
   analyzed = false,
   loading = false,
   onAnalyze,
   className,
 }: {
-  mode: SpeakerCountMode
-  onModeChange?: (mode: SpeakerCountMode) => void
-  speakerCount: number
+  /** Speaker count mode (controlled) */
+  value?: SpeakerCountMode
+  defaultValue?: SpeakerCountMode
+  onValueChange?: (value: SpeakerCountMode) => void
+  /** Number of speakers in `manual` mode, 2 to 6 (controlled) */
+  speakerCount?: number
+  defaultSpeakerCount?: number
   onSpeakerCountChange?: (count: number) => void
   /** A result already exists */
   analyzed?: boolean
@@ -37,6 +47,17 @@ function SpeakerForm({
   onAnalyze?: () => void
   className?: string
 }) {
+  const [mode, setMode] = useControllableState({
+    value: valueProp,
+    defaultValue,
+    onChange: onValueChange,
+  })
+  const [speakerCount, setSpeakerCount] = useControllableState({
+    value: speakerCountProp,
+    defaultValue: defaultSpeakerCount,
+    onChange: onSpeakerCountChange,
+  })
+
   return (
     <div
       data-slot="speaker-form"
@@ -47,9 +68,7 @@ function SpeakerForm({
         variant="outline"
         size="sm"
         value={mode}
-        onValueChange={(next) =>
-          next && onModeChange?.(next as SpeakerCountMode)
-        }
+        onValueChange={(next) => next && setMode(next as SpeakerCountMode)}
         aria-label="Speaker count mode"
         disabled={loading}
       >
@@ -68,7 +87,7 @@ function SpeakerForm({
             size="icon-sm"
             aria-label="Fewer speakers"
             disabled={loading || speakerCount <= MIN_SPEAKERS}
-            onClick={() => onSpeakerCountChange?.(speakerCount - 1)}
+            onClick={() => setSpeakerCount(speakerCount - 1)}
           >
             <MinusIcon />
           </Button>
@@ -81,7 +100,7 @@ function SpeakerForm({
             size="icon-sm"
             aria-label="More speakers"
             disabled={loading || speakerCount >= MAX_SPEAKERS}
-            onClick={() => onSpeakerCountChange?.(speakerCount + 1)}
+            onClick={() => setSpeakerCount(speakerCount + 1)}
           >
             <PlusIcon />
           </Button>

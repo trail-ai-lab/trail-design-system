@@ -9,6 +9,7 @@ import {
   FileTextIcon,
 } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { useControllableState } from "@/lib/use-controllable-state"
 
 import { Badge } from "@/components/ui/badge"
@@ -42,6 +43,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { SummaryText } from "@/components/slai/summary-text"
@@ -144,7 +146,10 @@ function SummaryCard({
         : undefined
 
   return (
-    <Card className={className}>
+    <Card
+      data-slot="summary-card"
+      className={cn("flex min-h-0 flex-col", className)}
+    >
       <CardHeader>
         <CardTitle>Summary</CardTitle>
         <CardAction className="flex items-center gap-2">
@@ -204,84 +209,95 @@ function SummaryCard({
           {scopeLabel && <Badge variant="secondary">{scopeLabel}</Badge>}
         </CardAction>
       </CardHeader>
-      <CardContent className="flex-1" aria-live="polite" aria-busy={loading}>
-        {earlier && !loading && (
+      <CardContent className="flex min-h-0 flex-1 flex-col p-0">
+        <ScrollArea className="min-h-0 flex-1">
           <div
-            data-slot="summary-earlier-version"
-            className="mb-3 flex items-center justify-between gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground"
+            aria-live="polite"
+            aria-busy={loading}
+            className="px-(--card-spacing) py-1"
           >
-            <span className="flex items-center gap-1.5">
-              <HistoryIcon className="size-3.5" />
-              Earlier version · {earlier.label}
-              {earlier.description && ` · ${earlier.description}`}
-            </span>
-            <Button
-              variant="link"
-              size="xs"
-              className="h-auto p-0"
-              onClick={() => setVersionId(null)}
-            >
-              Show latest
-            </Button>
-          </div>
-        )}
-        {loading ? (
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-11/12" />
-            <Skeleton className="h-4 w-3/5" />
-          </div>
-        ) : shownSummary ? (
-          <div className="flex flex-col gap-3">
-            {coverage && !earlier && (
-              <Badge variant="outline" className="w-fit text-muted-foreground">
-                {coverage}
-              </Badge>
+            {earlier && !loading && (
+              <div
+                data-slot="summary-earlier-version"
+                className="mb-3 flex items-center justify-between gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground"
+              >
+                <span className="flex items-center gap-1.5">
+                  <HistoryIcon className="size-3.5" />
+                  Earlier version · {earlier.label}
+                  {earlier.description && ` · ${earlier.description}`}
+                </span>
+                <Button
+                  variant="link"
+                  size="xs"
+                  className="h-auto p-0"
+                  onClick={() => setVersionId(null)}
+                >
+                  Show latest
+                </Button>
+              </div>
             )}
-            {thinSummaryTurns !== undefined && !earlier && (
-              <p className="flex items-center gap-1.5 text-xs text-warning">
-                <TriangleAlertIcon className="size-3.5" />
-                Only {thinSummaryTurns} turns since the last check-in — the
-                summary may be thin.
-              </p>
+            {loading ? (
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-11/12" />
+                <Skeleton className="h-4 w-3/5" />
+              </div>
+            ) : shownSummary ? (
+              <div className="flex flex-col gap-3">
+                {coverage && !earlier && (
+                  <Badge
+                    variant="outline"
+                    className="w-fit text-muted-foreground"
+                  >
+                    {coverage}
+                  </Badge>
+                )}
+                {thinSummaryTurns !== undefined && !earlier && (
+                  <p className="flex items-center gap-1.5 text-xs text-warning">
+                    <TriangleAlertIcon className="size-3.5" />
+                    Only {thinSummaryTurns} turns since the last check-in — the
+                    summary may be thin.
+                  </p>
+                )}
+                <SummaryText text={shownSummary} />
+              </div>
+            ) : (
+              <Empty className="p-6">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <FileTextIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>No summary yet</EmptyTitle>
+                  <EmptyDescription>
+                    Summarize what {scopeLabel ?? "the class"} discussed.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             )}
-            <SummaryText text={shownSummary} />
+            {earlierPhases.length > 0 && (
+              <Collapsible className="mt-4 border-t border-border pt-3">
+                <CollapsibleTrigger className="group/phases flex w-full items-center gap-1.5 text-xs font-medium text-muted-foreground outline-none hover:text-foreground">
+                  <ChevronDownIcon className="size-3.5 transition-transform group-data-[state=open]/phases:rotate-180" />
+                  {earlierPhases.length} earlier{" "}
+                  {earlierPhases.length === 1 ? "phase" : "phases"}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-3 flex flex-col gap-3">
+                  {earlierPhases.map((phase) => (
+                    <div key={phase.id} className="flex flex-col gap-1">
+                      <span className="text-xs text-muted-foreground">
+                        Before {phase.checkinAt}
+                      </span>
+                      <SummaryText
+                        text={phase.summary}
+                        className="line-clamp-3 text-muted-foreground"
+                      />
+                    </div>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+            )}
           </div>
-        ) : (
-          <Empty className="p-6">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <FileTextIcon />
-              </EmptyMedia>
-              <EmptyTitle>No summary yet</EmptyTitle>
-              <EmptyDescription>
-                Summarize what {scopeLabel ?? "the class"} discussed.
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        )}
-        {earlierPhases.length > 0 && (
-          <Collapsible className="mt-4 border-t border-border pt-3">
-            <CollapsibleTrigger className="group/phases flex w-full items-center gap-1.5 text-xs font-medium text-muted-foreground outline-none hover:text-foreground">
-              <ChevronDownIcon className="size-3.5 transition-transform group-data-[state=open]/phases:rotate-180" />
-              {earlierPhases.length} earlier{" "}
-              {earlierPhases.length === 1 ? "phase" : "phases"}
-            </CollapsibleTrigger>
-            <CollapsibleContent className="mt-3 flex flex-col gap-3">
-              {earlierPhases.map((phase) => (
-                <div key={phase.id} className="flex flex-col gap-1">
-                  <span className="text-xs text-muted-foreground">
-                    Before {phase.checkinAt}
-                  </span>
-                  <SummaryText
-                    text={phase.summary}
-                    className="line-clamp-3 text-muted-foreground"
-                  />
-                </div>
-              ))}
-            </CollapsibleContent>
-          </Collapsible>
-        )}
+        </ScrollArea>
       </CardContent>
       {onCheckIn && (
         <CardFooter>

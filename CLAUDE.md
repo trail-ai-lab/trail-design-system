@@ -20,7 +20,7 @@
 
 ## SLAI Product Model
 
-- Object model, used in every label, prop and type: **Class** (Physics) → **Session** (one class meeting, e.g. "Period 3 — Aug 21") → **Group** → **Recording**. **Sources** are material outside a session (quick recordings, uploaded documents).
+- Object model, used in every label, prop and type: **Class** (Physics) → **Session** (one class meeting, e.g. "Period 3 — Aug 21") → **Group** → **Recording**. **Sources** are recordings outside a session (quick recordings, uploaded audio); in copy they are "Recordings" ("Add recording" nav, "Recordings" sidebar group) — `source` stays only in code identifiers. PDF upload is off in the UI; `SidebarSource.type: "pdf"` remains for legacy rows.
 - SLAI has two modes with different priorities:
   - **Live** (nav item "Live session", page stories `SLAI/Pages/Live`) — used during class: watching groups, live transcript, quick summary/Q&A. Glanceable and low-friction. The nav item shows a "Running" marker while a session runs.
   - **Session review** (opened from the sidebar's "Sessions" tree, page stories `SLAI/Pages/Session`) — used after class: recordings, diarized transcripts and speakers, goals/WIDA verdicts, summary, Q&A. Deeper analysis.
@@ -49,7 +49,7 @@
 
 ## Composition Patterns (one shape per job)
 
-- **Single-task forms** (new session, add source, group setup, auth, recording): `Card` → `CardHeader` (`CardTitle`, then `CardDescription` — never above it) → `CardContent` with `FieldGroup` → `CardFooter` with one full-width, default-size primary action. Optional fields say "— optional"; no asterisks.
+- **Single-task forms** (new session, add recording, group setup, auth, recording): `Card` → `CardHeader` (`CardTitle`, then `CardDescription` — never above it) → `CardContent` with `FieldGroup` → `CardFooter` with one full-width, default-size primary action. Optional fields say "— optional"; no asterisks.
 - **Page frames:** single-card task pages center the card vertically and horizontally (`flex items-center-safe justify-center overflow-y-auto p-(--shell-gap)`; `-safe` keeps tall cards scrollable), forms `max-w-lg`; student (phone) screens `max-w-sm`, centered the same way. Content areas pad with `--shell-gap`.
 - **Card headers** are text only (`CardTitle` + `CardDescription`) — no icon tiles above the title.
 - **Headings** use the type scale by role: page title `text-h2 md:text-h1` (marketing `md:text-display`, home hero `lg:text-hero`), section `text-h2 md:text-h1`, subsection and dialog/auth card titles `text-h3`, card titles default `CardTitle`.

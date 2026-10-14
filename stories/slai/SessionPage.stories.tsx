@@ -452,7 +452,7 @@ function SessionReviewPage() {
           // AI panel fills the page.
           <div className="flex p-(--shell-gap) lg:h-full">
             <SummaryQaPanel
-              className="h-[60svh] flex-1 lg:h-full"
+              className="h-(--shell-panel-h) flex-1 lg:h-full"
               summary={{ scopeLabel, summary, versions }}
               chat={{ scopeLabel, messages: chat, ...chatMaterials }}
             />
@@ -476,7 +476,7 @@ function SessionReviewPage() {
               >
                 {qaVisible && (
                   <SummaryQaPanel
-                    className="h-[60svh] lg:h-full"
+                    className="h-(--shell-panel-h) lg:h-full"
                     summary={{ scopeLabel, summary, versions }}
                     chat={{
                       scopeLabel,
@@ -489,7 +489,7 @@ function SessionReviewPage() {
                 <Tabs
                   value={tab}
                   onValueChange={setTab}
-                  className="h-[60svh] min-h-0 lg:h-full"
+                  className="h-(--shell-panel-h) min-h-0 lg:h-full"
                 >
                   <TabsList className="w-full">
                     <TabsTrigger value="goals">Goals</TabsTrigger>
@@ -532,7 +532,7 @@ function SessionReviewPage() {
                   </TabsContent>
                   <TabsContent
                     value="speakers"
-                    className="flex min-h-0 flex-col gap-(--shell-gap)"
+                    className="flex min-h-0 flex-col"
                   >
                     <DiarizationPanel
                       className="min-h-0 flex-1"
@@ -541,8 +541,8 @@ function SessionReviewPage() {
                       elapsedSeconds={2}
                       form={
                         <SpeakerForm
-                          mode={speakerMode}
-                          onModeChange={setSpeakerMode}
+                          value={speakerMode}
+                          onValueChange={setSpeakerMode}
                           speakerCount={speakerCount}
                           onSpeakerCountChange={setSpeakerCount}
                           analyzed={analysis[activeGroup.id] === "ready"}
@@ -551,13 +551,11 @@ function SessionReviewPage() {
                       }
                     >
                       <ParticipationCard
-                        className="shrink-0"
-                        scopeLabel={scopeLabel}
+                        variant="embedded"
                         students={activeGroup.participation}
                       />
                       <RecordedTranscriptCard
-                        key={scope}
-                        className="min-h-80 flex-1"
+                        variant="embedded"
                         speakers={activeGroup.speakers}
                         entries={activeGroup.entries}
                       />

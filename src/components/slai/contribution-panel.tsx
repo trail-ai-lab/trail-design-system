@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 import { formatElapsed } from "@/lib/format"
+import { SectionLabel } from "@/components/patterns/section-label"
 import { SpeakerAssignDropdown } from "@/components/slai/speaker-assign-dropdown"
 
 export interface ContributionSpeaker {
@@ -38,6 +39,8 @@ export const SPEAKER_FILLS = [
 /**
  * Speaking-time breakdown for a diarized recording: a stacked bar of each
  * speaker's share and a row per speaker where the teacher assigns a student.
+ * `embedded` renders it as a labelled subsection with no card chrome, for use
+ * inside another card (DiarizationPanel).
  */
 function ContributionPanel({
   speakers,
@@ -45,6 +48,7 @@ function ContributionPanel({
   onAssign,
   onAddStudent,
   status = "idle",
+  variant = "card",
   className,
 }: {
   speakers: ContributionSpeaker[]
@@ -54,78 +58,112 @@ function ContributionPanel({
   onAddStudent?: (name: string) => void
   /** Persistence state of the latest assignment */
   status?: "idle" | "saving" | "saved"
+  variant?: "card" | "embedded"
   className?: string
 }) {
   const total = speakers.reduce((sum, speaker) => sum + speaker.seconds, 0)
   const percent = (seconds: number) =>
     total > 0 ? Math.round((seconds / total) * 100) : 0
 
+  const count = <Badge variant="secondary">{speakers.length} speakers</Badge>
+  const saveStatus = (
+    <>
+      {status === "saving" && (
+        <span className="flex items-center gap-1.5">
+          <Spinner className="size-3" /> Saving…
+        </span>
+      )}
+      {status === "saved" && (
+        <span className="flex items-center gap-1.5">
+          <CheckIcon className="size-3" /> Saved
+        </span>
+      )}
+    </>
+  )
+  const body = (
+    <>
+      <div
+        role="img"
+        aria-label="Speaking time share by speaker"
+        className="flex h-3 w-full gap-0.5 overflow-hidden rounded-full bg-muted"
+      >
+        {speakers.map((speaker, index) => (
+          <div
+            key={speaker.id}
+            className={cn(
+              "h-full",
+              SPEAKER_FILLS[index % SPEAKER_FILLS.length]
+            )}
+            style={{ width: `${percent(speaker.seconds)}%` }}
+          />
+        ))}
+      </div>
+      <ul className="flex flex-col gap-3">
+        {speakers.map((speaker, index) => (
+          <li key={speaker.id} className="flex items-center gap-3">
+            <span
+              aria-hidden
+              className={cn(
+                "size-2.5 shrink-0 rounded-full",
+                SPEAKER_FILLS[index % SPEAKER_FILLS.length]
+              )}
+            />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate text-sm font-medium">
+                {speaker.student ?? speaker.label}
+              </span>
+              <span className="text-xs text-muted-foreground tabular-nums">
+                {percent(speaker.seconds)}% · {formatElapsed(speaker.seconds)}
+              </span>
+            </div>
+            <SpeakerAssignDropdown
+              students={students}
+              value={speaker.student}
+              onValueChange={(student) => onAssign?.(speaker.id, student)}
+              onAddStudent={onAddStudent}
+              aria-label={`Student for ${speaker.label}`}
+            />
+          </li>
+        ))}
+      </ul>
+    </>
+  )
+
+  if (variant === "embedded") {
+    return (
+      <section
+        data-slot="contribution-panel"
+        data-variant={variant}
+        className={cn("flex flex-col gap-3", className)}
+      >
+        <div className="flex items-center gap-2">
+          <SectionLabel>Speaking time</SectionLabel>
+          {count}
+          <span className="ml-auto text-xs text-muted-foreground">
+            {saveStatus}
+          </span>
+        </div>
+        <div className="flex flex-col gap-4">{body}</div>
+      </section>
+    )
+  }
+
   return (
-    <Card className={className}>
+    <Card
+      data-slot="contribution-panel"
+      data-variant={variant}
+      className={className}
+    >
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           Speaking time
-          <Badge variant="secondary">{speakers.length} speakers</Badge>
+          {count}
         </CardTitle>
         <CardAction className="text-xs text-muted-foreground">
-          {status === "saving" && (
-            <span className="flex items-center gap-1.5">
-              <Spinner className="size-3" /> Saving…
-            </span>
-          )}
-          {status === "saved" && (
-            <span className="flex items-center gap-1.5">
-              <CheckIcon className="size-3" /> Saved
-            </span>
-          )}
+          {saveStatus}
         </CardAction>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div
-          role="img"
-          aria-label="Speaking time share by speaker"
-          className="flex h-3 w-full gap-0.5 overflow-hidden rounded-full bg-muted"
-        >
-          {speakers.map((speaker, index) => (
-            <div
-              key={speaker.id}
-              className={cn(
-                "h-full",
-                SPEAKER_FILLS[index % SPEAKER_FILLS.length]
-              )}
-              style={{ width: `${percent(speaker.seconds)}%` }}
-            />
-          ))}
-        </div>
-        <ul className="flex flex-col gap-3">
-          {speakers.map((speaker, index) => (
-            <li key={speaker.id} className="flex items-center gap-3">
-              <span
-                aria-hidden
-                className={cn(
-                  "size-2.5 shrink-0 rounded-full",
-                  SPEAKER_FILLS[index % SPEAKER_FILLS.length]
-                )}
-              />
-              <div className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-sm font-medium">
-                  {speaker.student ?? speaker.label}
-                </span>
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  {percent(speaker.seconds)}% · {formatElapsed(speaker.seconds)}
-                </span>
-              </div>
-              <SpeakerAssignDropdown
-                students={students}
-                value={speaker.student}
-                onValueChange={(student) => onAssign?.(speaker.id, student)}
-                onAddStudent={onAddStudent}
-                aria-label={`Student for ${speaker.label}`}
-              />
-            </li>
-          ))}
-        </ul>
-      </CardContent>
+      <CardContent className="flex flex-col gap-4">{body}</CardContent>
     </Card>
   )
 }

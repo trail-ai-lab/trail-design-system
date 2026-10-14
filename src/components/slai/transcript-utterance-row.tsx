@@ -2,12 +2,14 @@ import * as React from "react"
 import { LanguagesIcon, PauseIcon, PlayIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 
 export interface TranscriptUtterance {
   /** Formatted time of the utterance, e.g. "3:42 PM" */
   timestamp?: string
-  /** Detected language of the utterance, e.g. "Marathi" */
-  language: string
+  /** Detected language of the utterance in plain English, e.g. "Marathi";
+   * omitted when unknown, which hides it */
+  language?: string
   original: string
   /** Rendered stacked below the original; hidden when identical to it */
   translation?: string
@@ -25,8 +27,8 @@ function TranscriptUtteranceRow({
   leading,
   meta,
   entry,
-  highlighted = false,
-  playing,
+  isHighlighted = false,
+  isPlaying,
   onPlayToggle,
   className,
 }: {
@@ -34,9 +36,9 @@ function TranscriptUtteranceRow({
   meta?: React.ReactNode
   entry: TranscriptUtterance
   /** Marks the row as the one a chat answer or search result points to */
-  highlighted?: boolean
+  isHighlighted?: boolean
   /** Whether this utterance's audio is playing; only used with `onPlayToggle` */
-  playing?: boolean
+  isPlaying?: boolean
   /** Adds a play/pause button that plays just this utterance's audio */
   onPlayToggle?: () => void
   className?: string
@@ -47,7 +49,7 @@ function TranscriptUtteranceRow({
   return (
     <div
       data-slot="transcript-utterance-row"
-      data-highlighted={highlighted || undefined}
+      data-highlighted={isHighlighted || undefined}
       className={cn(
         "flex gap-3 data-[highlighted]:-mx-2 data-[highlighted]:rounded-xl data-[highlighted]:bg-primary/10 data-[highlighted]:px-2 data-[highlighted]:py-1.5",
         className
@@ -58,25 +60,21 @@ function TranscriptUtteranceRow({
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
           {meta}
           {onPlayToggle && (
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="icon-xs"
+              className="rounded-full"
               onClick={onPlayToggle}
-              aria-label={playing ? "Pause segment" : "Play segment"}
-              className="relative flex size-5 items-center justify-center rounded-full bg-muted text-foreground outline-none after:absolute after:-inset-1.5 hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={isPlaying ? "Pause segment" : "Play segment"}
+              aria-pressed={isPlaying}
             >
-              {playing ? (
-                <PauseIcon className="size-3" />
-              ) : (
-                <PlayIcon className="size-3" />
-              )}
-            </button>
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </Button>
           )}
-          <span>{entry.language}</span>
+          {entry.language && <span>{entry.language}</span>}
+          {entry.language && entry.timestamp && <span aria-hidden>·</span>}
           {entry.timestamp && (
-            <>
-              <span aria-hidden>·</span>
-              <span className="tabular-nums">{entry.timestamp}</span>
-            </>
+            <span className="tabular-nums">{entry.timestamp}</span>
           )}
         </div>
         <p className="text-sm leading-relaxed text-foreground">

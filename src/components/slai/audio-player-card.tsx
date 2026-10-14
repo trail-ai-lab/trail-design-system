@@ -114,7 +114,7 @@ function Player({
           setPlaying(false)
           return duration
         }
-        return value + 1
+        return Math.min(duration, value + 0.25)
       })
     }, 250)
     return () => clearInterval(id)
@@ -136,11 +136,17 @@ function Player({
     } else if (element.duration === Infinity && !durationProbed.current) {
       // MediaRecorder WebM files carry no duration, so the browser reports
       // Infinity. Seeking far past the end makes it scan the file and find the
-      // real length; jump back to the start once it has.
+      // real length; then jump back to where playback was. A seek made from
+      // outside (`audioRef`) while the probe runs moves it off the end, and is
+      // kept.
       durationProbed.current = true
+      const resumeAt = element.currentTime
       const restore = () => {
-        element.currentTime = 0
         element.removeEventListener("timeupdate", restore)
+        const atEnd =
+          !Number.isFinite(element.duration) ||
+          element.currentTime >= element.duration - 0.25
+        if (atEnd) element.currentTime = resumeAt
       }
       element.addEventListener("timeupdate", restore)
       element.currentTime = 1e101
@@ -168,9 +174,9 @@ function Player({
   }
 
   const commitSeek = (value: number) => {
-    if (audio.current && Number.isFinite(audio.current.duration)) {
-      audio.current.currentTime = value
-    }
+    // Seeking works before the length is known (an Infinity duration), so
+    // don't drop it.
+    if (audio.current) audio.current.currentTime = value
     seeking.current = false
     setCurrent(value)
   }

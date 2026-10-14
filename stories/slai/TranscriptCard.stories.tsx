@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { RefreshCwIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { InsightCallout } from "@/components/slai/insight-callout"
 
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import {
@@ -345,6 +346,24 @@ export const WithAction: Story = {
         <RefreshCwIcon data-icon="inline-start" />
         Retranscribe…
       </Button>
+    ),
+    className: "h-full",
+  },
+}
+
+/** `notice` puts a callout above the lines, e.g. when the transcript is a
+ * last-resort English pass and may not match the languages spoken. */
+export const WithNotice: Story = {
+  args: {
+    title: "Transcript",
+    groups: GROUPS,
+    scope: "group-1",
+    autoScroll: false,
+    notice: (
+      <InsightCallout variant="warning" title="Transcribed as English">
+        The languages spoken weren&apos;t recognized, so this may not match what
+        was said. Retranscribe with the languages spoken.
+      </InsightCallout>
     ),
     className: "h-full",
   },

@@ -5,6 +5,75 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.0.0
+
+Install with `github:trail-ai-lab/trail-design-system#v2.0.0`.
+
+### Major Changes
+
+- **`DiarizationPanel` is one "Speakers" card in every state:** once `state` is `"ready"`, the
+  results now render inside the same card as the form (title, scope badge, then `form`), as
+  subsections divided by separators, and the card's content scrolls. Before, the ready state
+  dropped the card and its children brought their own.
+  _Migrate:_ pass the new `variant="embedded"` `ContributionPanel` / `ParticipationCard` and
+  `RecordedTranscriptCard` as `children` (cards inside the card would be nested), and give the
+  panel a bounded height (e.g. `min-h-0 flex-1` in a flex column) so its content scrolls.
+- **`AddSourceForm` accepts audio only by default:** `accept` now defaults to `"audio/*"` (was
+  `"application/pdf,audio/*"`), and the copy says "Add recording" / "Audio files".
+  _Migrate:_ to keep offering PDFs, pass `accept="application/pdf,audio/*"`.
+- **`SpeakerForm` follows the controlled-value convention:** the mode is `value` / `defaultValue`
+  (`"auto"`) / `onValueChange`, and `speakerCount` gains `defaultSpeakerCount` (2); both are now
+  optional, so the form can run uncontrolled.
+  _Migrate:_ rename `mode` → `value` and `onModeChange` → `onValueChange`.
+- **`TranscriptUtteranceRow` state props read as `isX`:** `highlighted` → `isHighlighted`,
+  `playing` → `isPlaying`.
+  _Migrate:_ rename the two props where you render the row directly (`TranscriptCard` and
+  `RecordedTranscriptCard` are unchanged).
+
+### Minor Changes
+
+- **`embedded` variant** on `ContributionPanel`, `ParticipationCard` and `RecordedTranscriptCard`:
+  a labelled subsection (`SectionLabel` heading, like `GoalsPanel`'s sections) with no card
+  chrome, for use inside `DiarizationPanel`. The embedded transcript has no scroller of its own,
+  and the embedded participation list leaves the scope badge to the containing card.
+- **Language is optional on transcript lines:** `TranscriptUtterance.language`,
+  `RecordedEntry.language` and `TranscriptEntry.language` are now optional; a line without one
+  hides the language and its "·" separator instead of rendering an empty label.
+- **`AddSourceForm` `loading` and `progress`:** the upload-in-flight prop now follows the
+  `loading` convention, and `progress` (0–100) shows on the picked file as an upload bar.
+- **`TranscriptCard` `notice`:** a callout above the lines (shown with the noisy-audio warning),
+  e.g. an `InsightCallout` saying the transcript may not match the languages spoken.
+- **Manage speakers open state:** `RecordedTranscriptCard` takes `manageSpeakersOpen` /
+  `defaultManageSpeakersOpen` / `onManageSpeakersOpenChange` for its popover.
+- **`--shell-panel-h` layout token** (`60svh`): the height of a stacked panel (Summary & Q&A,
+  analysis tabs) below `lg`, e.g. `h-(--shell-panel-h) lg:h-full`. Page stories use it instead of
+  `h-[60svh]`.
+- **`SLAI/Pages/Recording` story:** the review of an uploaded recording — audio, Summary & Q&A,
+  Transcript and the one-card Speakers tab.
+
+### Deprecated
+
+- **`AddSourceForm` `uploading`:** use `loading`. It keeps working until the next major.
+
+### Patch Changes
+
+- **`SummaryCard` scrolls:** a long summary (or the earlier-version banner and earlier phases) now
+  scrolls inside the card instead of being cut off, like `SessionChatCard`.
+- **"Recordings" copy (SLAI):** the sidebar's nav item reads "Add recording" and its group
+  "Recordings" ("No recordings yet"); the add form's title is "Add recording". Prop names, the
+  `"source"` nav id and `SidebarSource.type: "pdf"` are unchanged.
+- **`AudioPlayerCard` keeps outside seeks:** a seek through `audioRef` (e.g. playing a transcript
+  line) made while a MediaRecorder WebM's length is being probed is no longer reset to the start,
+  and the probe returns to where playback was rather than to 0. Scrubbing before the length is
+  known is no longer dropped. Simulated playback (no `src`) now runs in real time (was 4×).
+- **`RecordedTranscriptCard` follows `speakers`:** with `manageSpeakers`, the card now starts over
+  from `speakers` when the prop changes (a new recording or re-analysis) instead of keeping the
+  first list. Remove buttons are labelled with the speaker's name once it has one.
+- **Segment play button** in `TranscriptUtteranceRow` is a `Button` (`secondary`, `icon-xs`)
+  instead of a hand-styled `<button>`, and reports `aria-pressed`.
+- `data-slot` on the roots of `AddSourceForm`, `SummaryCard`, `TranscriptCard`,
+  `RecordedTranscriptCard`, `ParticipationCard` and `ContributionPanel`.
+
 ## 1.11.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.11.0`.

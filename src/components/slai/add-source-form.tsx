@@ -21,20 +21,27 @@ import { LanguageMultiSelect } from "@/components/slai/language-multi-select"
 import type { LanguageOptions } from "@/components/slai/lib/language-option"
 
 /**
- * "Add source" card: drop a PDF or audio file, optionally rename it and set
- * the languages spoken, then upload.
+ * "Add recording" card: drop an audio file, optionally rename it and set the
+ * languages spoken, then upload.
  */
 function AddSourceForm({
   languageOptions,
-  accept = "application/pdf,audio/*",
-  uploading = false,
+  accept = "audio/*",
+  loading: loadingProp,
+  uploading: uploadingProp,
+  progress,
   onUpload,
   className,
 }: {
   /** Languages to offer; `{ value, label }` pairs report values */
   languageOptions: LanguageOptions
   accept?: string
+  /** The upload is in flight */
+  loading?: boolean
+  /** @deprecated Use `loading`. */
   uploading?: boolean
+  /** Upload progress, 0–100, shown on the file while `loading` */
+  progress?: number
   /** `name` is empty when the user kept the original file name */
   onUpload?: (
     file: File,
@@ -42,17 +49,18 @@ function AddSourceForm({
   ) => void
   className?: string
 }) {
+  const uploading = loadingProp ?? uploadingProp ?? false
   const uid = React.useId()
   const [file, setFile] = React.useState<File | null>(null)
   const [name, setName] = React.useState("")
   const [languages, setLanguages] = React.useState<string[]>([])
 
   return (
-    <Card className={className}>
+    <Card data-slot="add-source-form" className={className}>
       <CardHeader>
-        <CardTitle>Add source</CardTitle>
+        <CardTitle>Add recording</CardTitle>
         <CardDescription>
-          Upload a PDF or audio recording to review and ask questions about.
+          Upload an audio recording to review and ask questions about.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -61,6 +69,8 @@ function AddSourceForm({
             <FileUploadItem
               name={file.name}
               size={file.size}
+              status={uploading ? "uploading" : undefined}
+              progress={uploading ? progress : undefined}
               disabled={uploading}
               onRemove={() => setFile(null)}
             />
@@ -99,7 +109,7 @@ function AddSourceForm({
         ) : (
           <Dropzone
             accept={accept}
-            description="PDF or audio files"
+            description="Audio files"
             onFilesSelected={([selected]) => setFile(selected)}
           />
         )}

@@ -83,7 +83,7 @@ export interface SidebarSession {
   active?: boolean
 }
 
-/** A saved source (quick recording or uploaded document). */
+/** A saved recording (quick recording or upload) — or, while PDF upload is off, a legacy document. */
 export interface SidebarSource {
   /** Stable id, reported back in `SidebarItemTarget`; falls back to `name` */
   id?: string
@@ -129,7 +129,7 @@ export interface SidebarUser {
 const NAV_ITEMS = [
   { id: "live", label: "Live session", icon: RadioIcon },
   { id: "record", label: "Quick record", icon: MicIcon },
-  { id: "source", label: "Add source", icon: UploadIcon },
+  { id: "source", label: "Add recording", icon: UploadIcon },
   { id: "activities", label: "Activities", icon: ShapesIcon },
 ] as const
 
@@ -437,7 +437,7 @@ function SlaiSidebar({
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Sources</SidebarGroupLabel>
+          <SidebarGroupLabel>Recordings</SidebarGroupLabel>
           <SidebarMenu>
             {sourcesLoading &&
               [0, 1].map((i) => (
@@ -448,7 +448,7 @@ function SlaiSidebar({
             {!sourcesLoading && sources.length === 0 && (
               <SidebarMenuItem>
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
-                  No sources yet
+                  No recordings yet
                 </p>
               </SidebarMenuItem>
             )}

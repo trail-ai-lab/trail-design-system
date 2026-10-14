@@ -31,6 +31,11 @@ const LAYOUT_TOKENS = [
     value: "1rem / 16px",
     use: "Content-area padding and the gap between content cards",
   },
+  {
+    name: "--shell-panel-h",
+    value: "60svh",
+    use: "Height of a stacked panel (Summary & Q&A, analysis tabs) below lg, e.g. h-(--shell-panel-h) lg:h-full",
+  },
 ]
 
 const COMPONENT_TOKENS = [

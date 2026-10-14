@@ -65,7 +65,7 @@ export const Done: Story = {
       name="recording-2026-08-21.webm"
       durationSeconds={754}
       sizeBytes={4_400_000}
-      note="Find it under Sources in the sidebar."
+      note="Find it under Recordings in the sidebar."
       onAction={() => {}}
     />
   ),

@@ -10,7 +10,7 @@ function AddSourcePage({ uploading = false }: { uploading?: boolean }) {
   return (
     <AppShell
       sidebar={<PageSidebar activeNav="source" />}
-      title={<PageBreadcrumb items={[{ label: "Add Source" }]} />}
+      title={<PageBreadcrumb items={[{ label: "Add recording" }]} />}
     >
       <div className="flex flex-1 items-center-safe justify-center overflow-y-auto p-(--shell-gap)">
         <AddSourceForm

@@ -96,3 +96,28 @@ export const WithSegmentPlayback: Story = {
 export const AssignedElsewhere: Story = {
   args: { speakers: SPEAKERS, entries: ENTRIES, manageSpeakers: false },
 }
+
+/**
+ * `embedded`: a labelled subsection with no card chrome or scroller, for
+ * inside DiarizationPanel (which scrolls). A line without a `language` hides it.
+ */
+export const Embedded: Story = {
+  args: {
+    speakers: SPEAKERS,
+    entries: ENTRIES.map((entry, index) =>
+      index === 0 ? { ...entry, language: undefined } : entry
+    ),
+    variant: "embedded",
+  },
+}
+
+/** The Manage speakers popover, open (`defaultManageSpeakersOpen`; or
+ * control it with `manageSpeakersOpen` / `onManageSpeakersOpenChange`). */
+export const ManageSpeakersOpen: Story = {
+  args: {
+    speakers: SPEAKERS,
+    entries: ENTRIES,
+    className: "h-full",
+    defaultManageSpeakersOpen: true,
+  },
+}

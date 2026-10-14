@@ -10,7 +10,7 @@ const meta: Meta<typeof SpeakerForm> = {
   title: "SLAI/SpeakerForm",
   component: SpeakerForm,
   tags: ["autodocs"],
-  args: { mode: "auto", speakerCount: 3 },
+  args: { defaultSpeakerCount: 3 },
   decorators: [
     (Story) => (
       <div className="w-full max-w-lg">
@@ -23,15 +23,16 @@ const meta: Meta<typeof SpeakerForm> = {
 export default meta
 type Story = StoryObj<typeof SpeakerForm>
 
-export const Interactive: Story = {
+/** Controlled: the page owns the mode and speaker count. */
+export const Controlled: Story = {
   render: function Controlled(args) {
-    const [mode, setMode] = React.useState<SpeakerCountMode>(args.mode)
-    const [count, setCount] = React.useState(args.speakerCount)
+    const [mode, setMode] = React.useState<SpeakerCountMode>("manual")
+    const [count, setCount] = React.useState(3)
     return (
       <SpeakerForm
         {...args}
-        mode={mode}
-        onModeChange={setMode}
+        value={mode}
+        onValueChange={setMode}
         speakerCount={count}
         onSpeakerCountChange={setCount}
       />
@@ -39,10 +40,13 @@ export const Interactive: Story = {
   },
 }
 
+/** Uncontrolled: the form keeps its own state from the defaults. */
 export const Auto: Story = {}
 
-export const Manual: Story = { args: { mode: "manual" } }
+export const Manual: Story = { args: { defaultValue: "manual" } }
 
 export const Analyzed: Story = { args: { analyzed: true } }
 
-export const Analyzing: Story = { args: { loading: true, mode: "manual" } }
+export const Analyzing: Story = {
+  args: { loading: true, defaultValue: "manual" },
+}

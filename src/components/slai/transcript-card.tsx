@@ -52,8 +52,9 @@ export interface TranscriptEntry {
    * places the check-in divider; without it lines are ordered by
    * `timestamp`, to the minute. */
   at?: number | string
-  /** Detected language of the utterance, e.g. "Marathi" — the speaker is unknown */
-  language: string
+  /** Detected language of the utterance, e.g. "Marathi" — the speaker is
+   * unknown; omit when the language is unknown */
+  language?: string
   original: string
   /** Rendered stacked below the original; hidden when identical to it */
   translation?: string
@@ -123,16 +124,16 @@ function toMinutes(time?: string) {
 function TranscriptRow({
   entry,
   groupName,
-  highlighted,
+  isHighlighted,
 }: {
   entry: TranscriptEntry
   /** Set in the combined view to show which group the line came from */
   groupName?: string
-  highlighted?: boolean
+  isHighlighted?: boolean
 }) {
   return (
     <TranscriptUtteranceRow
-      highlighted={highlighted}
+      isHighlighted={isHighlighted}
       leading={
         <Avatar size="sm" className="mt-0.5" aria-hidden>
           <AvatarFallback>
@@ -200,6 +201,7 @@ function TranscriptCard({
   defaultShowTranslations = true,
   onShowTranslationsChange,
   action,
+  notice,
   className,
 }: {
   title?: React.ReactNode
@@ -242,6 +244,9 @@ function TranscriptCard({
   onShowTranslationsChange?: (show: boolean) => void
   /** Header action beside the scope badge, e.g. a "Retranscribe…" button */
   action?: React.ReactNode
+  /** A callout above the lines, e.g. an InsightCallout saying the transcript
+   * may be unreliable; shown with the noisy-audio warning */
+  notice?: React.ReactNode
   className?: string
 }) {
   const isAll = scope === ALL_GROUPS
@@ -321,7 +326,10 @@ function TranscriptCard({
   const studentNames = (!isAll && activeGroup?.students) || []
 
   return (
-    <Card className={cn("flex min-h-0 flex-col", className)}>
+    <Card
+      data-slot="transcript-card"
+      className={cn("flex min-h-0 flex-col", className)}
+    >
       <CardHeader>
         <CardTitle className="flex items-center gap-2.5">
           {title}
@@ -395,15 +403,18 @@ function TranscriptCard({
         )}
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
-        {transcriptionEnabled && noisyGroups.length > 0 && (
-          <div className="px-(--card-spacing) pb-3">
-            <NoisyAudioBanner
-              title={
-                isAll
-                  ? `Audio may be too noisy in ${joinNames(noisyGroups)}`
-                  : undefined
-              }
-            />
+        {transcriptionEnabled && (noisyGroups.length > 0 || notice) && (
+          <div className="flex flex-col gap-3 px-(--card-spacing) pb-3">
+            {notice}
+            {noisyGroups.length > 0 && (
+              <NoisyAudioBanner
+                title={
+                  isAll
+                    ? `Audio may be too noisy in ${joinNames(noisyGroups)}`
+                    : undefined
+                }
+              />
+            )}
           </div>
         )}
         <div className="relative flex min-h-0 flex-1 flex-col">
@@ -459,7 +470,7 @@ function TranscriptCard({
                           : { ...entry, translation: undefined }
                       }
                       groupName={isAll ? group?.name : undefined}
-                      highlighted={highlighted.has(entry.id)}
+                      isHighlighted={highlighted.has(entry.id)}
                     />
                   </React.Fragment>
                 ))}

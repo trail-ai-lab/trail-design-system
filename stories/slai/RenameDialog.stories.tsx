@@ -25,7 +25,7 @@ export const Default: Story = {}
 /** The extension is fixed and re-appended to the submitted name. */
 export const SourceWithExtension: Story = {
   args: {
-    title: "Rename source",
+    title: "Rename recording",
     currentName: "Inclined Plane Lab",
     extension: ".mp3",
   },

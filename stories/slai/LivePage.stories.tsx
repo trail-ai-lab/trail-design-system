@@ -294,7 +294,7 @@ function ActiveSessionPage() {
     >
       <div className="flex min-h-0 flex-1 flex-col gap-(--shell-gap) p-(--shell-gap) lg:grid lg:grid-cols-2">
         <SummaryQaPanel
-          className="h-[60svh] lg:h-full"
+          className="h-(--shell-panel-h) lg:h-full"
           summary={{
             scopeLabel,
             summary: SUMMARIES[scope],
@@ -318,7 +318,7 @@ function ActiveSessionPage() {
           }}
         />
         <TranscriptCard
-          className="h-[60svh] lg:h-full"
+          className="h-(--shell-panel-h) lg:h-full"
           groups={groups}
           scope={scope}
           status={activeGroup?.status ?? "recording"}

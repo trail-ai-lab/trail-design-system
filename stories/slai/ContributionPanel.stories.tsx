@@ -56,3 +56,6 @@ export const Interactive: Story = {
     )
   },
 }
+
+/** `embedded`: a labelled subsection with no card chrome, for inside DiarizationPanel. */
+export const Embedded: Story = { args: { variant: "embedded" } }

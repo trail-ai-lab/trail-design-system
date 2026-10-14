@@ -24,4 +24,16 @@ type Story = StoryObj<typeof AddSourceForm>
 /** Drop or pick a file to reveal the rename and languages fields. */
 export const Default: Story = {}
 
-export const Uploading: Story = { args: { uploading: true } }
+/** A file picked (as the play step does), then uploading at 45%. */
+export const Uploading: Story = {
+  args: { loading: true, progress: 45 },
+  play: async ({ canvasElement, userEvent }) => {
+    const input =
+      canvasElement.querySelector<HTMLInputElement>('input[type="file"]')
+    if (!input) return
+    const file = new File(["audio"], "inclined-plane-lab.webm", {
+      type: "audio/webm",
+    })
+    await userEvent.upload(input, file)
+  },
+}

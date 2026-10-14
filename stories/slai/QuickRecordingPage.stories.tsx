@@ -89,7 +89,7 @@ function QuickRecordingPage() {
       sidebar={SLAI_SIDEBAR}
       title={
         <PageBreadcrumb
-          items={[{ label: "Sources" }, { label: RECORDING.name }]}
+          items={[{ label: "Recordings" }, { label: RECORDING.name }]}
         />
       }
       toolbar={

@@ -57,3 +57,20 @@ export const IdenticalTranslationHidden: Story = {
     },
   },
 }
+
+/** The line a chat answer or search result points to. */
+export const Highlighted: Story = { args: { isHighlighted: true } }
+
+/** `onPlayToggle` adds a play button; `isPlaying` shows it as pause. */
+export const WithPlayback: Story = {
+  args: { onPlayToggle: () => {} },
+}
+
+export const Playing: Story = {
+  args: { onPlayToggle: () => {}, isPlaying: true },
+}
+
+/** Without a detected language the label and its separator are hidden. */
+export const NoLanguage: Story = {
+  args: { entry: { timestamp: "0:12", original: "Let's measure it again." } },
+}
