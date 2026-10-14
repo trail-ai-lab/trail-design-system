@@ -69,6 +69,11 @@ Install with `github:trail-ai-lab/trail-design-system#v2.0.0`.
 - **`RecordedTranscriptCard` follows `speakers`:** with `manageSpeakers`, the card now starts over
   from `speakers` when the prop changes (a new recording or re-analysis) instead of keeping the
   first list. Remove buttons are labelled with the speaker's name once it has one.
+- **Session page story matches SLAI's Speakers tab:** `SLAI/Pages/Session` now shows Speaking time
+  (`ContributionPanel`, speakers assigned to students) and the transcript by speaker with names
+  from those assignments, recording offsets and play buttons, like `SLAI/Pages/Recording`, instead
+  of the turn-based `ParticipationCard` and the Manage speakers popover. Story language labels use
+  plain names ("English").
 - **Segment play button** in `TranscriptUtteranceRow` is a `Button` (`secondary`, `icon-xs`)
   instead of a hand-styled `<button>`, and reports `aria-pressed`.
 - `data-slot` on the roots of `AddSourceForm`, `SummaryCard`, `TranscriptCard`,

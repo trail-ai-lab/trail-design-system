@@ -13,14 +13,14 @@ const ENTRIES = [
     id: "1",
     speakerId: "s2",
     timestamp: "3:39 PM",
-    language: "American English",
+    language: "English",
     original: "Hello, hello. Okay, we're recording now.",
   },
   {
     id: "2",
     speakerId: "s3",
     timestamp: "3:40 PM",
-    language: "American English",
+    language: "English",
     original: "Gravity pulls the ball down the ramp, so it speeds up.",
   },
   {
@@ -36,7 +36,7 @@ const ENTRIES = [
     id: "4",
     speakerId: "s2",
     timestamp: "3:43 PM",
-    language: "American English",
+    language: "English",
     original: "Let's test it with three different angles and time each run.",
   },
 ]

@@ -71,13 +71,13 @@ const GROUPS: TranscriptGroup[] = [
       {
         id: "1",
         timestamp: "3:39 PM",
-        language: "American English",
+        language: "English",
         original: "Hello, hello. Okay, we're recording now.",
       },
       {
         id: "2",
         timestamp: "3:40 PM",
-        language: "American English",
+        language: "English",
         original: "Gravity pulls the ball down the ramp, so it speeds up.",
       },
       {
@@ -91,7 +91,7 @@ const GROUPS: TranscriptGroup[] = [
       {
         id: "4",
         timestamp: "3:43 PM",
-        language: "American English",
+        language: "English",
         original:
           "Let's test it with three different angles and time each run.",
       },
@@ -105,7 +105,7 @@ const GROUPS: TranscriptGroup[] = [
       {
         id: "6",
         timestamp: "3:46 PM",
-        language: "American English",
+        language: "English",
         original: "First run at fifteen degrees took about two seconds.",
       },
     ],
@@ -123,13 +123,13 @@ const GROUPS: TranscriptGroup[] = [
       {
         id: "1",
         timestamp: "3:42 PM",
-        language: "American English",
+        language: "English",
         original: "Should we start with the steepest ramp or the flattest?",
       },
       {
         id: "2",
         timestamp: "3:45 PM",
-        language: "American English",
+        language: "English",
         original: "Flattest first, so we have a baseline to compare against.",
       },
     ],

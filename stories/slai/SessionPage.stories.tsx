@@ -29,7 +29,10 @@ import { ActivityLogCard } from "@/components/slai/activity-log-card"
 import { AppShell } from "@/components/slai/app-shell"
 import { AudioPlayerCard } from "@/components/slai/audio-player-card"
 import { ALL_GROUPS, GroupSwitcher } from "@/components/slai/group-switcher"
-import { ParticipationCard } from "@/components/slai/participation-card"
+import {
+  ContributionPanel,
+  type ContributionSpeaker,
+} from "@/components/slai/contribution-panel"
 import {
   TranscriptCard,
   type TranscriptGroup,
@@ -72,14 +75,14 @@ const GROUP_1 = {
       id: "1",
       speakerId: "g1-s2",
       timestamp: "3:39 PM",
-      language: "American English",
+      language: "English",
       original: "Hello, hello. Okay, we're recording now.",
     },
     {
       id: "2",
       speakerId: "g1-s3",
       timestamp: "3:40 PM",
-      language: "American English",
+      language: "English",
       original: "Gravity pulls the ball down the ramp, so it speeds up.",
     },
     {
@@ -95,7 +98,7 @@ const GROUP_1 = {
       id: "4",
       speakerId: "g1-s2",
       timestamp: "3:43 PM",
-      language: "American English",
+      language: "English",
       original: "Let's test it with three different angles and time each run.",
     },
     {
@@ -110,14 +113,14 @@ const GROUP_1 = {
       id: "6",
       speakerId: "g1-s3",
       timestamp: "3:46 PM",
-      language: "American English",
+      language: "English",
       original: "First run at fifteen degrees took about two seconds.",
     },
     {
       id: "7",
       speakerId: "g1-s2",
       timestamp: "3:48 PM",
-      language: "American English",
+      language: "English",
       original: "At thirty degrees it was way faster, about one second.",
     },
     {
@@ -129,11 +132,12 @@ const GROUP_1 = {
       translation: "So the steeper the angle, the greater the speed.",
     },
   ] as RecordedEntry[],
-  participation: [
-    { name: "Aarav", percent: 42, turns: 11 },
-    { name: "Mia", percent: 33, turns: 9 },
-    { name: "Jordan", percent: 25, turns: 6 },
-  ],
+  // The speaker analysis: talk time per diarized speaker, each assigned to a student.
+  speakingTime: [
+    { id: "g1-s1", label: "Speaker 1", seconds: 610, student: "Aarav" },
+    { id: "g1-s2", label: "Speaker 2", seconds: 480, student: "Mia" },
+    { id: "g1-s3", label: "Speaker 3", seconds: 363, student: "Jordan" },
+  ] as ContributionSpeaker[],
   activity: [
     {
       id: "g1-a1",
@@ -206,28 +210,28 @@ const GROUP_2 = {
       id: "1",
       speakerId: "g2-s1",
       timestamp: "3:42 PM",
-      language: "American English",
+      language: "English",
       original: "Should we start with the steepest ramp or the flattest?",
     },
     {
       id: "2",
       speakerId: "g2-s2",
       timestamp: "3:45 PM",
-      language: "American English",
+      language: "English",
       original: "Flattest first, so we have a baseline to compare against.",
     },
     {
       id: "3",
       speakerId: "g2-s1",
       timestamp: "3:48 PM",
-      language: "American English",
+      language: "English",
       original: "Baseline run took about three seconds.",
     },
   ] as RecordedEntry[],
-  participation: [
-    { name: "Sam", percent: 55, turns: 8 },
-    { name: "Priya", percent: 45, turns: 7 },
-  ],
+  speakingTime: [
+    { id: "g2-s1", label: "Speaker 1", seconds: 664 },
+    { id: "g2-s2", label: "Speaker 2", seconds: 543 },
+  ] as ContributionSpeaker[],
   // No activity this session: the Activity tab is hidden.
   activity: [] as typeof GROUP_1.activity,
   // Speakers not analyzed yet: the Speakers tab starts with the analysis card.
@@ -246,6 +250,22 @@ const GROUP_2 = {
 }
 
 const GROUPS = [GROUP_1, GROUP_2]
+
+/** Minutes since the group's first line, as the Speakers tab shows them
+ * ("2:00") — the recording's offset, where the transcript shows clock time. */
+function toOffsets(entries: RecordedEntry[]): RecordedEntry[] {
+  const minutes = (time?: string) => {
+    const match = time?.match(/(\d+):(\d+)\s*(AM|PM)/i)
+    if (!match) return 0
+    const hours = (Number(match[1]) % 12) + (/pm/i.test(match[3]) ? 12 : 0)
+    return hours * 60 + Number(match[2])
+  }
+  const start = minutes(entries[0]?.timestamp)
+  return entries.map((entry) => ({
+    ...entry,
+    timestamp: `${minutes(entry.timestamp) - start}:00`,
+  }))
+}
 
 /** Earlier summaries (newest first) per scope; the current one is the latest. */
 const EARLIER_SUMMARIES: Record<string, SummaryVersion[]> = {
@@ -344,6 +364,20 @@ function SessionReviewPage() {
       ])
     )
   )
+  // Who each diarized speaker is, per group (assigned in Speaking time).
+  const [assigned, setAssigned] = React.useState<
+    Record<string, Record<string, string | undefined>>
+  >(() =>
+    Object.fromEntries(
+      GROUPS.map((group) => [
+        group.id,
+        Object.fromEntries(
+          group.speakingTime.map((speaker) => [speaker.id, speaker.student])
+        ),
+      ])
+    )
+  )
+  const [playingEntryId, setPlayingEntryId] = React.useState<string>()
   const [speakerMode, setSpeakerMode] = React.useState<SpeakerCountMode>("auto")
   const [speakerCount, setSpeakerCount] = React.useState(2)
   const analyze = (groupId: string) => {
@@ -550,14 +584,38 @@ function SessionReviewPage() {
                         />
                       }
                     >
-                      <ParticipationCard
+                      <ContributionPanel
                         variant="embedded"
-                        students={activeGroup.participation}
+                        speakers={activeGroup.speakingTime.map((speaker) => ({
+                          ...speaker,
+                          student: assigned[activeGroup.id]?.[speaker.id],
+                        }))}
+                        students={activeGroup.speakers.map((s) => s.name)}
+                        onAssign={(speakerId, student) =>
+                          setAssigned((prev) => ({
+                            ...prev,
+                            [activeGroup.id]: {
+                              ...prev[activeGroup.id],
+                              [speakerId]: student,
+                            },
+                          }))
+                        }
                       />
                       <RecordedTranscriptCard
                         variant="embedded"
-                        speakers={activeGroup.speakers}
-                        entries={activeGroup.entries}
+                        // Names come from Speaking time, so no popover here.
+                        manageSpeakers={false}
+                        speakers={activeGroup.speakingTime.map((speaker) => ({
+                          id: speaker.id,
+                          name: assigned[activeGroup.id]?.[speaker.id] ?? "",
+                        }))}
+                        entries={toOffsets(activeGroup.entries)}
+                        playingEntryId={playingEntryId}
+                        onPlayEntry={(entry) =>
+                          setPlayingEntryId((id) =>
+                            id === entry.id ? undefined : entry.id
+                          )
+                        }
                       />
                     </DiarizationPanel>
                   </TabsContent>
