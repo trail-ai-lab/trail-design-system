@@ -5,6 +5,18 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 1.11.0
+
+Install with `github:trail-ai-lab/trail-design-system#v1.11.0`.
+
+### Minor Changes
+
+- **`TranscriptCard` highlights several lines:** new `highlightedEntryIds` (with
+  `onHighlightedEntryIdsChange`) emphasizes several entries at once, e.g. every line a chat answer
+  cites when students built an idea across turns. It combines with `highlightedEntryId`; the first
+  highlighted line in transcript order is scrolled into view, `autoScroll` pauses while any line is
+  highlighted, and "Back to latest" clears both.
+
 ## 1.10.0
 
 Install with `github:trail-ai-lab/trail-design-system#v1.10.0`.

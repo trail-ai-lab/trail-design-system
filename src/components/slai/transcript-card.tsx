@@ -172,9 +172,12 @@ function TranscriptRow({
  * translations (shown by default; control it with `showTranslations`).
  *
  * `highlightedEntryId` (e.g. the line a chat answer cites) scrolls that line
- * into view and emphasizes it. While a line is highlighted, `autoScroll`
- * pauses so new lines don't carry it away; with `onHighlightedEntryIdChange`
- * a "Back to latest" button clears it and resumes following.
+ * into view and emphasizes it; `highlightedEntryIds` does the same for
+ * several lines (e.g. an idea built across turns by different speakers),
+ * scrolling to the first. While a line is highlighted, `autoScroll` pauses
+ * so new lines don't carry it away; with `onHighlightedEntryIdChange` or
+ * `onHighlightedEntryIdsChange` a "Back to latest" button clears it and
+ * resumes following.
  */
 function TranscriptCard({
   title = "Live transcript",
@@ -186,6 +189,8 @@ function TranscriptCard({
   autoScroll = true,
   highlightedEntryId,
   onHighlightedEntryIdChange,
+  highlightedEntryIds,
+  onHighlightedEntryIdsChange,
   checkIn,
   interimText,
   transcriptionEnabled = true,
@@ -214,6 +219,12 @@ function TranscriptCard({
   highlightedEntryId?: string
   /** Clears the highlight ("Back to latest" while following new lines) */
   onHighlightedEntryIdChange?: (id: string | undefined) => void
+  /** Several entries to emphasize, e.g. every line a chat answer cites;
+   * combined with `highlightedEntryId`. The first in transcript order is
+   * scrolled into view. */
+  highlightedEntryIds?: string[]
+  /** Clears `highlightedEntryIds` (called with `[]` by "Back to latest") */
+  onHighlightedEntryIdsChange?: (ids: string[]) => void
   /** The latest check-in: a divider marks where it falls among the lines
    * (needs `at` on entries). `label` is the formatted time, e.g. "3:42 PM". */
   checkIn?: { at: number | string; label: string }
@@ -273,8 +284,16 @@ function TranscriptCard({
     .filter((group) => group.noisyAudio)
     .map((group) => group.name)
 
+  const highlighted = React.useMemo(() => {
+    const ids = new Set(highlightedEntryIds)
+    if (highlightedEntryId) ids.add(highlightedEntryId)
+    return ids
+  }, [highlightedEntryId, highlightedEntryIds])
+  // Changes when the set of highlighted lines does, not on every new array.
+  const highlightKey = [...highlighted].join("\n")
+
   // Follow new lines, except while a line is highlighted.
-  const following = autoScroll && !highlightedEntryId
+  const following = autoScroll && highlighted.size === 0
   React.useEffect(() => {
     if (!following) return
     const viewport = scrollRef.current?.querySelector(
@@ -285,7 +304,7 @@ function TranscriptCard({
 
   // Bring the highlighted line into view (the page too, on small screens).
   React.useEffect(() => {
-    if (!highlightedEntryId) return
+    if (!highlightKey) return
     const reduceMotion = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)"
     ).matches
@@ -297,7 +316,7 @@ function TranscriptCard({
         block: "center",
         behavior: reduceMotion ? "auto" : "smooth",
       })
-  }, [highlightedEntryId, scope])
+  }, [highlightKey, scope])
 
   const studentNames = (!isAll && activeGroup?.students) || []
 
@@ -440,7 +459,7 @@ function TranscriptCard({
                           : { ...entry, translation: undefined }
                       }
                       groupName={isAll ? group?.name : undefined}
-                      highlighted={entry.id === highlightedEntryId}
+                      highlighted={highlighted.has(entry.id)}
                     />
                   </React.Fragment>
                 ))}
@@ -458,17 +477,22 @@ function TranscriptCard({
               </div>
             )}
           </ScrollArea>
-          {autoScroll && highlightedEntryId && onHighlightedEntryIdChange && (
-            <Button
-              variant="secondary"
-              size="sm"
-              className="absolute bottom-3 left-1/2 -translate-x-1/2 shadow-raised"
-              onClick={() => onHighlightedEntryIdChange(undefined)}
-            >
-              <ArrowDownIcon data-icon="inline-start" />
-              Back to latest
-            </Button>
-          )}
+          {autoScroll &&
+            highlighted.size > 0 &&
+            (onHighlightedEntryIdChange || onHighlightedEntryIdsChange) && (
+              <Button
+                variant="secondary"
+                size="sm"
+                className="absolute bottom-3 left-1/2 -translate-x-1/2 shadow-raised"
+                onClick={() => {
+                  onHighlightedEntryIdChange?.(undefined)
+                  onHighlightedEntryIdsChange?.([])
+                }}
+              >
+                <ArrowDownIcon data-icon="inline-start" />
+                Back to latest
+              </Button>
+            )}
         </div>
         <div className="px-(--card-spacing)">
           <Separator className="-mx-2 mt-1 w-auto!" />

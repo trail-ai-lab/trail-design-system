@@ -193,6 +193,22 @@ export const HighlightedEntry: Story = {
   },
 }
 
+/**
+ * `highlightedEntryIds` emphasizes several rows at once, e.g. an answer that
+ * cites an idea two students built across turns; the first is scrolled into
+ * view.
+ */
+export const HighlightedEntries: Story = {
+  args: {
+    groups: GROUPS,
+    scope: "group-1",
+    status: "recording",
+    translationLanguage: "English",
+    highlightedEntryIds: GROUPS[0].entries.slice(1, 3).map((entry) => entry.id),
+    className: "h-full",
+  },
+}
+
 /** Exact times (`at`) on each line, as an app has them. */
 const at = (time: string) => `2026-08-21T${time}`
 
