@@ -5,6 +5,26 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.1.0
+
+Install with `github:trail-ai-lab/trail-design-system#v2.1.0`.
+
+### Minor Changes
+
+- **`SessionChatCard` `onSourceClick`:** makes each of an answer's `sources` chips a button,
+  called with the answer and the chip's index (e.g. to show that passage in the transcript).
+  With it, an answer that has `sources` is no longer clickable itself; `onMessageClick` still
+  applies to answers without chips.
+- **`RecordedTranscriptCard` `highlightedEntryIds`:** emphasizes several lines (e.g. every
+  passage a chat answer cites), combined with `highlightedEntryId`, and scrolls the first
+  highlighted line into view — in the card's own scroller or the containing one when embedded.
+
+### Patch Changes
+
+- **`SessionChatCard` no longer clips its thread:** a long source chip or unbroken text widened
+  the whole thread past the card, cutting off questions, answers and chips on the right. Chips
+  now wrap, long words break, and the thread stays at the card's width.
+
 ## 2.0.0
 
 Install with `github:trail-ai-lab/trail-design-system#v2.0.0`.

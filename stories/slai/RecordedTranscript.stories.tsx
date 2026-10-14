@@ -121,3 +121,13 @@ export const ManageSpeakersOpen: Story = {
     defaultManageSpeakersOpen: true,
   },
 }
+
+// The lines a chat answer cites, emphasized and scrolled into view.
+export const HighlightedLines: Story = {
+  args: {
+    speakers: SPEAKERS,
+    entries: ENTRIES,
+    highlightedEntryIds: ["2", "4"],
+    className: "h-full",
+  },
+}

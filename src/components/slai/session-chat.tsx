@@ -49,27 +49,67 @@ export interface ChatMessage {
   sources?: string[]
   /** Course materials the answer drew on, shown as chips with a document icon */
   materials?: ChatMaterialSource[]
-  /** Transcript entry id the answer points to; makes the row clickable */
+  /** Transcript entry id the answer points to; makes the row clickable
+   * (with `onMessageClick`, when the answer has no `sources` to click) */
   highlight?: string
+}
+
+function SourceChip({
+  source,
+  onClick,
+}: {
+  source: string
+  onClick?: () => void
+}) {
+  const className =
+    "h-auto max-w-full justify-start py-1 text-left font-normal whitespace-normal wrap-anywhere"
+  if (!onClick) {
+    return (
+      <Badge variant="outline" className={className}>
+        {source}
+      </Badge>
+    )
+  }
+  return (
+    <Badge
+      variant="outline"
+      className={cn(className, "cursor-pointer hover:bg-muted")}
+      asChild
+    >
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={`Show in transcript: ${source}`}
+      >
+        {source}
+      </button>
+    </Badge>
+  )
 }
 
 function ChatRow({
   message,
   onMessageClick,
+  onSourceClick,
 }: {
   message: ChatMessage
   onMessageClick?: (message: ChatMessage) => void
+  onSourceClick?: (message: ChatMessage, index: number) => void
 }) {
   if (message.role === "user") {
     return (
       <div className="flex justify-end">
-        <p className="max-w-5/6 rounded-2xl bg-primary px-3.5 py-2 text-sm leading-relaxed text-primary-foreground">
+        <p className="max-w-5/6 rounded-2xl bg-primary px-3.5 py-2 text-sm leading-relaxed wrap-anywhere text-primary-foreground">
           {message.content}
         </p>
       </div>
     )
   }
-  const clickable = Boolean(message.highlight && onMessageClick)
+  const hasSources = Boolean(message.sources && message.sources.length > 0)
+  // Clickable source chips replace the clickable answer.
+  const clickable = Boolean(
+    message.highlight && onMessageClick && !(hasSources && onSourceClick)
+  )
   return (
     <div className="flex gap-3">
       <Avatar size="sm" aria-hidden>
@@ -77,27 +117,29 @@ function ChatRow({
           <SparklesIcon className="size-3 text-primary" />
         </AvatarFallback>
       </Avatar>
-      <div className="flex min-w-0 flex-col gap-2">
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
         {clickable ? (
           <button
             type="button"
             onClick={() => onMessageClick?.(message)}
-            className="cursor-pointer rounded-md text-left text-sm leading-relaxed text-foreground underline-offset-4 outline-none hover:underline focus-visible:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="cursor-pointer rounded-md text-left text-sm leading-relaxed wrap-anywhere text-foreground underline-offset-4 outline-none hover:underline focus-visible:underline focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             {message.content}
           </button>
         ) : (
-          <p className="text-sm leading-relaxed text-foreground">
+          <p className="text-sm leading-relaxed wrap-anywhere text-foreground">
             {message.content}
           </p>
         )}
-        {((message.sources && message.sources.length > 0) ||
+        {(hasSources ||
           (message.materials && message.materials.length > 0)) && (
           <div className="flex flex-wrap gap-1">
-            {message.sources?.map((source) => (
-              <Badge key={source} variant="outline" className="font-normal">
-                {source}
-              </Badge>
+            {message.sources?.map((source, index) => (
+              <SourceChip
+                key={`${index}-${source}`}
+                source={source}
+                onClick={onSourceClick && (() => onSourceClick(message, index))}
+              />
             ))}
             {message.materials?.map((material) => (
               <Badge
@@ -168,6 +210,7 @@ function SessionChatCard({
   suggestions = [],
   welcomeMessage,
   onMessageClick,
+  onSourceClick,
   showDisclaimer = false,
   materials,
   onMaterialsClick,
@@ -184,8 +227,12 @@ function SessionChatCard({
   suggestions?: string[]
   /** Assistant greeting pinned at the top of the thread */
   welcomeMessage?: string
-  /** Called when an assistant message with a `highlight` is clicked */
+  /** Called when an assistant message with a `highlight` is clicked. With
+   * `onSourceClick`, only answers without `sources` are clickable. */
   onMessageClick?: (message: ChatMessage) => void
+  /** Makes each of an answer's `sources` chips a button, e.g. to show that
+   * passage in the transcript; called with the answer and the chip's index */
+  onSourceClick?: (message: ChatMessage, index: number) => void
   /** Footer reminding that AI answers can be wrong */
   showDisclaimer?: boolean
   /** Course materials Q&A can draw on; shows a line under the title */
@@ -229,7 +276,12 @@ function SessionChatCard({
         )}
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
-        <ScrollArea ref={scrollRef} className="min-h-0 flex-1">
+        {/* Radix wraps the content in a `display: table` box that grows to fit
+            its widest line instead of wrapping it; keep it at the card's width. */}
+        <ScrollArea
+          ref={scrollRef}
+          className="min-h-0 flex-1 [&_[data-slot=scroll-area-viewport]>div]:block!"
+        >
           {messages.length === 0 && !loading && !welcomeMessage ? (
             <Empty className="h-full">
               <EmptyHeader>
@@ -281,6 +333,7 @@ function SessionChatCard({
                   key={message.id}
                   message={message}
                   onMessageClick={onMessageClick}
+                  onSourceClick={onSourceClick}
                 />
               ))}
               {loading && (

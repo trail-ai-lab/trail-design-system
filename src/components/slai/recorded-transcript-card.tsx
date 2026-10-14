@@ -160,12 +160,16 @@ function ManageSpeakers({
  * `embedded` renders it as a labelled subsection with no card chrome and no
  * scroller of its own, for use inside another card that scrolls
  * (DiarizationPanel).
+ *
+ * `highlightedEntryId` / `highlightedEntryIds` (e.g. the lines a chat answer
+ * cites) emphasize those lines and scroll the first into view.
  */
 function RecordedTranscriptCard({
   speakers: speakersProp,
   entries,
   onSpeakersChange,
   highlightedEntryId,
+  highlightedEntryIds,
   playingEntryId,
   onPlayEntry,
   manageSpeakers = true,
@@ -181,6 +185,9 @@ function RecordedTranscriptCard({
   onSpeakersChange?: (speakers: RecordedSpeaker[]) => void
   /** Entry to emphasize, e.g. the sentence a chat answer cites */
   highlightedEntryId?: string
+  /** Several entries to emphasize, e.g. every passage a chat answer cites;
+   * combined with `highlightedEntryId` */
+  highlightedEntryIds?: string[]
   /** Entry whose audio segment is currently playing */
   playingEntryId?: string
   /** Adds a per-utterance play button; called with the entry to toggle */
@@ -236,6 +243,31 @@ function RecordedTranscriptCard({
     return map
   }, [speakers])
 
+  const highlighted = React.useMemo(() => {
+    const ids = new Set(highlightedEntryIds)
+    if (highlightedEntryId) ids.add(highlightedEntryId)
+    return ids
+  }, [highlightedEntryId, highlightedEntryIds])
+  // Changes when the set of highlighted lines does, not on every new array.
+  const highlightKey = [...highlighted].join("\n")
+
+  // Bring the first highlighted line into view (in whichever box scrolls).
+  const rootRef = React.useRef<HTMLDivElement>(null)
+  React.useEffect(() => {
+    if (!highlightKey) return
+    const reduceMotion = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
+    rootRef.current
+      ?.querySelector(
+        '[data-slot="transcript-utterance-row"][data-highlighted]'
+      )
+      ?.scrollIntoView({
+        block: "center",
+        behavior: reduceMotion ? "auto" : "smooth",
+      })
+  }, [highlightKey])
+
   const manage = manageSpeakers && (
     <ManageSpeakers
       speakers={speakers}
@@ -258,7 +290,7 @@ function RecordedTranscriptCard({
         entry={entry}
         speakerLabel={label}
         speakerInitials={avatar}
-        isHighlighted={entry.id === highlightedEntryId}
+        isHighlighted={highlighted.has(entry.id)}
         isPlaying={entry.id === playingEntryId}
         onPlayToggle={onPlayEntry && (() => onPlayEntry(entry))}
       />
@@ -268,6 +300,7 @@ function RecordedTranscriptCard({
   if (variant === "embedded") {
     return (
       <section
+        ref={rootRef}
         data-slot="recorded-transcript-card"
         data-variant={variant}
         className={cn("flex flex-col gap-3", className)}
@@ -283,6 +316,7 @@ function RecordedTranscriptCard({
 
   return (
     <Card
+      ref={rootRef}
       data-slot="recorded-transcript-card"
       data-variant={variant}
       className={cn("flex min-h-0 flex-col", className)}
