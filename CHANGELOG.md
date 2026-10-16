@@ -5,6 +5,15 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.1.1
+
+Install with `github:trail-ai-lab/trail-design-system#v2.1.1`.
+
+### Patch Changes
+
+- **`SlaiSidebar` session rows:** the ⋮ button on a session now opens its Rename / Delete
+  menu. The trigger dropped the props the dropdown passes, so clicking it did nothing.
+
 ## 2.1.0
 
 Install with `github:trail-ai-lab/trail-design-system#v2.1.0`.

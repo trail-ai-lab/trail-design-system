@@ -51,6 +51,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 
 /** A class folder (e.g. "Physics") and the sessions held in it. */
 export interface SidebarClass {
@@ -178,13 +179,22 @@ function RowMenu({
 }
 
 /** Hover action trigger for a session sub-row (sub-rows use a different
- * group hook than SidebarMenuAction, so it gets its own positioned button). */
-function SubRowAction({ label }: { label: string }) {
+ * group hook than SidebarMenuAction, so it gets its own positioned button).
+ * Forwards its props so `DropdownMenuTrigger asChild` can attach its handlers and ref. */
+function SubRowAction({
+  label,
+  className,
+  ...props
+}: React.ComponentProps<"button"> & { label: string }) {
   return (
     <button
       type="button"
       aria-label={label}
-      className="absolute top-1 right-1 flex aspect-square w-5 items-center justify-center rounded-md text-sidebar-foreground opacity-0 outline-hidden transition-opacity group-focus-within/menu-sub-item:opacity-100 group-hover/menu-sub-item:opacity-100 after:absolute after:-inset-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:opacity-100 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0"
+      {...props}
+      className={cn(
+        "absolute top-1 right-1 flex aspect-square w-5 items-center justify-center rounded-md text-sidebar-foreground opacity-0 outline-hidden transition-opacity group-focus-within/menu-sub-item:opacity-100 group-hover/menu-sub-item:opacity-100 after:absolute after:-inset-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:opacity-100 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
+        className
+      )}
     >
       <EllipsisVerticalIcon />
     </button>

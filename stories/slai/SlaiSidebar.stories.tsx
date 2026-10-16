@@ -1,5 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, screen, waitFor } from "storybook/test"
 
 import { LinkProvider } from "@/components/patterns/link-provider"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
@@ -140,6 +141,18 @@ export const RowActions: Story = {
         />
       </>
     )
+  },
+  // A session row's ⋮ opens its menu (the menu renders in a portal).
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Period 3 — Aug 21 options" })
+    )
+    await expect(
+      await screen.findByRole("menuitem", { name: "Rename" })
+    ).toBeInTheDocument()
+    // Close it so the a11y check runs on the sidebar, not under the open menu.
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull())
   },
 }
 
