@@ -7,6 +7,7 @@ import {
   DownloadIcon,
   EllipsisVerticalIcon,
   FileTextIcon,
+  FolderInputIcon,
   FolderIcon,
   LibraryIcon,
   LogOutIcon,
@@ -93,6 +94,8 @@ export interface SidebarSource {
   href?: string
   /** Picks the row icon; defaults to audio */
   type?: "audio" | "pdf"
+  /** `false` hides "Move to session…" for this row (e.g. it's already in a session) */
+  movable?: boolean
 }
 
 /** The row a Rename / Delete menu action was triggered on. */
@@ -138,19 +141,22 @@ export type SlaiNavId = (typeof NAV_ITEMS)[number]["id"]
 
 /**
  * Row actions dropdown shared by class, session and source rows: optional
- * Download, then Rename, then Delete set apart at the end. The `trigger` is
+ * Download and Move to session, then Rename, then Delete set apart at the end. The `trigger` is
  * the row's hover action button (a SidebarMenuAction for top-level rows or a
  * positioned button for sub-rows).
  */
 function RowMenu({
   trigger,
   onDownload,
+  onMove,
   onRename,
   onDelete,
 }: {
   trigger: React.ReactNode
   /** Shows a Download item when set */
   onDownload?: () => void
+  /** Shows a "Move to session…" item when set */
+  onMove?: () => void
   onRename?: () => void
   onDelete?: () => void
 }) {
@@ -162,6 +168,12 @@ function RowMenu({
           <DropdownMenuItem onSelect={onDownload}>
             <DownloadIcon />
             Download
+          </DropdownMenuItem>
+        )}
+        {onMove && (
+          <DropdownMenuItem onSelect={onMove}>
+            <FolderInputIcon />
+            Move to session…
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onSelect={onRename}>
@@ -240,6 +252,7 @@ function SlaiSidebar({
   onRename,
   onDelete,
   onDownload,
+  onMove,
   onLogout,
 }: {
   /** Classes, each holding its past sessions */
@@ -271,6 +284,8 @@ function SlaiSidebar({
   onDelete?: (target: SidebarItemTarget) => void
   /** Adds a Download item to source rows' menu */
   onDownload?: (target: SidebarItemTarget) => void
+  /** Adds "Move to session…" to source rows' menu (rows with `movable: false` skip it); open your MoveToSessionDialog for `target` */
+  onMove?: (target: SidebarItemTarget) => void
   /** Adds an account menu with "Log out" to the user footer */
   onLogout?: () => void
 }) {
@@ -498,6 +513,11 @@ function SlaiSidebar({
                     <RowMenu
                       onDownload={
                         onDownload ? () => onDownload(target) : undefined
+                      }
+                      onMove={
+                        onMove && source.movable !== false
+                          ? () => onMove(target)
+                          : undefined
                       }
                       onRename={() => onRename?.(target)}
                       onDelete={() => onDelete?.(target)}

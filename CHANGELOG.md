@@ -5,6 +5,31 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.2.0
+
+Install with `github:trail-ai-lab/trail-design-system#v2.2.0`.
+
+### Minor Changes
+
+- **`DateTimePicker` (pattern):** a date and time of day from a calendar popover with a time
+  input under it. `value` / `defaultValue` / `onValueChange` with `null` for no date;
+  `clearable` adds a × button.
+- **`SessionDestinationFields`:** class → session pickers, each with "+ New …", plus an
+  optional date and time for a new session. Reports a `SessionDestination` (`classId?`,
+  `className`, `sessionId?`, `sessionName`, `sessionDate`), or `null` while incomplete. Pass
+  only sessions a recording can join (`DestinationClass.sessions`).
+- **`MoveToSessionDialog`:** moves a saved recording into a new or existing session as its own
+  group. `onSubmit` receives the destination and `groupName` (defaults to `recordingName`);
+  `defaultSessionDate` pre-fills a new session's date, `error` shows why a move failed.
+- **`AddSourceForm` `multiple`:** picks several audio files, each with an optional name, and
+  shared languages. With `classes` it adds "Save to": separate recordings, or a session (each
+  file becomes a group named after it). Reports through `onUploadMany(uploads, { languages,
+  destination })`; `fileStates` shows each file's upload state and `onRetry` retries a failed
+  one. The single-file mode is unchanged.
+- **`SlaiSidebar` `onMove`:** adds "Move to session…" to source rows' menu;
+  `SidebarSource.movable: false` leaves it out for a row (e.g. a recording already in a
+  session).
+
 ## 2.1.1
 
 Install with `github:trail-ai-lab/trail-design-system#v2.1.1`.

@@ -4,6 +4,7 @@ import { expect, screen, waitFor } from "storybook/test"
 
 import { LinkProvider } from "@/components/patterns/link-provider"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
+import { MoveToSessionDialog } from "@/components/slai/move-to-session-dialog"
 import { RenameDialog } from "@/components/slai/rename-dialog"
 import {
   SlaiSidebar,
@@ -151,6 +152,55 @@ export const RowActions: Story = {
       await screen.findByRole("menuitem", { name: "Rename" })
     ).toBeInTheDocument()
     // Close it so the a11y check runs on the sidebar, not under the open menu.
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull())
+  },
+}
+
+/**
+ * `onMove` adds "Move to session…" to source rows; a row with
+ * `movable: false` (a recording already in a session) leaves it out.
+ */
+export const MoveRecording: Story = {
+  args: {
+    sources: [
+      { id: "s1", name: "Inclined Plane Lab" },
+      { id: "s2", name: "Group 2 — Period 3", movable: false },
+    ],
+  },
+  render: function MoveRecordingStory(args) {
+    const [move, setMove] = React.useState<SidebarItemTarget | null>(null)
+    return (
+      <>
+        <SlaiSidebar
+          {...args}
+          onRename={() => {}}
+          onDelete={() => {}}
+          onMove={setMove}
+        />
+        <MoveToSessionDialog
+          open={move !== null}
+          onOpenChange={(open) => !open && setMove(null)}
+          recordingName={move?.name ?? ""}
+          classes={[
+            {
+              id: "physics",
+              name: "Physics",
+              sessions: [{ id: "p1", name: "Period 1" }],
+            },
+          ]}
+          onSubmit={() => setMove(null)}
+        />
+      </>
+    )
+  },
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Inclined Plane Lab options" })
+    )
+    await expect(
+      await screen.findByRole("menuitem", { name: "Move to session…" })
+    ).toBeInTheDocument()
     await userEvent.keyboard("{Escape}")
     await waitFor(() => expect(screen.queryByRole("menu")).toBeNull())
   },

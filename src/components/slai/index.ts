@@ -109,7 +109,17 @@ export {
   SaveRecordingDialog,
   type SaveRecordingPhase,
 } from "./save-recording-dialog"
-export { AddSourceForm } from "./add-source-form"
+export {
+  AddSourceForm,
+  type AddSourceFileState,
+  type AddSourceUpload,
+} from "./add-source-form"
+export {
+  SessionDestinationFields,
+  type DestinationClass,
+  type SessionDestination,
+} from "./session-destination-fields"
+export { MoveToSessionDialog } from "./move-to-session-dialog"
 
 // Course materials (documents SLAI's Q&A answers from)
 export {
