@@ -23,6 +23,16 @@ import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { InsightCallout } from "@/components/slai/insight-callout"
 import { StudentChip } from "@/components/slai/student-chip"
+import type { RosterStudent } from "@/components/slai/contribution-panel"
+
+/** A student added to the group: their name, and roster id when picked from
+ * (or typed exactly as on) the class roster. */
+export interface GroupMember {
+  name: string
+  studentId?: string
+}
+
+const nameKey = (name: string) => name.trim().replace(/\s+/g, " ").toLowerCase()
 
 function StepNumber({
   isActive,
@@ -52,16 +62,26 @@ function StepNumber({
  *
  * `loading` covers creating the group on the server; `notice` explains why
  * the student is back here (e.g. the teacher removed their group).
+ *
+ * With a class `roster`, students tap their names instead of typing them, so
+ * each member carries the roster id (`members` in `onContinue`). Names not on
+ * the roster can still be typed.
  */
 function GroupSetupForm({
   onContinue,
   loading = false,
   notice,
   maxStudents = 6,
+  roster,
   className,
 }: {
-  /** Receives the trimmed group name and the students added */
-  onContinue?: (group: { name: string; students: string[] }) => void
+  /** Receives the trimmed group name, the students' names, and each member
+   * with their roster id when known */
+  onContinue?: (group: {
+    name: string
+    students: string[]
+    members: GroupMember[]
+  }) => void
   /** The group is being created: the button shows "Joining…" and is disabled */
   loading?: boolean
   /** A warning shown at the top of the card, e.g. "Your group was removed by
@@ -69,26 +89,47 @@ function GroupSetupForm({
   notice?: React.ReactNode
   /** Most students a group can hold; adding stops there */
   maxStudents?: number
+  /** The class roster to pick names from */
+  roster?: RosterStudent[]
   className?: string
 }) {
   const uid = React.useId()
   const [groupName, setGroupName] = React.useState("")
-  const [students, setStudents] = React.useState<string[]>([])
+  const [members, setMembers] = React.useState<GroupMember[]>([])
   const [studentInput, setStudentInput] = React.useState("")
 
+  const students = members.map((member) => member.name)
+  const addedKeys = new Set(students.map(nameKey))
   const pendingStudent = studentInput.trim()
-  const alreadyAdded = students.includes(pendingStudent)
+  const alreadyAdded = addedKeys.has(nameKey(pendingStudent))
   const isFull = students.length >= maxStudents
 
-  const addStudent = () => {
-    const name = studentInput.trim()
-    if (!name || students.includes(name) || isFull) return
-    setStudents((prev) => [...prev, name])
+  const rosterByKey = new Map(
+    (roster ?? []).map((student) => [nameKey(student.name), student])
+  )
+  const suggestions = (roster ?? []).filter(
+    (student) =>
+      !addedKeys.has(nameKey(student.name)) &&
+      (!pendingStudent ||
+        nameKey(student.name).includes(nameKey(pendingStudent)))
+  )
+
+  const addMember = (member: GroupMember) => {
+    if (isFull || addedKeys.has(nameKey(member.name))) return
+    setMembers((prev) => [...prev, member])
     setStudentInput("")
   }
 
+  const addStudent = () => {
+    const name = studentInput.trim()
+    if (!name) return
+    // A typed name that matches the roster gets that student's id
+    const match = rosterByKey.get(nameKey(name))
+    addMember(match ? { name: match.name, studentId: match.id } : { name })
+  }
+
   const removeStudent = (index: number) => {
-    setStudents((prev) => prev.filter((_, i) => i !== index))
+    setMembers((prev) => prev.filter((_, i) => i !== index))
   }
 
   return (
@@ -142,7 +183,9 @@ function GroupSetupForm({
             <div className="flex gap-2">
               <Input
                 id={`${uid}-student-name`}
-                placeholder="Enter a student name"
+                placeholder={
+                  roster?.length ? "Find your name" : "Enter a student name"
+                }
                 disabled={isFull}
                 value={studentInput}
                 onChange={(event) => setStudentInput(event.target.value)}
@@ -176,6 +219,29 @@ function GroupSetupForm({
               )
             )}
 
+            {!isFull && suggestions.length > 0 && (
+              <div
+                role="group"
+                aria-label="Students in this class"
+                className="flex max-h-32 flex-wrap gap-2 overflow-y-auto"
+              >
+                {suggestions.map((student) => (
+                  <Button
+                    key={student.id}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      addMember({ name: student.name, studentId: student.id })
+                    }
+                  >
+                    <PlusIcon data-icon="inline-start" />
+                    {student.name}
+                  </Button>
+                ))}
+              </div>
+            )}
+
             {students.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {students.map((name, index) => (
@@ -198,6 +264,7 @@ function GroupSetupForm({
             onContinue?.({
               name: groupName.trim(),
               students: students.slice(0, maxStudents),
+              members: members.slice(0, maxStudents),
             })
           }
         >

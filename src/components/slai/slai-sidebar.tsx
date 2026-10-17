@@ -10,6 +10,7 @@ import {
   FolderInputIcon,
   FolderIcon,
   LibraryIcon,
+  UsersIcon,
   LogOutIcon,
   MicIcon,
   MoreHorizontalIcon,
@@ -62,6 +63,8 @@ export interface SidebarClass {
   sessions: SidebarSession[]
   /** Shows a "Course materials" row first in the class folder */
   materials?: SidebarClassMaterials
+  /** Shows a "Students" (class roster) row after materials, before sessions */
+  roster?: SidebarClassRoster
 }
 
 /** The class folder's "Course materials" row. */
@@ -71,6 +74,16 @@ export interface SidebarClassMaterials {
   /** Marks the materials page as the one being viewed */
   active?: boolean
   /** Ready materials, shown muted at the row's end */
+  count?: number
+}
+
+/** The class folder's "Students" row: the class roster. */
+export interface SidebarClassRoster {
+  /** Opens the class's roster page; the row is a link when set */
+  href?: string
+  /** Marks the roster page as the one being viewed */
+  active?: boolean
+  /** Students on the roster, shown muted at the row's end */
   count?: number
 }
 
@@ -213,17 +226,54 @@ function SubRowAction({
   )
 }
 
-function MaterialsRowLabel({ count }: { count?: number }) {
+function ClassLinkRowLabel({
+  icon: Icon,
+  label,
+  count,
+}: {
+  icon: React.ComponentType
+  label: string
+  count?: number
+}) {
   return (
     <>
-      <LibraryIcon />
-      <span className="truncate">Course materials</span>
+      <Icon />
+      <span className="truncate">{label}</span>
       {count !== undefined && (
         <span className="ml-auto text-xs text-muted-foreground tabular-nums">
           {count}
         </span>
       )}
     </>
+  )
+}
+
+/** A class folder's link row ("Course materials", "Students"). */
+function ClassLinkRow({
+  row,
+  icon,
+  label,
+}: {
+  row: SidebarClassMaterials | SidebarClassRoster
+  icon: React.ComponentType
+  label: string
+}) {
+  const content = (
+    <ClassLinkRowLabel icon={icon} label={label} count={row.count} />
+  )
+  return (
+    <SidebarMenuSubItem>
+      <SidebarMenuSubButton
+        isActive={row.active}
+        asChild={row.href !== undefined}
+      >
+        {row.href !== undefined ? (
+          <AppLink href={row.href}>{content}</AppLink>
+        ) : (
+          content
+        )}
+      </SidebarMenuSubButton>
+    </SidebarMenuSubItem>
   )
 }
 
@@ -397,24 +447,18 @@ function SlaiSidebar({
                     <CollapsibleContent>
                       <SidebarMenuSub className="mr-0 pr-0">
                         {klass.materials && (
-                          <SidebarMenuSubItem>
-                            <SidebarMenuSubButton
-                              isActive={klass.materials.active}
-                              asChild={klass.materials.href !== undefined}
-                            >
-                              {klass.materials.href !== undefined ? (
-                                <AppLink href={klass.materials.href}>
-                                  <MaterialsRowLabel
-                                    count={klass.materials.count}
-                                  />
-                                </AppLink>
-                              ) : (
-                                <MaterialsRowLabel
-                                  count={klass.materials.count}
-                                />
-                              )}
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
+                          <ClassLinkRow
+                            row={klass.materials}
+                            icon={LibraryIcon}
+                            label="Course materials"
+                          />
+                        )}
+                        {klass.roster && (
+                          <ClassLinkRow
+                            row={klass.roster}
+                            icon={UsersIcon}
+                            label="Students"
+                          />
                         )}
                         {klass.sessions.map((session) => {
                           const target: SidebarItemTarget = {

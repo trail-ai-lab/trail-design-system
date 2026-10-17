@@ -100,6 +100,27 @@ export const WithCourseMaterials: Story = {
   },
 }
 
+/**
+ * A class with `roster` shows a "Students" row (the class roster, with its
+ * count) after course materials and before the sessions.
+ */
+export const WithClassRoster: Story = {
+  args: {
+    classes: CLASSES.map((klass) => ({
+      ...klass,
+      sessions: klass.sessions.map((session) => ({
+        ...session,
+        active: false,
+      })),
+      materials: { count: klass.name === "Physics" ? 3 : 0 },
+      roster: {
+        count: klass.name === "Physics" ? 24 : 0,
+        active: klass.name === "Physics",
+      },
+    })),
+  },
+}
+
 /** Sources can be objects to pick a file-type icon (audio by default). */
 export const WithFileTypes: Story = {
   args: {

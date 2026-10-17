@@ -8,6 +8,7 @@ export {
   type SidebarItemTarget,
   type SidebarClass,
   type SidebarClassMaterials,
+  type SidebarClassRoster,
   type SidebarUser,
   type SlaiNavId,
 } from "./slai-sidebar"
@@ -26,7 +27,7 @@ export type { LanguageOption, LanguageOptions } from "./lib/language-option"
 export { NewSessionForm } from "./new-session-form"
 export { RecordingControl, type RecordingState } from "./recording-control"
 export { LiveWaveform } from "./live-waveform"
-export { GroupSetupForm } from "./group-setup-form"
+export { GroupSetupForm, type GroupMember } from "./group-setup-form"
 export { StudentChip } from "./student-chip"
 export { MicPermissionError } from "./mic-permission-error"
 export { StudentRecordingScreen } from "./student-recording-screen"
@@ -96,7 +97,11 @@ export { SpeakerAssignDropdown } from "./speaker-assign-dropdown"
 export {
   ContributionPanel,
   SPEAKER_FILLS,
+  rosterId,
+  rosterName,
   type ContributionSpeaker,
+  type RosterEntry,
+  type RosterStudent,
 } from "./contribution-panel"
 export { DiarizationPanel, type DiarizationState } from "./diarization-panel"
 export {
@@ -133,6 +138,18 @@ export {
 export { MaterialsTable } from "./materials-table"
 export { UploadMaterialsSheet } from "./upload-materials-sheet"
 export { SessionMaterialsPicker } from "./session-materials-picker"
+
+// Class roster (students linked across sessions)
+export {
+  parseRoster,
+  type RosterImportRow,
+  type RosterStudentFields,
+  type RosterTableStudent,
+} from "./lib/roster"
+export { StudentRosterTable } from "./student-roster-table"
+export { AddStudentsDialog } from "./add-students-dialog"
+export { EditStudentDialog } from "./edit-student-dialog"
+export { NamesToLinkCard, type UnlinkedName } from "./names-to-link-card"
 
 // Activities
 export { VidyaMapPlaceholder } from "./vidya-map-placeholder"
