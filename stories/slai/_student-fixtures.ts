@@ -98,3 +98,55 @@ export const LIAM: StudentProgressData = {
     [SESSION_LABELS[2], null, "met", 50, 6],
   ]),
 }
+
+/**
+ * Early progress, before any assessment: per session only the group, talk
+ * time and the student's first substantive line, with gaps for absences.
+ */
+export const MEI_EARLY: StudentProgressData = {
+  id: "mei",
+  name: "Mei",
+  primaryLanguage: "Mandarin",
+  sessions: [
+    {
+      sessionId: "s1",
+      sessionLabel: "Period 3 — Sep 18",
+      sessionIndex: 1,
+      dateLabel: "Sep 18",
+      groupName: "Team A",
+      participationPct: 22,
+      talkSeconds: 74,
+      transcriptQuote: "我觉得每组都有一样多的。",
+      quoteTranslation: "I think every group has the same amount.",
+      quoteLanguage: "Chinese",
+      href: "#/session/physics/period-3-sep-18/team-a",
+    },
+    {
+      sessionId: "s2",
+      sessionLabel: "Period 3 — Sep 25",
+      sessionIndex: 2,
+      dateLabel: "Sep 25",
+      absent: true,
+    },
+    {
+      sessionId: "s3",
+      sessionLabel: "Period 3 — Oct 2",
+      sessionIndex: 3,
+      dateLabel: "Oct 2",
+      groupName: "Team C",
+    },
+    {
+      sessionId: "s4",
+      sessionLabel: "Period 3 — Oct 9",
+      sessionIndex: 4,
+      dateLabel: "Oct 9",
+      groupName: "Team A",
+      participationPct: 31,
+      talkSeconds: 128,
+      transcriptQuote:
+        "The ramp is steeper so the cart goes faster at the end.",
+      quoteLanguage: "English",
+      href: "#/session/physics/period-3-oct-9/team-a",
+    },
+  ],
+}
