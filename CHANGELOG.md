@@ -5,6 +5,32 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.4.0
+
+Install with `github:trail-ai-lab/trail-design-system#v2.4.0`.
+
+### Minor Changes
+
+- **Early student progress:** `StudentProgressView` and `SessionEvidenceStrip` work before any
+  assessment exists, showing only what the data has.
+  - `StudentSessionData`: everything but `sessionId`, `sessionLabel` and `sessionIndex` is
+    optional (`widaScore`, `standardVerdict`, `participationPct`, `academicTermCount`,
+    `transcriptQuote`, `actionPrompt`, `actionDone`). New optional fields: `dateLabel`,
+    `groupName`, `absent`, `talkSeconds`, `quoteLabel`, `quoteLanguage` and `href`.
+    `StudentProgressData.primaryLanguage` is optional.
+  - `StudentProgressView`: `sessionLabels` and `standardLabel` are optional (chart labels
+    default to each session's `dateLabel`, else its label). Header badges and chart tabs appear
+    only for metrics some session measured; a single metric shows without tabs ("Participation
+    over time"). The count reads "In 3 of 4 sessions" when the student missed some. A student
+    with no sessions gets an empty state.
+  - `SessionEvidenceCard`: shows the date and group, talk time (share and duration, with a
+    bar), the quote labelled with its language, and an "Open recording" link (`href`). Verdict
+    badges and the follow-up only show when set. An `absent` session is a muted "Absent" card,
+    and a session with no quote says no lines are assigned yet. "Latest" marks the last session
+    the student was in.
+  - `ProgressChart`: skips sessions that are absent or didn't measure the metric;
+    `standardLabel` is optional.
+
 ## 2.3.0
 
 Install with `github:trail-ai-lab/trail-design-system#v2.3.0`.

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { AppShell } from "@/components/slai/app-shell"
 import { StudentProgressView } from "@/components/slai/student-progress-view"
 import { PageSidebar } from "./_page-fixtures"
-import { MEI, SESSION_LABELS } from "./_student-fixtures"
+import { MEI, MEI_EARLY, SESSION_LABELS } from "./_student-fixtures"
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
 
 function StudentProgressPage() {
@@ -34,3 +34,29 @@ export default meta
 type Story = StoryObj
 
 export const Default: Story = { render: () => <StudentProgressPage /> }
+
+/**
+ * A class student's page, opened from their name on the class's Students
+ * page, before any assessment: evidence only.
+ */
+export const Early: Story = {
+  render: () => (
+    <AppShell
+      sidebar={<PageSidebar activeRoster="Physics" />}
+      title={
+        <PageBreadcrumb
+          items={[
+            { label: "Physics" },
+            { label: "Students", href: "#" },
+            { label: "Mei" },
+          ]}
+        />
+      }
+    >
+      <StudentProgressView
+        className="min-h-0 flex-1 p-(--shell-gap)"
+        student={MEI_EARLY}
+      />
+    </AppShell>
+  ),
+}

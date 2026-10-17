@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { StudentProgressView } from "@/components/slai/student-progress-view"
-import { LIAM, MEI, SESSION_LABELS } from "./_student-fixtures"
+import { LIAM, MEI, MEI_EARLY, SESSION_LABELS } from "./_student-fixtures"
 
 const meta: Meta<typeof StudentProgressView> = {
   title: "SLAI/StudentProgressView",
@@ -43,3 +43,26 @@ export const Warning: Story = {
 
 /** No WIDA metric for native English speakers. */
 export const NativeEnglish: Story = { args: { student: LIAM } }
+
+/**
+ * Before any assessment: no verdicts or charts except participation — the
+ * header and, per session, the group, talk time and first substantive line.
+ * Absent sessions stay as muted cards; a session with no assigned speaker
+ * says so.
+ */
+export const Early: Story = {
+  args: {
+    student: MEI_EARLY,
+    sessionLabels: undefined,
+    standardLabel: undefined,
+  },
+}
+
+/** A student on the roster who hasn't been in a session yet. */
+export const NoSessions: Story = {
+  args: {
+    student: { ...MEI_EARLY, sessions: [] },
+    sessionLabels: undefined,
+    standardLabel: undefined,
+  },
+}

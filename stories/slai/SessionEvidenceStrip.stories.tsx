@@ -4,7 +4,7 @@ import {
   SessionEvidenceCard,
   SessionEvidenceStrip,
 } from "@/components/slai/session-evidence-strip"
-import { LIAM, MEI } from "./_student-fixtures"
+import { LIAM, MEI, MEI_EARLY } from "./_student-fixtures"
 
 const meta: Meta<typeof SessionEvidenceStrip> = {
   title: "SLAI/SessionEvidenceStrip",
@@ -36,4 +36,9 @@ export const SingleCard: Story = {
       isLatest
     />
   ),
+}
+
+/** Before assessments: talk time and first line; absent and not-yet-assigned sessions. */
+export const Early: Story = {
+  args: { sessions: MEI_EARLY.sessions, standardLabel: undefined },
 }

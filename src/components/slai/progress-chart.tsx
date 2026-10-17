@@ -21,16 +21,23 @@ import type {
   StudentSessionData,
 } from "@/components/slai/lib/student-progress"
 
-function metricValue(session: StudentSessionData, metric: ProgressMetric) {
+/** The session's value for a metric; null when absent or not measured. */
+export function metricValue(
+  session: StudentSessionData,
+  metric: ProgressMetric
+): number | null {
+  if (session.absent) return null
   switch (metric) {
     case "wida":
-      return session.widaScore
+      return session.widaScore ?? null
     case "standard":
-      return VERDICT_VALUE[session.standardVerdict]
+      return session.standardVerdict
+        ? VERDICT_VALUE[session.standardVerdict]
+        : null
     case "participation":
-      return session.participationPct
+      return session.participationPct ?? null
     case "academic":
-      return session.academicTermCount
+      return session.academicTermCount ?? null
   }
 }
 
@@ -118,7 +125,7 @@ function ProgressChart({
   sessions,
   sessionLabels,
   metric,
-  standardLabel,
+  standardLabel = "Standard",
   isNativeEnglish = false,
   studentName,
   className,
@@ -127,14 +134,16 @@ function ProgressChart({
   /** Every session's x-axis label, in order; absent sessions show as gaps */
   sessionLabels: string[]
   metric: ProgressMetric
-  standardLabel: string
+  /** Name of the standard, for the standard metric; defaults to "Standard" */
+  standardLabel?: string
   /** Native English speakers have no WIDA series */
   isNativeEnglish?: boolean
   studentName?: string
   className?: string
 }) {
   const data = React.useMemo<Point[]>(() => {
-    const last = sessions[sessions.length - 1]
+    const present = sessions.filter((s) => !s.absent)
+    const last = present[present.length - 1]
     return sessionLabels.map((label, i) => {
       const session = sessions.find((s) => s.sessionIndex === i + 1)
       return {
