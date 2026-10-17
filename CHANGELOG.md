@@ -5,6 +5,37 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.3.0
+
+Install with `github:trail-ai-lab/trail-design-system#v2.3.0`.
+
+### Minor Changes
+
+- **Class roster page (`SLAI/Pages/ClassStudents`):** what the sidebar's "Students" row opens.
+  - `StudentRosterTable`: one row per student (avatar, name and other spellings, language
+    with a "Native English" badge, grade, sessions), skeleton and empty states, and row menus
+    for `onEdit` / `onRemove` (from this class) / `onDelete`. `onAdd` shows "Add students".
+    A student's `href` links their name to their progress page. Types: `RosterTableStudent`.
+  - `AddStudentsDialog`: paste names one per line or choose a CSV (name, optional language
+    and grade columns); counts the students found. `onSubmit(rows: RosterImportRow[])`.
+    The parser is exported as `parseRoster`.
+  - `EditStudentDialog`: name, other spellings (aliases), language, grade and native English;
+    `onSubmit(fields: RosterStudentFields)`.
+  - `NamesToLinkCard`: names from groups and speakers that match no roster student
+    (`UnlinkedName`), each with "Link to…" a student (`onLink`) or "Add as student"
+    (`onCreate`); `loadingName` disables the row being resolved.
+- **`SidebarClass.roster`:** a class's "Students" row (the class roster) after course
+  materials and before its sessions, with `href`, `active` and `count`
+  (`SidebarClassRoster`). Materials and Students share one row component.
+- **`ContributionPanel` roster ids:** `students` takes `{id, name}` entries (`RosterStudent`)
+  as well as plain names (`RosterEntry`), and `onAssign(speakerId, student, studentId?)` also
+  passes the roster id of the chosen student. `ContributionSpeaker.studentId` is optional.
+  `rosterName` / `rosterId` read either form.
+- **`GroupSetupForm` `roster`:** with the class roster, students tap their names (filtered as
+  they type) instead of typing them; a typed name that matches the roster gets its id.
+  `onContinue` also receives `members: GroupMember[]` (`{name, studentId?}`). Without a
+  roster the form is unchanged.
+
 ## 2.2.0
 
 Install with `github:trail-ai-lab/trail-design-system#v2.2.0`.

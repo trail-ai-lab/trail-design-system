@@ -40,3 +40,20 @@ export const GroupFull: Story = {
     }
   },
 }
+
+/**
+ * With the class `roster`, students tap their names (filtered as they type) so
+ * each member carries a roster id; names not on the roster can still be typed.
+ */
+export const WithRoster: Story = {
+  args: {
+    roster: [
+      { id: "stu_mei", name: "Mei" },
+      { id: "stu_liam", name: "Liam" },
+      { id: "stu_rosa", name: "Rosa" },
+      { id: "stu_diego", name: "Diego" },
+      { id: "stu_sofia", name: "Sofia" },
+      { id: "stu_kevin", name: "Kevin" },
+    ],
+  },
+}

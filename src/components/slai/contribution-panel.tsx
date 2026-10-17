@@ -24,6 +24,25 @@ export interface ContributionSpeaker {
   seconds: number
   /** Assigned student name, if any */
   student?: string
+  /** Roster id of the assigned student, when known */
+  studentId?: string
+}
+
+/** A student on a class roster, with the stable id progress data points at. */
+export interface RosterStudent {
+  id: string
+  name: string
+}
+
+/** Roster entries as `{id, name}`; plain names (no id) are still accepted. */
+export type RosterEntry = string | RosterStudent
+
+export function rosterName(entry: RosterEntry): string {
+  return typeof entry === "string" ? entry : entry.name
+}
+
+export function rosterId(entry: RosterEntry): string | undefined {
+  return typeof entry === "string" ? undefined : entry.id
 }
 
 /** Distinct, token-based fills for the stacked bar and row dots. */
@@ -52,15 +71,28 @@ function ContributionPanel({
   className,
 }: {
   speakers: ContributionSpeaker[]
-  /** Student roster offered in each assignment dropdown */
-  students: string[]
-  onAssign?: (speakerId: string, student: string | undefined) => void
+  /** Student roster offered in each assignment dropdown: `{id, name}`
+   * entries (preferred, so assignments carry the student id) or plain names */
+  students: RosterEntry[]
+  /** `studentId` is set when the chosen student is a roster entry with an id */
+  onAssign?: (
+    speakerId: string,
+    student: string | undefined,
+    studentId?: string
+  ) => void
   onAddStudent?: (name: string) => void
   /** Persistence state of the latest assignment */
   status?: "idle" | "saving" | "saved"
   variant?: "card" | "embedded"
   className?: string
 }) {
+  const names = Array.from(new Set(students.map(rosterName)))
+  const idByName = new Map(
+    students.flatMap((entry) => {
+      const id = rosterId(entry)
+      return id ? [[rosterName(entry), id] as const] : []
+    })
+  )
   const total = speakers.reduce((sum, speaker) => sum + speaker.seconds, 0)
   const percent = (seconds: number) =>
     total > 0 ? Math.round((seconds / total) * 100) : 0
@@ -117,9 +149,15 @@ function ContributionPanel({
               </span>
             </div>
             <SpeakerAssignDropdown
-              students={students}
+              students={names}
               value={speaker.student}
-              onValueChange={(student) => onAssign?.(speaker.id, student)}
+              onValueChange={(student) =>
+                onAssign?.(
+                  speaker.id,
+                  student,
+                  student ? idByName.get(student) : undefined
+                )
+              }
               onAddStudent={onAddStudent}
               aria-label={`Student for ${speaker.label}`}
             />

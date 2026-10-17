@@ -18,6 +18,9 @@ export const CLASSES: SidebarClass[] = [
 /** Ready course materials per class, shown on each folder's "Course materials" row. */
 const MATERIAL_COUNTS: Record<string, number> = { Biology: 2, Physics: 3 }
 
+/** Roster size per class, shown on each folder's "Students" row. */
+const ROSTER_COUNTS: Record<string, number> = { Biology: 18, Physics: 6 }
+
 export const SOURCES = [
   "Inclined Plane Lab",
   "Photosynthesis Discussion",
@@ -44,6 +47,7 @@ export function PageSidebar({
   activeNav,
   activeSession,
   activeMaterials,
+  activeRoster,
   activeSource,
   activeStudent,
   showStudents = false,
@@ -54,6 +58,8 @@ export function PageSidebar({
   activeSession?: { className: string; session: string }
   /** Highlights a class's "Course materials" row, e.g. "Physics" */
   activeMaterials?: string
+  /** Highlights a class's "Students" (roster) row, e.g. "Physics" */
+  activeRoster?: string
   activeSource?: string
   activeStudent?: string
   /** Show the Students group (student progress pages) */
@@ -66,6 +72,10 @@ export function PageSidebar({
     materials: {
       count: MATERIAL_COUNTS[klass.name] ?? 0,
       active: klass.name === activeMaterials,
+    },
+    roster: {
+      count: ROSTER_COUNTS[klass.name] ?? 0,
+      active: klass.name === activeRoster,
     },
     sessions: klass.sessions.map((session) => ({
       ...session,
@@ -85,7 +95,7 @@ export function PageSidebar({
       students={showStudents ? STUDENTS : undefined}
       activeStudent={activeStudent}
       defaultOpenClass={
-        activeSession?.className ?? activeMaterials ?? "Physics"
+        activeSession?.className ?? activeMaterials ?? activeRoster ?? "Physics"
       }
       onDownload={() => {}}
       onLogout={() => {}}
