@@ -57,6 +57,40 @@ export const Interactive: Story = {
   },
 }
 
+/**
+ * The teacher joined the group (`role: "teacher"`), and speaker identification
+ * tagged two speakers (`aiTagged`), so their rows carry "Teacher" and "AI" badges.
+ */
+export const WithTeacherAndAiTags: Story = {
+  args: {
+    speakers: [
+      {
+        id: "s1",
+        label: "Speaker 1",
+        seconds: 412,
+        student: "Asha",
+        aiTagged: true,
+      },
+      {
+        id: "s2",
+        label: "Speaker 2",
+        seconds: 268,
+        student: "Teacher",
+        role: "teacher",
+      },
+      {
+        id: "s3",
+        label: "Speaker 3",
+        seconds: 190,
+        student: "Chen",
+        aiTagged: true,
+      },
+      { id: "s4", label: "Speaker 4", seconds: 74 },
+    ],
+    students: ["Teacher", "Asha", "Ben", "Chen", "Dara"],
+  },
+}
+
 /** `embedded`: a labelled subsection with no card chrome, for inside DiarizationPanel. */
 export const Embedded: Story = { args: { variant: "embedded" } }
 

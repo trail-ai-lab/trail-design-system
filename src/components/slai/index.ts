@@ -78,6 +78,7 @@ export { ActivityLogCard, type ActivityLogEvent } from "./activity-log-card"
 // Live-session building blocks
 export { RecordingTimer } from "./recording-timer"
 export { NoisyAudioBanner } from "./noisy-audio-banner"
+export { SpeakerTags, type SpeakerRole } from "./speaker-tags"
 export { SummaryText } from "./summary-text"
 
 // Search, row actions, language pickers

@@ -15,6 +15,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { formatElapsed } from "@/lib/format"
 import { SectionLabel } from "@/components/patterns/section-label"
 import { SpeakerAssignDropdown } from "@/components/slai/speaker-assign-dropdown"
+import { SpeakerTags, type SpeakerRole } from "@/components/slai/speaker-tags"
 
 export interface ContributionSpeaker {
   id: string
@@ -26,6 +27,10 @@ export interface ContributionSpeaker {
   student?: string
   /** Roster id of the assigned student, when known */
   studentId?: string
+  /** "teacher" when the speaker is the teacher rather than a student */
+  role?: SpeakerRole
+  /** Who the speaker is was identified automatically; shows an "AI" badge */
+  aiTagged?: boolean
 }
 
 /** A student on a class roster, with the stable id progress data points at. */
@@ -141,8 +146,11 @@ function ContributionPanel({
               )}
             />
             <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate text-sm font-medium">
-                {speaker.student ?? speaker.label}
+              <span className="flex min-w-0 items-center gap-1.5">
+                <span className="truncate text-sm font-medium">
+                  {speaker.student ?? speaker.label}
+                </span>
+                <SpeakerTags role={speaker.role} aiTagged={speaker.aiTagged} />
               </span>
               <span className="text-xs text-muted-foreground tabular-nums">
                 {percent(speaker.seconds)}% · {formatElapsed(speaker.seconds)}

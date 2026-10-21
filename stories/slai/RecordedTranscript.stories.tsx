@@ -67,6 +67,20 @@ export const Named: Story = {
   },
 }
 
+// The teacher joined the group, and speaker identification tagged two speakers:
+// their lines carry "Teacher" and "AI" badges.
+export const WithTeacherAndAiTags: Story = {
+  args: {
+    speakers: [
+      { id: "s1", name: "Aarav", aiTagged: true },
+      { id: "s2", name: "Teacher", role: "teacher" },
+      { id: "s3", name: "Jordan", aiTagged: true },
+    ],
+    entries: ENTRIES,
+    className: "h-full",
+  },
+}
+
 // Fresh diarization output — speakers are unnamed ("Speaker 1/2/3") until
 // the teacher assigns names in the Manage speakers popover.
 export const Unnamed: Story = {

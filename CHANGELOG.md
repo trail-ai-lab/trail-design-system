@@ -5,6 +5,22 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.5.0
+
+Install with `github:trail-ai-lab/trail-design-system#v2.5.0`.
+
+### Minor Changes
+
+- **Teacher and AI speaker badges:** a speaker can be marked as the teacher, and as identified
+  automatically, in the speaker list and the transcript.
+  - New `SpeakerTags` (`SLAI/SpeakerTags`) and `SpeakerRole` type: a "Teacher" badge for
+    `role="teacher"` and an "AI" badge for `aiTagged`. Renders nothing when neither is set.
+  - `ContributionSpeaker` and `RecordedSpeaker`: new optional `role` and `aiTagged`.
+    `ContributionPanel` shows the badges beside the speaker's name, also once a student is
+    assigned. `RecordedTranscriptCard` shows them beside the speaker on each line.
+  - Stories: `SpeakerTags`, and `WithTeacherAndAiTags` for `ContributionPanel` and
+    `RecordedTranscriptCard`.
+
 ## 2.4.0
 
 Install with `github:trail-ai-lab/trail-design-system#v2.4.0`.

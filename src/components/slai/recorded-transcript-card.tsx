@@ -24,11 +24,16 @@ import { initials } from "@/lib/format"
 import { useControllableState } from "@/lib/use-controllable-state"
 import { SectionLabel } from "@/components/patterns/section-label"
 import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
+import { SpeakerTags, type SpeakerRole } from "@/components/slai/speaker-tags"
 
 export interface RecordedSpeaker {
   id: string
   /** Teacher-assigned name; blank shows the diarized "Speaker N" label */
   name?: string
+  /** "teacher" when the speaker is the teacher rather than a student */
+  role?: SpeakerRole
+  /** Who the speaker is was identified automatically; shows an "AI" badge */
+  aiTagged?: boolean
 }
 
 export interface RecordedEntry {
@@ -47,6 +52,7 @@ function RecordedRow({
   entry,
   speakerLabel,
   speakerInitials,
+  speaker,
   isHighlighted,
   isPlaying,
   onPlayToggle,
@@ -54,6 +60,7 @@ function RecordedRow({
   entry: RecordedEntry
   speakerLabel: string
   speakerInitials: string
+  speaker?: Pick<RecordedSpeaker, "role" | "aiTagged">
   isHighlighted?: boolean
   isPlaying?: boolean
   onPlayToggle?: () => void
@@ -65,7 +72,12 @@ function RecordedRow({
           <AvatarFallback>{speakerInitials}</AvatarFallback>
         </Avatar>
       }
-      meta={<span className="font-medium text-foreground">{speakerLabel}</span>}
+      meta={
+        <span className="inline-flex items-center gap-1.5">
+          <span className="font-medium text-foreground">{speakerLabel}</span>
+          <SpeakerTags role={speaker?.role} aiTagged={speaker?.aiTagged} />
+        </span>
+      }
       entry={entry}
       isHighlighted={isHighlighted}
       isPlaying={isPlaying}
@@ -236,9 +248,9 @@ function RecordedTranscriptCard({
 
   // Stable ordinal + name lookup for each speaker.
   const byId = React.useMemo(() => {
-    const map = new Map<string, { name?: string; ordinal: number }>()
+    const map = new Map<string, RecordedSpeaker & { ordinal: number }>()
     speakers.forEach((speaker, index) =>
-      map.set(speaker.id, { name: speaker.name, ordinal: index + 1 })
+      map.set(speaker.id, { ...speaker, ordinal: index + 1 })
     )
     return map
   }, [speakers])
@@ -290,6 +302,7 @@ function RecordedTranscriptCard({
         entry={entry}
         speakerLabel={label}
         speakerInitials={avatar}
+        speaker={speaker}
         isHighlighted={highlighted.has(entry.id)}
         isPlaying={entry.id === playingEntryId}
         onPlayToggle={onPlayEntry && (() => onPlayEntry(entry))}
