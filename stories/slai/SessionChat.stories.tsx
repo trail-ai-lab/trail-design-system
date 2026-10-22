@@ -103,6 +103,34 @@ export const MaterialCitations: Story = {
   },
 }
 
+/** Long file names and section headings wrap like transcript chips instead of being clipped. */
+export const LongMaterialCitations: Story = {
+  args: {
+    scopeLabel: "Arcadia Long",
+    className: "h-full",
+    materials: { ready: 1 },
+    onMaterialsClick: () => {},
+    messages: [
+      { id: "1", role: "user", content: "What is Lesson 16 about?" },
+      {
+        id: "2",
+        role: "assistant",
+        content:
+          "The teacher edition [C1] says Lesson 16 asks students to design a cup system that slows energy transfer into the liquid inside it. In the recording, Alice connects this to the tinfoil reflecting heat.",
+        sources: ["Alice", "Group 1 — Mei"],
+        materials: [
+          {
+            name: "Teacher Edition  Lessons 16-18.pdf",
+            location:
+              "LESSON 16: How can we design a cup system to slow energy transfer into the liquid inside it? > Lesson 16 • Learning Plan Snapshot · p. 3",
+          },
+          { name: "Teacher Edition  Lessons 16-18.pdf", location: "p. 5" },
+        ],
+      },
+    ],
+  },
+}
+
 /** No materials yet: the header says answers use the transcript only and links to add some. */
 export const NoMaterials: Story = {
   args: {

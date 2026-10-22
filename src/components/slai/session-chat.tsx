@@ -145,15 +145,17 @@ function ChatRow({
               <Badge
                 key={`${material.id ?? material.name}-${material.location ?? ""}`}
                 variant="outline"
-                className="max-w-full font-normal"
+                className="h-auto max-w-full items-start justify-start py-1 text-left font-normal wrap-anywhere whitespace-normal"
               >
-                <FileTextIcon data-icon="inline-start" aria-hidden />
-                <span className="truncate">{material.name}</span>
-                {material.location && (
-                  <span className="text-muted-foreground">
-                    · {material.location}
-                  </span>
-                )}
+                <FileTextIcon
+                  data-icon="inline-start"
+                  className="mt-0.5 shrink-0"
+                  aria-hidden
+                />
+                <span>
+                  {material.name}
+                  {material.location && ` · ${material.location}`}
+                </span>
               </Badge>
             ))}
           </div>

@@ -5,6 +5,17 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.5.1
+
+Install with `github:trail-ai-lab/trail-design-system#v2.5.1`.
+
+### Patch Changes
+
+- **Course-material chips wrap like transcript chips:** in `SessionChatCard`, a
+  `ChatMessage.materials` chip no longer truncates a long file name or greys out its
+  location. It wraps onto more lines in full-strength text, matching the `sources` chips, and
+  its document icon keeps its size. New story: `LongMaterialCitations`.
+
 ## 2.5.0
 
 Install with `github:trail-ai-lab/trail-design-system#v2.5.0`.
