@@ -5,6 +5,18 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 2.5.2
+
+Install with `github:trail-ai-lab/trail-design-system#v2.5.2`.
+
+### Patch Changes
+
+- **`TranscriptCard` follows new lines once the transcript is capped:** auto-scroll now
+  follows the newest line instead of the line count. A consumer that keeps only the latest N
+  lines (SLAI shows each group's newest 200) adds one and drops one per new line, so the count
+  stayed the same and new lines were left hidden below the scroll area. New story:
+  `FollowsLatestLinesWindow`.
+
 ## 2.5.1
 
 Install with `github:trail-ai-lab/trail-design-system#v2.5.1`.

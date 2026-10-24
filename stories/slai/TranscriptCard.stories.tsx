@@ -1,5 +1,7 @@
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { RefreshCwIcon } from "lucide-react"
+import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { Button } from "@/components/ui/button"
 import { InsightCallout } from "@/components/slai/insight-callout"
@@ -302,6 +304,56 @@ export const InProgressLine: Story = {
     scope: "group-2",
     interimText: "and then we can compare the times for",
     className: "h-full",
+  },
+}
+
+/** The consumer keeps only the latest lines (here 12): each new line drops
+ * the oldest, so the count never changes. The card still follows the newest
+ * line. */
+export const FollowsLatestLinesWindow: Story = {
+  render: function Render(args) {
+    const WINDOW = 12
+    const [next, setNext] = React.useState(WINDOW)
+    const entries = Array.from({ length: WINDOW }, (_, i) => {
+      const n = next - WINDOW + i + 1
+      return {
+        id: `line-${n}`,
+        at: n,
+        language: "English",
+        original: `Line ${n}: we measured the water temperature again.`,
+      }
+    })
+    return (
+      <div className="flex h-full flex-col gap-2">
+        <Button
+          variant="outline"
+          className="self-start"
+          onClick={() => setNext((n) => n + 1)}
+        >
+          Add a line
+        </Button>
+        <TranscriptCard
+          {...args}
+          className="min-h-0 flex-1"
+          groups={[{ ...GROUPS[0], entries }]}
+          scope="group-1"
+        />
+      </div>
+    )
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const button = canvas.getByRole("button", { name: "Add a line" })
+    for (let i = 0; i < 3; i++) await userEvent.click(button)
+    await canvas.findByText(/^Line 15:/)
+    const viewport = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="scroll-area-viewport"]'
+    )!
+    await waitFor(() =>
+      expect(
+        viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight
+      ).toBeLessThanOrEqual(1)
+    )
   },
 }
 

@@ -297,15 +297,19 @@ function TranscriptCard({
   // Changes when the set of highlighted lines does, not on every new array.
   const highlightKey = [...highlighted].join("\n")
 
-  // Follow new lines, except while a line is highlighted.
+  // Follow new lines, except while a line is highlighted. Keyed on the
+  // newest line rather than the count: a consumer that keeps only the latest
+  // N lines adds one and drops one, so the count stays the same.
   const following = autoScroll && highlighted.size === 0
+  const last = rows[rows.length - 1]
+  const latestKey = last ? `${last.group?.id}-${last.entry.id}` : ""
   React.useEffect(() => {
     if (!following) return
     const viewport = scrollRef.current?.querySelector(
       '[data-slot="scroll-area-viewport"]'
     )
     viewport?.scrollTo({ top: viewport.scrollHeight })
-  }, [following, scope, rows.length, interimText])
+  }, [following, scope, latestKey, interimText])
 
   // Bring the highlighted line into view (the page too, on small screens).
   React.useEffect(() => {
