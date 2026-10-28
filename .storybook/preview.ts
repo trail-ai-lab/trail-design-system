@@ -13,7 +13,12 @@ type Theme = "light" | "dark"
 
 function SyncTheme({ theme }: { theme: Theme }) {
   const { setTheme } = useTheme()
+  // next-themes gives setTheme a new identity whenever the theme changes, so
+  // this effect re-runs after an in-story toggle; only a toolbar change applies.
+  const applied = React.useRef<Theme | null>(null)
   React.useEffect(() => {
+    if (applied.current === theme) return
+    applied.current = theme
     setTheme(theme)
   }, [theme, setTheme])
   React.useEffect(() => {

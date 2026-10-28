@@ -12,7 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSet,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { useControllableState } from "@/lib/use-controllable-state"
@@ -34,6 +40,7 @@ import {
 import type { LanguageOptions } from "@/components/slai/lib/language-option"
 import type { CourseMaterial } from "@/components/slai/lib/course-material"
 import { SessionMaterialsPicker } from "@/components/slai/session-materials-picker"
+import { isNameTaken } from "@/components/slai/lib/name-key"
 
 const NEW_CLASS = "__new_class__"
 
@@ -71,7 +78,10 @@ function NewSessionForm({
   }) => void
   /** Session is being created; disables the form and shows a spinner */
   loading?: boolean
-  /** Adds a "+ New class" option that reveals a free-text class input */
+  /**
+   * Adds a "+ New class" option that reveals a free-text class input. A new
+   * name matching one of `classes` (ignoring case and spacing) is refused.
+   */
   allowNewClass?: boolean
   /** Initial language settings, e.g. the teacher's saved preference */
   defaultLanguages?: LanguageSettingsValue
@@ -99,6 +109,7 @@ function NewSessionForm({
   const [newClass, setNewClass] = React.useState("")
   const creatingClass = klass === NEW_CLASS
   const resolvedClass = creatingClass ? newClass.trim() : klass
+  const classTaken = creatingClass && isNameTaken(newClass, classes)
   const languagesRef = React.useRef<LanguageSettingsValue>(defaultLanguages)
   const [materialIds, setMaterialIds] = useControllableState({
     value: materialIdsProp,
@@ -123,7 +134,7 @@ function NewSessionForm({
               <legend className="mb-3">Session details</legend>
             </SectionLabel>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field>
+              <Field data-invalid={classTaken || undefined}>
                 <FieldLabel htmlFor={`${uid}-new-session-class`}>
                   Class
                 </FieldLabel>
@@ -163,10 +174,19 @@ function NewSessionForm({
                 {creatingClass && (
                   <Input
                     aria-label="New class name"
+                    aria-invalid={classTaken || undefined}
+                    aria-describedby={
+                      classTaken ? `${uid}-new-class-error` : undefined
+                    }
                     placeholder="e.g., Grade 8 Science"
                     value={newClass}
                     onChange={(event) => setNewClass(event.target.value)}
                   />
+                )}
+                {classTaken && (
+                  <FieldError id={`${uid}-new-class-error`}>
+                    This class already exists. Pick it from the list.
+                  </FieldError>
                 )}
               </Field>
               <Field>
@@ -251,7 +271,7 @@ function NewSessionForm({
       <CardFooter>
         <Button
           className="w-full"
-          disabled={!resolvedClass || loading}
+          disabled={!resolvedClass || classTaken || loading}
           onClick={() =>
             onStartSession?.({
               klass: resolvedClass,

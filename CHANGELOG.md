@@ -5,6 +5,28 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.0.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.
+
+### Major Changes
+
+- **`ModeToggle` switches theme in one click:** the button no longer opens a Light / Dark /
+  System popover; each click flips between light and dark, starting from the theme currently
+  shown. A provider's `defaultTheme="system"` still applies until the first click, but people
+  can no longer pick "System" from the toggle. Props are unchanged. Its icon now follows the
+  `dark` class, so it renders the same on server and client.
+  _Migrate:_ nothing to change in code. Keep `defaultTheme="system"` and `enableSystem` on the
+  `ThemeProvider` if new visitors should follow their OS setting. An app that still needs a
+  System choice has to build its own control on `useTheme()`.
+
+### Minor Changes
+
+- **Class names are unique:** `NewSessionForm` with `allowNewClass` refuses a new class name
+  that matches one of `classes` (ignoring case and spacing): it shows "This class already
+  exists" and disables Start. `RenameDialog` takes an optional `takenNames` and refuses a name
+  that matches one of them the same way. New stories: `NewClassNameTaken`, `NameTaken`.
+
 ## 2.5.2
 
 Install with `github:trail-ai-lab/trail-design-system#v2.5.2`.

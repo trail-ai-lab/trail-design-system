@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, screen } from "storybook/test"
 
 import { NewSessionForm } from "@/components/slai/new-session-form"
 import { PHYSICS_MATERIALS } from "./_material-fixtures"
@@ -48,6 +49,25 @@ export const Starting: Story = {
 
 export const AllowNewClass: Story = {
   args: { allowNewClass: true },
+}
+
+/** A new class can't reuse an existing class's name (ignoring case and spacing). */
+export const NewClassNameTaken: Story = {
+  args: { allowNewClass: true },
+  play: async ({ canvas, userEvent }) => {
+    const [classSelect] = canvas.getAllByRole("combobox")
+    await userEvent.click(classSelect)
+    await userEvent.click(
+      await screen.findByRole("option", { name: "+ New class" })
+    )
+    await userEvent.type(canvas.getByLabelText("New class name"), "physics")
+    await expect(
+      canvas.getByText("This class already exists. Pick it from the list.")
+    ).toBeVisible()
+    await expect(
+      canvas.getByRole("button", { name: "Start session" })
+    ).toBeDisabled()
+  },
 }
 
 /**

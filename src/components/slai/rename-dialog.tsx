@@ -14,13 +14,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Field, FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { isNameTaken } from "@/components/slai/lib/name-key"
 
 /**
  * Rename prompt for a class, session or source. Pass `extension` (e.g.
  * ".mp3") to keep a source's file extension fixed: it shows as a suffix and
- * is excluded from the editable name.
+ * is excluded from the editable name. Pass `takenNames` (e.g. the other
+ * classes' names) to refuse a name already in use, ignoring case and spacing.
  */
 function RenameDialog({
   trigger,
@@ -31,6 +34,7 @@ function RenameDialog({
   description,
   currentName,
   extension,
+  takenNames,
   loading = false,
   onSubmit,
 }: {
@@ -43,6 +47,8 @@ function RenameDialog({
   description?: string
   currentName: string
   extension?: string
+  /** Names the new name may not match; don't include `currentName` */
+  takenNames?: readonly string[]
   loading?: boolean
   /** Receives the new name, with `extension` re-appended when set */
   onSubmit: (name: string) => void
@@ -65,6 +71,7 @@ function RenameDialog({
           key={currentName}
           currentName={currentName}
           extension={extension}
+          takenNames={takenNames}
           loading={loading}
           onCancel={() => setOpen(false)}
           onSubmit={onSubmit}
@@ -77,19 +84,24 @@ function RenameDialog({
 function RenameForm({
   currentName,
   extension,
+  takenNames = [],
   loading,
   onCancel,
   onSubmit,
 }: {
   currentName: string
   extension?: string
+  takenNames?: readonly string[]
   loading: boolean
   onCancel: () => void
   onSubmit: (name: string) => void
 }) {
   const [name, setName] = React.useState(currentName)
+  const errorId = React.useId()
   const trimmed = name.trim()
-  const canSubmit = trimmed.length > 0 && trimmed !== currentName && !loading
+  const taken = isNameTaken(`${trimmed}${extension ?? ""}`, takenNames)
+  const canSubmit =
+    trimmed.length > 0 && trimmed !== currentName && !taken && !loading
 
   const submit = () => {
     if (canSubmit) onSubmit(`${trimmed}${extension ?? ""}`)
@@ -97,20 +109,27 @@ function RenameForm({
 
   return (
     <>
-      <div className="flex items-center gap-2">
-        <Input
-          aria-label="Name"
-          value={name}
-          disabled={loading}
-          onChange={(event) => setName(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") submit()
-          }}
-        />
-        {extension && (
-          <span className="text-sm text-muted-foreground">{extension}</span>
+      <Field data-invalid={taken || undefined}>
+        <div className="flex items-center gap-2">
+          <Input
+            aria-label="Name"
+            aria-invalid={taken || undefined}
+            aria-describedby={taken ? errorId : undefined}
+            value={name}
+            disabled={loading}
+            onChange={(event) => setName(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") submit()
+            }}
+          />
+          {extension && (
+            <span className="text-sm text-muted-foreground">{extension}</span>
+          )}
+        </div>
+        {taken && (
+          <FieldError id={errorId}>That name is already in use.</FieldError>
         )}
-      </div>
+      </Field>
       <DialogFooter>
         <Button variant="outline" disabled={loading} onClick={onCancel}>
           Cancel

@@ -1,5 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect, screen } from "storybook/test"
 
 import { Button } from "@/components/ui/button"
 import { RenameDialog } from "@/components/slai/rename-dialog"
@@ -28,6 +29,24 @@ export const SourceWithExtension: Story = {
     title: "Rename recording",
     currentName: "Inclined Plane Lab",
     extension: ".mp3",
+  },
+}
+
+/** Another class already uses the typed name (ignoring case and spacing), so Save is disabled. */
+export const NameTaken: Story = {
+  args: {
+    title: "Rename class",
+    currentName: "Chemistry",
+    takenNames: ["Physics", "Biology"],
+  },
+  play: async ({ userEvent }) => {
+    const input = await screen.findByLabelText("Name")
+    await userEvent.clear(input)
+    await userEvent.type(input, " physics ")
+    await expect(
+      await screen.findByText("That name is already in use.")
+    ).toBeVisible()
+    await expect(screen.getByRole("button", { name: "Save" })).toBeDisabled()
   },
 }
 
