@@ -103,7 +103,7 @@ export const MaterialCitations: Story = {
   },
 }
 
-/** Long file names and section headings wrap like transcript chips instead of being clipped. */
+/** Long file names stay on one line with the page still readable; "Show more" gives the section and full name. */
 export const LongMaterialCitations: Story = {
   args: {
     scopeLabel: "Arcadia Long",
@@ -116,13 +116,14 @@ export const LongMaterialCitations: Story = {
         id: "2",
         role: "assistant",
         content:
-          "The teacher edition [C1] says Lesson 16 asks students to design a cup system that slows energy transfer into the liquid inside it. In the recording, Alice connects this to the tinfoil reflecting heat.",
+          "The teacher edition says Lesson 16 asks students to design a cup system that slows energy transfer into the liquid inside it. In the recording, Alice connects this to the tinfoil reflecting heat.",
         sources: ["Alice", "Group 1 — Mei"],
         materials: [
           {
-            name: "Teacher Edition  Lessons 16-18.pdf",
-            location:
-              "LESSON 16: How can we design a cup system to slow energy transfer into the liquid inside it? > Lesson 16 • Learning Plan Snapshot · p. 3",
+            name: "Teacher Edition  Lessons 16-18 with a very long file name.pdf",
+            section:
+              "LESSON 16: How can we design a cup system to slow energy transfer into the liquid inside it? > Lesson 16 • Learning Plan Snapshot",
+            location: "p. 3",
           },
           { name: "Teacher Edition  Lessons 16-18.pdf", location: "p. 5" },
         ],
@@ -185,7 +186,7 @@ export const WithSourcesAndHighlight: Story = {
 
 /** Each cited passage is a chip; with `onSourceClick` the chips are buttons
  * (e.g. to show that passage in the transcript) and the answer itself isn't.
- * Long quotes wrap instead of widening the thread. */
+ * Long quotes stay on one line until "Show more", and only a few chips show. */
 export const ClickableSources: Story = {
   args: {
     scopeLabel: "Team Beta",
@@ -210,6 +211,16 @@ export const ClickableSources: Story = {
         sources: [
           "Lucía: “The worksheet says objects fall because of gravity. But why do bigger things not always hit the ground first?”",
           "Aarav: “So gravity pulls everything equally, but other stuff like air resistance changes how fast things actually fall.”",
+          "Mei: “Like a feather and a rock.”",
+          "Lucía: “So the feather is slower because of the air, not because it is lighter?”",
+          "Aarav: “Reflecta.”",
+        ],
+        materials: [
+          {
+            name: "Teacher Edition  Lessons 16-18.pdf",
+            section: "Lesson 16 > Learning Plan Snapshot",
+            location: "p. 3",
+          },
         ],
       },
     ],

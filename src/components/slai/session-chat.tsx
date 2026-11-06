@@ -36,6 +36,8 @@ import { Spinner } from "@/components/ui/spinner"
 export interface ChatMaterialSource {
   id?: string
   name: string
+  /** Section heading, shown once the answer's evidence is expanded */
+  section?: string
   /** Where in it, e.g. "p. 12" or "slide 4" */
   location?: string
 }
@@ -54,36 +56,172 @@ export interface ChatMessage {
   highlight?: string
 }
 
+/** Chips shown before "Show more"; each also stays on one line until then. */
+const VISIBLE_EVIDENCE = 3
+
+/** One line while collapsed, the full text once expanded. */
+function chipClassName(expanded: boolean) {
+  return cn(
+    "max-w-full justify-start text-left font-normal",
+    expanded && "h-auto py-1 wrap-anywhere whitespace-normal"
+  )
+}
+
 function SourceChip({
   source,
+  expanded,
   onClick,
 }: {
   source: string
+  expanded: boolean
   onClick?: () => void
 }) {
-  const className =
-    "h-auto max-w-full justify-start py-1 text-left font-normal whitespace-normal wrap-anywhere"
+  const text = expanded ? (
+    source
+  ) : (
+    <span data-evidence-text className="truncate">
+      {source}
+    </span>
+  )
   if (!onClick) {
     return (
-      <Badge variant="outline" className={className}>
-        {source}
+      <Badge
+        variant="outline"
+        className={chipClassName(expanded)}
+        title={expanded ? undefined : source}
+      >
+        {text}
       </Badge>
     )
   }
   return (
     <Badge
       variant="outline"
-      className={cn(className, "cursor-pointer hover:bg-muted")}
+      className={cn(chipClassName(expanded), "cursor-pointer hover:bg-muted")}
       asChild
     >
       <button
         type="button"
         onClick={onClick}
         aria-label={`Show in transcript: ${source}`}
+        title={expanded ? undefined : source}
       >
-        {source}
+        {text}
       </button>
     </Badge>
+  )
+}
+
+function MaterialChip({
+  material,
+  expanded,
+}: {
+  material: ChatMaterialSource
+  expanded: boolean
+}) {
+  const { name, section, location } = material
+  const full = [name, section, location].filter(Boolean).join(" · ")
+  return (
+    <Badge
+      variant="outline"
+      className={cn(chipClassName(expanded), expanded && "items-start")}
+      title={expanded ? undefined : full}
+    >
+      <FileTextIcon
+        data-icon="inline-start"
+        className={cn("shrink-0", expanded && "mt-0.5")}
+        aria-hidden
+      />
+      {expanded ? (
+        <span>{full}</span>
+      ) : (
+        <>
+          <span data-evidence-text className="truncate">
+            {name}
+          </span>
+          {/* The file name gives way first, so the page stays readable. */}
+          {location && <span className="shrink-0">· {location}</span>}
+        </>
+      )}
+    </Badge>
+  )
+}
+
+/**
+ * An answer's evidence, kept small so the answer stays the thing to read:
+ * a few one-line chips, and "Show more" for the rest and their full text.
+ */
+function AnswerEvidence({
+  message,
+  onSourceClick,
+}: {
+  message: ChatMessage
+  onSourceClick?: (message: ChatMessage, index: number) => void
+}) {
+  const sources = message.sources ?? []
+  const materials = message.materials ?? []
+  const [expanded, setExpanded] = React.useState(false)
+  const [clipped, setClipped] = React.useState(false)
+  const listRef = React.useRef<HTMLDivElement>(null)
+
+  // Always leave room for one material, so a long list of passages can't hide
+  // that the answer also drew on the teacher's documents.
+  const shownMaterials = expanded
+    ? materials.length
+    : Math.min(materials.length, Math.max(1, VISIBLE_EVIDENCE - sources.length))
+  const shownSources = expanded
+    ? sources.length
+    : Math.min(sources.length, VISIBLE_EVIDENCE - shownMaterials)
+  const hidden =
+    sources.length + materials.length - shownSources - shownMaterials
+
+  React.useEffect(() => {
+    const list = listRef.current
+    if (!list || expanded) return
+    const measure = () =>
+      setClipped(
+        Array.from(list.querySelectorAll("[data-evidence-text]")).some(
+          (text) => text.scrollWidth > text.clientWidth
+        )
+      )
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(list)
+    return () => observer.disconnect()
+  }, [expanded, shownSources, shownMaterials])
+
+  return (
+    <div ref={listRef} className="flex flex-wrap items-center gap-1">
+      {sources.slice(0, shownSources).map((source, index) => (
+        <SourceChip
+          key={`${index}-${source}`}
+          source={source}
+          expanded={expanded}
+          onClick={onSourceClick && (() => onSourceClick(message, index))}
+        />
+      ))}
+      {materials.slice(0, shownMaterials).map((material) => (
+        <MaterialChip
+          key={`${material.id ?? material.name}-${material.section ?? ""}-${material.location ?? ""}`}
+          material={material}
+          expanded={expanded}
+        />
+      ))}
+      {(expanded || hidden > 0 || clipped) && (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((value) => !value)}
+          className="cursor-pointer rounded-md px-1 text-xs text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {expanded
+            ? "Show less"
+            : hidden > 0
+              ? `Show ${hidden} more`
+              : "Show more"}
+        </button>
+      )}
+    </div>
   )
 }
 
@@ -133,32 +271,7 @@ function ChatRow({
         )}
         {(hasSources ||
           (message.materials && message.materials.length > 0)) && (
-          <div className="flex flex-wrap gap-1">
-            {message.sources?.map((source, index) => (
-              <SourceChip
-                key={`${index}-${source}`}
-                source={source}
-                onClick={onSourceClick && (() => onSourceClick(message, index))}
-              />
-            ))}
-            {message.materials?.map((material) => (
-              <Badge
-                key={`${material.id ?? material.name}-${material.location ?? ""}`}
-                variant="outline"
-                className="h-auto max-w-full items-start justify-start py-1 text-left font-normal wrap-anywhere whitespace-normal"
-              >
-                <FileTextIcon
-                  data-icon="inline-start"
-                  className="mt-0.5 shrink-0"
-                  aria-hidden
-                />
-                <span>
-                  {material.name}
-                  {material.location && ` · ${material.location}`}
-                </span>
-              </Badge>
-            ))}
-          </div>
+          <AnswerEvidence message={message} onSourceClick={onSourceClick} />
         )}
       </div>
     </div>

@@ -5,6 +5,18 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.2.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.2.0`.
+
+### Minor Changes
+
+- **Shorter evidence chips:** `SessionChatCard` keeps each answer's chips on one line and shows
+  three of them, with "Show N more" (or "Show more" when text is cut off) to reveal the rest and
+  their full text. Hovering a cut-off chip shows it in full. New optional
+  `ChatMaterialSource.section` holds a heading that only appears once expanded, so `location` can
+  stay short and always readable (e.g. "p. 12"). Props are otherwise unchanged.
+
 ## 3.1.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.1.0`.
