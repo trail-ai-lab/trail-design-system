@@ -75,7 +75,7 @@ export const Loading: Story = {
   },
 }
 
-/** Answers cite course materials (with page or slide) alongside transcript sources. */
+/** Answers cite course materials (with page or slide) alongside transcript sources, in one list. */
 export const MaterialCitations: Story = {
   args: {
     scopeLabel: "Group 1",
@@ -103,7 +103,7 @@ export const MaterialCitations: Story = {
   },
 }
 
-/** Long file names stay on one line with the page still readable; "Show more" gives the section and full name. */
+/** Long file names and section headings wrap in the opened list of sources. */
 export const LongMaterialCitations: Story = {
   args: {
     scopeLabel: "Arcadia Long",
@@ -154,10 +154,10 @@ export const WithWelcomeAndDisclaimer: Story = {
   },
 }
 
-/** Answers cite sources as chips; with `onSourceClick` each chip is a button
- * that shows that passage in the transcript, and the answer text isn't
- * clickable. An answer without chips (older answers) keeps `onMessageClick`
- * on its text. */
+/** Answers list their sources under a count that opens them; with
+ * `onSourceClick` each one is a button that shows that passage in the
+ * transcript, and the answer text isn't clickable. An answer without sources
+ * (older answers) keeps `onMessageClick` on its text. */
 export const WithSourcesAndHighlight: Story = {
   args: {
     scopeLabel: "Group 1",
@@ -184,9 +184,9 @@ export const WithSourcesAndHighlight: Story = {
   },
 }
 
-/** Each cited passage is a chip; with `onSourceClick` the chips are buttons
- * (e.g. to show that passage in the transcript) and the answer itself isn't.
- * Long quotes stay on one line until "Show more", and only a few chips show. */
+/** The count opens the list of cited passages and materials; with
+ * `onSourceClick` each passage is a button (e.g. to show it in the transcript)
+ * and the answer itself isn't. */
 export const ClickableSources: Story = {
   args: {
     scopeLabel: "Team Beta",

@@ -1,11 +1,22 @@
 "use client"
 
 import * as React from "react"
-import { CornerDownLeftIcon, FileTextIcon, SparklesIcon } from "lucide-react"
+import {
+  ChevronRightIcon,
+  CornerDownLeftIcon,
+  FileTextIcon,
+  MessageSquareQuoteIcon,
+  SparklesIcon,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import {
   Card,
   CardAction,
@@ -36,7 +47,7 @@ import { Spinner } from "@/components/ui/spinner"
 export interface ChatMaterialSource {
   id?: string
   name: string
-  /** Section heading, shown once the answer's evidence is expanded */
+  /** Section heading, e.g. "Lesson 16 > Reflection" */
   section?: string
   /** Where in it, e.g. "p. 12" or "slide 4" */
   location?: string
@@ -47,109 +58,71 @@ export interface ChatMessage {
   role: "user" | "assistant"
   content: string
   timestamp?: string
-  /** Transcript excerpts or groups the answer drew on, shown as chips */
+  /** Transcript excerpts or groups the answer drew on, listed under its sources */
   sources?: string[]
-  /** Course materials the answer drew on, shown as chips with a document icon */
+  /** Course materials the answer drew on, listed with a document icon */
   materials?: ChatMaterialSource[]
   /** Transcript entry id the answer points to; makes the row clickable
    * (with `onMessageClick`, when the answer has no `sources` to click) */
   highlight?: string
 }
 
-/** Chips shown before "Show more"; each also stays on one line until then. */
-const VISIBLE_EVIDENCE = 3
+const EVIDENCE_ROW =
+  "flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-xs leading-relaxed wrap-anywhere text-foreground"
 
-/** One line while collapsed, the full text once expanded. */
-function chipClassName(expanded: boolean) {
-  return cn(
-    "max-w-full justify-start text-left font-normal",
-    expanded && "h-auto py-1 wrap-anywhere whitespace-normal"
-  )
-}
-
-function SourceChip({
+function SourceRow({
   source,
-  expanded,
   onClick,
 }: {
   source: string
-  expanded: boolean
   onClick?: () => void
 }) {
-  const text = expanded ? (
-    source
-  ) : (
-    <span data-evidence-text className="truncate">
-      {source}
-    </span>
+  const content = (
+    <>
+      <MessageSquareQuoteIcon
+        className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
+        aria-hidden
+      />
+      <span className="min-w-0">{source}</span>
+    </>
   )
-  if (!onClick) {
-    return (
-      <Badge
-        variant="outline"
-        className={chipClassName(expanded)}
-        title={expanded ? undefined : source}
-      >
-        {text}
-      </Badge>
-    )
-  }
+  if (!onClick) return <div className={EVIDENCE_ROW}>{content}</div>
   return (
-    <Badge
-      variant="outline"
-      className={cn(chipClassName(expanded), "cursor-pointer hover:bg-muted")}
-      asChild
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`Show in transcript: ${source}`}
+      className={cn(
+        EVIDENCE_ROW,
+        "cursor-pointer outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+      )}
     >
-      <button
-        type="button"
-        onClick={onClick}
-        aria-label={`Show in transcript: ${source}`}
-        title={expanded ? undefined : source}
-      >
-        {text}
-      </button>
-    </Badge>
+      {content}
+    </button>
   )
 }
 
-function MaterialChip({
-  material,
-  expanded,
-}: {
-  material: ChatMaterialSource
-  expanded: boolean
-}) {
-  const { name, section, location } = material
-  const full = [name, section, location].filter(Boolean).join(" · ")
+function MaterialRow({ material }: { material: ChatMaterialSource }) {
+  const details = [material.section, material.location]
+    .filter(Boolean)
+    .join(" · ")
   return (
-    <Badge
-      variant="outline"
-      className={cn(chipClassName(expanded), expanded && "items-start")}
-      title={expanded ? undefined : full}
-    >
+    <div className={EVIDENCE_ROW}>
       <FileTextIcon
-        data-icon="inline-start"
-        className={cn("shrink-0", expanded && "mt-0.5")}
+        className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
         aria-hidden
       />
-      {expanded ? (
-        <span>{full}</span>
-      ) : (
-        <>
-          <span data-evidence-text className="truncate">
-            {name}
-          </span>
-          {/* The file name gives way first, so the page stays readable. */}
-          {location && <span className="shrink-0">· {location}</span>}
-        </>
-      )}
-    </Badge>
+      <span className="flex min-w-0 flex-col">
+        <span>{material.name}</span>
+        {details && <span className="text-muted-foreground">{details}</span>}
+      </span>
+    </div>
   )
 }
 
 /**
- * An answer's evidence, kept small so the answer stays the thing to read:
- * a few one-line chips, and "Show more" for the rest and their full text.
+ * An answer's evidence, kept out of the way so the answer stays the thing to
+ * read: one line with the count, which opens into the full list.
  */
 function AnswerEvidence({
   message,
@@ -160,68 +133,44 @@ function AnswerEvidence({
 }) {
   const sources = message.sources ?? []
   const materials = message.materials ?? []
-  const [expanded, setExpanded] = React.useState(false)
-  const [clipped, setClipped] = React.useState(false)
-  const listRef = React.useRef<HTMLDivElement>(null)
-
-  // Always leave room for one material, so a long list of passages can't hide
-  // that the answer also drew on the teacher's documents.
-  const shownMaterials = expanded
-    ? materials.length
-    : Math.min(materials.length, Math.max(1, VISIBLE_EVIDENCE - sources.length))
-  const shownSources = expanded
-    ? sources.length
-    : Math.min(sources.length, VISIBLE_EVIDENCE - shownMaterials)
-  const hidden =
-    sources.length + materials.length - shownSources - shownMaterials
-
-  React.useEffect(() => {
-    const list = listRef.current
-    if (!list || expanded) return
-    const measure = () =>
-      setClipped(
-        Array.from(list.querySelectorAll("[data-evidence-text]")).some(
-          (text) => text.scrollWidth > text.clientWidth
-        )
-      )
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(list)
-    return () => observer.disconnect()
-  }, [expanded, shownSources, shownMaterials])
-
+  const count = sources.length + materials.length
+  const rootRef = React.useRef<HTMLDivElement>(null)
   return (
-    <div ref={listRef} className="flex flex-wrap items-center gap-1">
-      {sources.slice(0, shownSources).map((source, index) => (
-        <SourceChip
-          key={`${index}-${source}`}
-          source={source}
-          expanded={expanded}
-          onClick={onSourceClick && (() => onSourceClick(message, index))}
+    <Collapsible
+      ref={rootRef}
+      onOpenChange={(open) => {
+        if (!open) return
+        // The latest answer sits at the bottom of the thread, where the list
+        // would otherwise open out of sight. A list too tall to fit keeps the
+        // row that closes it at the top.
+        requestAnimationFrame(() =>
+          rootRef.current?.scrollIntoView({ block: "nearest" })
+        )
+      }}
+    >
+      <CollapsibleTrigger className="group/evidence flex cursor-pointer items-center gap-1 rounded-md text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50">
+        {count} {count === 1 ? "source" : "sources"}
+        <ChevronRightIcon
+          className="size-3.5 transition-transform group-data-[state=open]/evidence:rotate-90"
+          aria-hidden
         />
-      ))}
-      {materials.slice(0, shownMaterials).map((material) => (
-        <MaterialChip
-          key={`${material.id ?? material.name}-${material.section ?? ""}-${material.location ?? ""}`}
-          material={material}
-          expanded={expanded}
-        />
-      ))}
-      {(expanded || hidden > 0 || clipped) && (
-        <button
-          type="button"
-          aria-expanded={expanded}
-          onClick={() => setExpanded((value) => !value)}
-          className="cursor-pointer rounded-md px-1 text-xs text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          {expanded
-            ? "Show less"
-            : hidden > 0
-              ? `Show ${hidden} more`
-              : "Show more"}
-        </button>
-      )}
-    </div>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-1 flex flex-col gap-0.5 border-l border-border pl-1">
+        {sources.map((source, index) => (
+          <SourceRow
+            key={`${index}-${source}`}
+            source={source}
+            onClick={onSourceClick && (() => onSourceClick(message, index))}
+          />
+        ))}
+        {materials.map((material) => (
+          <MaterialRow
+            key={`${material.id ?? material.name}-${material.section ?? ""}-${material.location ?? ""}`}
+            material={material}
+          />
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
   )
 }
 
@@ -244,7 +193,7 @@ function ChatRow({
     )
   }
   const hasSources = Boolean(message.sources && message.sources.length > 0)
-  // Clickable source chips replace the clickable answer.
+  // Clickable sources replace the clickable answer.
   const clickable = Boolean(
     message.highlight && onMessageClick && !(hasSources && onSourceClick)
   )
@@ -345,8 +294,8 @@ function SessionChatCard({
   /** Called when an assistant message with a `highlight` is clicked. With
    * `onSourceClick`, only answers without `sources` are clickable. */
   onMessageClick?: (message: ChatMessage) => void
-  /** Makes each of an answer's `sources` chips a button, e.g. to show that
-   * passage in the transcript; called with the answer and the chip's index */
+  /** Makes each of an answer's `sources` a button, e.g. to show that passage
+   * in the transcript; called with the answer and the source's index */
   onSourceClick?: (message: ChatMessage, index: number) => void
   /** Footer reminding that AI answers can be wrong */
   showDisclaimer?: boolean

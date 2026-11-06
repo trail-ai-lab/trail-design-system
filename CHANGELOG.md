@@ -5,6 +5,17 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.3.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.3.0`.
+
+### Minor Changes
+
+- **Answer sources open from one line:** `SessionChatCard` replaces each answer's evidence chips
+  and "Show more" with a single "3 sources" row that opens into the full list: each passage in
+  full, and each material with its file name, section and page. With `onSourceClick` the passages
+  stay buttons. Props are unchanged.
+
 ## 3.2.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.2.0`.
