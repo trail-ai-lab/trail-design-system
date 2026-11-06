@@ -88,6 +88,7 @@ export {
   type SearchResult,
 } from "./global-search"
 export { RenameDialog } from "./rename-dialog"
+export { NewClassDialog } from "./new-class-dialog"
 export { DeleteConfirmDialog } from "./delete-confirm-dialog"
 export { LanguageCombobox } from "./language-combobox"
 export { LanguageMultiSelect } from "./language-multi-select"
@@ -146,9 +147,15 @@ export {
   type RosterImportRow,
   type RosterStudentFields,
   type RosterTableStudent,
+  type RosterVoiceprint,
+  type VoiceprintStatus,
 } from "./lib/roster"
 export { StudentRosterTable } from "./student-roster-table"
 export { AddStudentsDialog } from "./add-students-dialog"
+export {
+  VoiceprintRecordDialog,
+  type VoiceprintRecordStatus,
+} from "./voiceprint-record-dialog"
 export { EditStudentDialog } from "./edit-student-dialog"
 export { NamesToLinkCard, type UnlinkedName } from "./names-to-link-card"
 

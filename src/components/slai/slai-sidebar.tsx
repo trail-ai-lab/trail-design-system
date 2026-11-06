@@ -15,6 +15,7 @@ import {
   MicIcon,
   MoreHorizontalIcon,
   PencilIcon,
+  PlusIcon,
   RadioIcon,
   ShapesIcon,
   Trash2Icon,
@@ -42,6 +43,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
@@ -279,7 +281,7 @@ function ClassLinkRow({
 
 /**
  * The SLAI app sidebar: brand header, primary nav ("Live session" for the in-class
- * view), the Sessions tree (classes → their course materials and past
+ * view), the Classes tree (classes → their course materials and past
  * sessions, opening a session's review), the saved sources list, and the signed-in user footer.
  *
  * Shared by every SLAI page (live session, session review, new session)
@@ -303,6 +305,7 @@ function SlaiSidebar({
   onDelete,
   onDownload,
   onMove,
+  onNewClass,
   onLogout,
 }: {
   /** Classes, each holding its past sessions */
@@ -336,6 +339,8 @@ function SlaiSidebar({
   onDownload?: (target: SidebarItemTarget) => void
   /** Adds "Move to session…" to source rows' menu (rows with `movable: false` skip it); open your MoveToSessionDialog for `target` */
   onMove?: (target: SidebarItemTarget) => void
+  /** Shows a "New class" button on the Classes group; open your `NewClassDialog` */
+  onNewClass?: () => void
   /** Adds an account menu with "Log out" to the user footer */
   onLogout?: () => void
 }) {
@@ -385,7 +390,16 @@ function SlaiSidebar({
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Sessions</SidebarGroupLabel>
+          <SidebarGroupLabel>Classes</SidebarGroupLabel>
+          {onNewClass && (
+            <SidebarGroupAction
+              aria-label="New class"
+              title="New class"
+              onClick={onNewClass}
+            >
+              <PlusIcon />
+            </SidebarGroupAction>
+          )}
           <SidebarMenu>
             {sessionsLoading &&
               [0, 1, 2].map((i) => (
@@ -396,7 +410,7 @@ function SlaiSidebar({
             {!sessionsLoading && classes.length === 0 && (
               <SidebarMenuItem>
                 <p className="px-2 py-1.5 text-xs text-muted-foreground">
-                  No sessions yet
+                  No classes yet
                 </p>
               </SidebarMenuItem>
             )}

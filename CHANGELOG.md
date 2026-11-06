@@ -5,6 +5,21 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.1.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.1.0`.
+
+### Minor Changes
+
+- **New class button:** `SlaiSidebar` takes `onNewClass`, which shows a "New class" button on the
+  group that holds the classes. New `NewClassDialog` asks for the name and refuses one already in
+  `takenNames`. The group is now labelled "Classes" and its empty text is "No classes yet".
+- **Voiceprints on the roster:** `StudentRosterTable` takes `onAddVoiceprint`, which shows a
+  Voiceprint column with add, processing, play and try-again states from the new
+  `RosterTableStudent.voiceprint`. `getVoiceprintAudioUrl` plays a ready one in a popover, and the
+  row menu gains "Re-record voiceprint" and `onDeleteVoiceprint`'s "Delete voiceprint". Without
+  `onAddVoiceprint` the table is unchanged. New `VoiceprintRecordDialog` guides recording a sample.
+
 ## 3.0.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.0.0`.

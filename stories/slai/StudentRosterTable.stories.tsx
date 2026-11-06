@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
+import type { RosterVoiceprint } from "@/components/slai/lib/roster"
 import { StudentRosterTable } from "@/components/slai/student-roster-table"
 import { PHYSICS_ROSTER } from "./_roster-fixtures"
 
@@ -49,5 +50,27 @@ export const ReadOnly: Story = {
     onEdit: undefined,
     onRemove: undefined,
     onDelete: undefined,
+  },
+}
+
+/**
+ * With `onAddVoiceprint`, the Voiceprint column shows each student's state:
+ * none, processing, ready (plays in a popover) or failed.
+ */
+export const WithVoiceprints: Story = {
+  args: {
+    students: PHYSICS_ROSTER.map((s, i) => ({
+      ...s,
+      voiceprint: [
+        { status: "ready", durationSeconds: 42 },
+        { status: "processing" },
+        { status: "none" },
+        { status: "failed", error: "Not enough speech" },
+      ][i % 4] as RosterVoiceprint,
+    })),
+    onAddVoiceprint: () => {},
+    onDeleteVoiceprint: () => {},
+    getVoiceprintAudioUrl: () =>
+      Promise.reject(new Error("No audio in stories")),
   },
 }

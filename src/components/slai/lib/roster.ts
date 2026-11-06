@@ -1,3 +1,15 @@
+/** Where a student's recorded voice sample stands. */
+export type VoiceprintStatus = "none" | "processing" | "ready" | "failed"
+
+/** A student's recorded voice sample, as the roster's Voiceprint column shows it. */
+export interface RosterVoiceprint {
+  status: VoiceprintStatus
+  /** Length of the recording, in seconds */
+  durationSeconds?: number
+  /** Why it failed, e.g. "Not enough speech" */
+  error?: string
+}
+
 /** A student on a class roster, as the roster page lists them. */
 export interface RosterTableStudent {
   id: string
@@ -12,6 +24,8 @@ export interface RosterTableStudent {
   sessionCount?: number
   /** Opens the student's progress page; the name is a link when set */
   href?: string
+  /** Shown in the Voiceprint column; left out means no voiceprint yet */
+  voiceprint?: RosterVoiceprint
 }
 
 /** The editable fields of a roster student. */

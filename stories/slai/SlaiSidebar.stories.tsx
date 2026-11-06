@@ -72,6 +72,11 @@ export const Live: Story = {
 /** Session review: the session being viewed is highlighted in the tree instead of a nav item. */
 export const SessionReview: Story = {}
 
+/** With `onNewClass`, the Classes group shows a "New class" button; open `NewClassDialog`. */
+export const WithNewClass: Story = {
+  args: { onNewClass: () => {} },
+}
+
 export const Loading: Story = {
   args: { sessionsLoading: true, sourcesLoading: true },
 }

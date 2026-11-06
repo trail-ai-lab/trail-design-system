@@ -23,7 +23,7 @@
 - Object model, used in every label, prop and type: **Class** (Physics) → **Session** (one class meeting, e.g. "Period 3 — Aug 21") → **Group** → **Recording**. **Sources** are recordings outside a session (quick recordings, uploaded audio); in copy they are "Recordings" ("Add recording" nav, "Recordings" sidebar group) — `source` stays only in code identifiers. PDF upload is off in the UI; `SidebarSource.type: "pdf"` remains for legacy rows.
 - SLAI has two modes with different priorities:
   - **Live** (nav item "Live session", page stories `SLAI/Pages/Live`) — used during class: watching groups, live transcript, quick summary/Q&A. Glanceable and low-friction. The nav item shows a "Running" marker while a session runs.
-  - **Session review** (opened from the sidebar's "Sessions" tree, page stories `SLAI/Pages/Session`) — used after class: recordings, diarized transcripts and speakers, goals/WIDA verdicts, summary, Q&A. Deeper analysis.
+  - **Session review** (opened from the sidebar's "Classes" tree, page stories `SLAI/Pages/Session`) — used after class: recordings, diarized transcripts and speakers, goals/WIDA verdicts, summary, Q&A. Deeper analysis.
 - Keep the two modes structurally consistent:
   - Layout: AI panels (Summary, Q&A) on the left, primary content (live transcript / analysis tabs) on the right.
   - Recording time is per group: in Live it sits beside the transcript title (`TranscriptGroup.recordedSeconds`, pauses excluded) — no session-wide timer in the toolbar. A single-recording page (quick recording) keeps its `RecordingTimer compact` in the toolbar. Timing never goes in the breadcrumb title.
