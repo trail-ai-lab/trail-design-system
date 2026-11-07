@@ -5,6 +5,15 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.6.1
+
+Install with `github:trail-ai-lab/trail-design-system#v3.6.1`.
+
+### Patch Changes
+
+- `StudentVoiceRecorder` keeps each question up for 25 seconds rather than 15, so shy students have
+  time to answer.
+
 ## 3.6.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.6.0`.

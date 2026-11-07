@@ -54,7 +54,7 @@ const READ_ALOUD =
 
 /** Saying a name takes moments; the other questions need time to answer */
 const NAME_PROMPT_MS = 6000
-const QUESTION_MS = 15000
+const QUESTION_MS = 25000
 
 function ReadyStep({
   icon,
