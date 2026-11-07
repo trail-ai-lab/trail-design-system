@@ -8,6 +8,8 @@ export interface RosterVoiceprint {
   durationSeconds?: number
   /** Why it failed, e.g. "Not enough speech" */
   error?: string
+  /** Who recorded it; left out means the teacher */
+  recordedBy?: "teacher" | "student"
 }
 
 /** A student on a class roster, as the roster page lists them. */

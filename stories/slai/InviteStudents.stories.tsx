@@ -42,6 +42,27 @@ export const InSheet: Story = {
   ),
 }
 
+/** With the switch on, students can record their own voiceprints when they join. */
+export const WithVoiceSamples: Story = {
+  render: () => (
+    <InviteStudentsSheet
+      joinUrl={JOIN_URL}
+      onGenerateNewLink={() => {}}
+      voiceSamplesEnabled
+      onVoiceSamplesEnabledChange={() => {}}
+      voiceSamplesRecorded={12}
+      voiceSamplesTotal={28}
+    >
+      <SheetTrigger asChild>
+        <Button variant="outline">
+          <QrCodeIcon data-icon="inline-start" />
+          Invite students
+        </Button>
+      </SheetTrigger>
+    </InviteStudentsSheet>
+  ),
+}
+
 /** The join link is still being created: placeholders, link actions disabled. */
 export const GeneratingLink: Story = {
   args: { joinUrl: undefined },

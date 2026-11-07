@@ -62,7 +62,7 @@ export const WithVoiceprints: Story = {
     students: PHYSICS_ROSTER.map((s, i) => ({
       ...s,
       voiceprint: [
-        { status: "ready", durationSeconds: 42 },
+        { status: "ready", durationSeconds: 42, recordedBy: "student" },
         { status: "processing" },
         { status: "none" },
         { status: "failed", error: "Not enough speech" },

@@ -5,6 +5,19 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.5.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.5.0`.
+
+### Minor Changes
+
+- **Students record their own voiceprints:** a new `StudentVoiceRecorder` walks a student in grades
+  4 to 8 through recording, with instructions written for them and questions to answer.
+  `GroupSetupForm` takes `voiceStatuses` and `onRecordVoice`, which turn the roster into rows with a
+  Voice column. `InviteStudentsSheet` takes `voiceSamplesEnabled`, `onVoiceSamplesEnabledChange`,
+  `voiceSamplesRecorded` and `voiceSamplesTotal`, which add the teacher's switch and a count.
+  `RosterVoiceprint` takes `recordedBy`, and `StudentRosterTable` marks a student's own recording.
+
 ## 3.4.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.4.0`.

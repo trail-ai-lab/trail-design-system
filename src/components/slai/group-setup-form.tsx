@@ -1,7 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { ArrowRightIcon, PlusIcon } from "lucide-react"
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  MicIcon,
+  PlusIcon,
+  RotateCcwIcon,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -24,6 +30,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { InsightCallout } from "@/components/slai/insight-callout"
 import { StudentChip } from "@/components/slai/student-chip"
 import type { RosterStudent } from "@/components/slai/contribution-panel"
+import type { VoiceprintStatus } from "@/components/slai/lib/roster"
 
 /** A student added to the group: their name, and roster id when picked from
  * (or typed exactly as on) the class roster. */
@@ -55,6 +62,51 @@ function StepNumber({
   )
 }
 
+/** A roster row's Voice column: record, wait, done, or try again. */
+function VoiceCell({
+  student,
+  status = "none",
+  onRecord,
+}: {
+  student: RosterStudent
+  status?: VoiceprintStatus
+  onRecord: () => void
+}) {
+  if (status === "processing") {
+    return (
+      <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Spinner />
+        Checking…
+      </span>
+    )
+  }
+  if (status === "ready") {
+    return (
+      <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <CheckIcon className="size-4" />
+        Done
+      </span>
+    )
+  }
+  const isFailed = status === "failed"
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      className="h-11"
+      aria-label={`${isFailed ? "Try again for" : "Record"} ${student.name}'s voice`}
+      onClick={onRecord}
+    >
+      {isFailed ? (
+        <RotateCcwIcon data-icon="inline-start" />
+      ) : (
+        <MicIcon data-icon="inline-start" />
+      )}
+      {isFailed ? "Try again" : "Record"}
+    </Button>
+  )
+}
+
 /**
  * Group setup collected on a student's device after joining a session (QR
  * code or link): a group name and, optionally, who's recording together —
@@ -66,6 +118,9 @@ function StepNumber({
  * With a class `roster`, students tap their names instead of typing them, so
  * each member carries the roster id (`members` in `onContinue`). Names not on
  * the roster can still be typed.
+ *
+ * With `voiceStatuses` and `onRecordVoice` as well, the roster becomes rows of
+ * name and Voice, so students can also record their voice from here.
  */
 function GroupSetupForm({
   onContinue,
@@ -73,6 +128,8 @@ function GroupSetupForm({
   notice,
   maxStudents = 6,
   roster,
+  voiceStatuses,
+  onRecordVoice,
   className,
 }: {
   /** Receives the trimmed group name, the students' names, and each member
@@ -91,6 +148,11 @@ function GroupSetupForm({
   maxStudents?: number
   /** The class roster to pick names from */
   roster?: RosterStudent[]
+  /** Where each roster student's voice sample stands, by roster id */
+  voiceStatuses?: Record<string, VoiceprintStatus>
+  /** A student tapped Record. Resolve `true` once they've saved, and they join
+   * the group */
+  onRecordVoice?: (student: RosterStudent) => Promise<boolean>
   className?: string
 }) {
   const uid = React.useId()
@@ -114,10 +176,39 @@ function GroupSetupForm({
         nameKey(student.name).includes(nameKey(pendingStudent)))
   )
 
+  const showVoice = Boolean(roster?.length && voiceStatuses && onRecordVoice)
+  // The rows list everyone, added or not, and stay in place as students are added
+  const rows = (roster ?? []).filter(
+    (student) =>
+      !pendingStudent || nameKey(student.name).includes(nameKey(pendingStudent))
+  )
+  const rosterIds = new Set((roster ?? []).map((student) => student.id))
+
+  // Reads the latest members, since recording a voice ends long after the tap
   const addMember = (member: GroupMember) => {
-    if (isFull || addedKeys.has(nameKey(member.name))) return
-    setMembers((prev) => [...prev, member])
+    setMembers((prev) =>
+      prev.length >= maxStudents ||
+      prev.some((m) => nameKey(m.name) === nameKey(member.name))
+        ? prev
+        : [...prev, member]
+    )
     setStudentInput("")
+  }
+
+  const toggleMember = (student: RosterStudent) => {
+    if (addedKeys.has(nameKey(student.name))) {
+      setMembers((prev) =>
+        prev.filter((m) => nameKey(m.name) !== nameKey(student.name))
+      )
+    } else {
+      addMember({ name: student.name, studentId: student.id })
+    }
+  }
+
+  const recordVoice = async (student: RosterStudent) => {
+    if (await onRecordVoice?.(student)) {
+      addMember({ name: student.name, studentId: student.id })
+    }
   }
 
   const addStudent = () => {
@@ -219,7 +310,55 @@ function GroupSetupForm({
               )
             )}
 
-            {!isFull && suggestions.length > 0 && (
+            {showVoice && rows.length > 0 && (
+              <>
+                <FieldDescription>
+                  Tap your name to join the group. Tap Record to save your
+                  voice.
+                </FieldDescription>
+                <div
+                  role="group"
+                  aria-label="Students in this class"
+                  className="-mx-1 flex max-h-72 flex-col gap-1 overflow-y-auto p-1"
+                >
+                  <div className="flex justify-between px-3 text-sm text-muted-foreground">
+                    <span>Name</span>
+                    <span className="w-28">Voice</span>
+                  </div>
+                  {rows.map((student) => {
+                    const isAdded = addedKeys.has(nameKey(student.name))
+                    return (
+                      <div key={student.id} className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant={isAdded ? "secondary" : "ghost"}
+                          className="h-11 min-w-0 flex-1 justify-start"
+                          aria-pressed={isAdded}
+                          disabled={!isAdded && isFull}
+                          onClick={() => toggleMember(student)}
+                        >
+                          {isAdded ? (
+                            <CheckIcon data-icon="inline-start" />
+                          ) : (
+                            <PlusIcon data-icon="inline-start" />
+                          )}
+                          <span className="truncate">{student.name}</span>
+                        </Button>
+                        <div className="flex w-28 shrink-0 items-center">
+                          <VoiceCell
+                            student={student}
+                            status={voiceStatuses?.[student.id]}
+                            onRecord={() => void recordVoice(student)}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            {!showVoice && !isFull && suggestions.length > 0 && (
               <div
                 role="group"
                 aria-label="Students in this class"
@@ -244,13 +383,18 @@ function GroupSetupForm({
 
             {students.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {students.map((name, index) => (
-                  <StudentChip
-                    key={`${name}-${index}`}
-                    name={name}
-                    onRemove={() => removeStudent(index)}
-                  />
-                ))}
+                {members.map((member, index) =>
+                  // The rows already show who's added from the roster
+                  showVoice &&
+                  member.studentId &&
+                  rosterIds.has(member.studentId) ? null : (
+                    <StudentChip
+                      key={`${member.name}-${index}`}
+                      name={member.name}
+                      onRemove={() => removeStudent(index)}
+                    />
+                  )
+                )}
               </div>
             )}
           </Field>

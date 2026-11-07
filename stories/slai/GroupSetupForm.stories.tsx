@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { expect } from "storybook/test"
 
 import { GroupSetupForm } from "@/components/slai/group-setup-form"
 
@@ -55,5 +56,35 @@ export const WithRoster: Story = {
       { id: "stu_sofia", name: "Sofia" },
       { id: "stu_kevin", name: "Kevin" },
     ],
+  },
+}
+
+/**
+ * With `voiceStatuses` and `onRecordVoice`, each student gets a Voice column.
+ * Names still join the group; a student who saves their voice joins by itself.
+ */
+export const WithVoiceColumn: Story = {
+  args: {
+    roster: [
+      { id: "stu_mei", name: "Mei" },
+      { id: "stu_liam", name: "Liam" },
+      { id: "stu_rosa", name: "Rosa" },
+      { id: "stu_diego", name: "Diego" },
+    ],
+    voiceStatuses: {
+      stu_mei: "none",
+      stu_liam: "ready",
+      stu_rosa: "processing",
+      stu_diego: "failed",
+    },
+    onRecordVoice: async () => true,
+  },
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Record Mei's voice" })
+    )
+    await expect(
+      await canvas.findByRole("button", { name: "Mei", pressed: true })
+    ).toBeInTheDocument()
   },
 }

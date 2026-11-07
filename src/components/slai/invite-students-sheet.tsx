@@ -11,7 +11,13 @@ import QRCode from "react-qr-code"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { FieldLabel } from "@/components/ui/field"
+import { Switch } from "@/components/ui/switch"
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+} from "@/components/ui/field"
 import {
   InputGroup,
   InputGroupAddon,
@@ -130,13 +136,19 @@ function InvitePanel({
 }
 
 /**
- * Side panel wrapping the invite QR code and join link.
+ * Side panel wrapping the invite QR code and join link. With
+ * `onVoiceSamplesEnabledChange`, a switch also lets students record their own
+ * voiceprints when they join.
  */
 function InviteStudentsSheet({
   open,
   onOpenChange,
   joinUrl,
   onGenerateNewLink,
+  voiceSamplesEnabled = false,
+  onVoiceSamplesEnabledChange,
+  voiceSamplesRecorded,
+  voiceSamplesTotal,
   children,
 }: {
   open?: boolean
@@ -144,8 +156,17 @@ function InviteStudentsSheet({
   /** Omit while the link is being created */
   joinUrl?: string
   onGenerateNewLink?: () => void
+  /** Students can record their own voiceprints in this session */
+  voiceSamplesEnabled?: boolean
+  /** Shows the switch */
+  onVoiceSamplesEnabledChange?: (enabled: boolean) => void
+  /** Students on the roster with a voiceprint, shown while the switch is on */
+  voiceSamplesRecorded?: number
+  /** Students on the roster */
+  voiceSamplesTotal?: number
   children?: React.ReactNode
 }) {
+  const voiceSwitchId = React.useId()
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       {children}
@@ -162,6 +183,31 @@ function InviteStudentsSheet({
             joinUrl={joinUrl}
             onGenerateNewLink={onGenerateNewLink}
           />
+          {onVoiceSamplesEnabledChange && (
+            <Field orientation="horizontal" className="mt-6 border-t pt-6">
+              <FieldContent>
+                <FieldLabel htmlFor={voiceSwitchId}>
+                  Let students record their voiceprints
+                </FieldLabel>
+                <FieldDescription>
+                  Turn this on only if students have agreed to be recorded. They
+                  pick their name and record on the join page. You can listen to
+                  or delete any voiceprint on the Students page.
+                </FieldDescription>
+                {voiceSamplesEnabled && voiceSamplesTotal !== undefined && (
+                  <FieldDescription className="font-medium text-foreground tabular-nums">
+                    {voiceSamplesRecorded ?? 0} of {voiceSamplesTotal} students
+                    recorded
+                  </FieldDescription>
+                )}
+              </FieldContent>
+              <Switch
+                id={voiceSwitchId}
+                checked={voiceSamplesEnabled}
+                onCheckedChange={onVoiceSamplesEnabledChange}
+              />
+            </Field>
+          )}
         </div>
       </SheetContent>
     </Sheet>

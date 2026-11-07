@@ -129,10 +129,17 @@ function VoiceprintCell({
     )
   }
   if (voiceprint?.status === "ready") {
-    return getAudioUrl ? (
-      <VoiceprintPlayer student={student} getAudioUrl={getAudioUrl} />
-    ) : (
-      <Badge variant="secondary">Added</Badge>
+    return (
+      <span className="flex flex-wrap items-center gap-2">
+        {getAudioUrl ? (
+          <VoiceprintPlayer student={student} getAudioUrl={getAudioUrl} />
+        ) : (
+          <Badge variant="secondary">Added</Badge>
+        )}
+        {voiceprint.recordedBy === "student" && (
+          <Badge variant="outline">Recorded by student</Badge>
+        )}
+      </span>
     )
   }
   if (voiceprint?.status === "failed") {

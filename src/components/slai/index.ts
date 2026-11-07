@@ -156,6 +156,10 @@ export {
   VoiceprintRecordDialog,
   type VoiceprintRecordStatus,
 } from "./voiceprint-record-dialog"
+export {
+  StudentVoiceRecorder,
+  type StudentVoiceRecordStatus,
+} from "./student-voice-recorder"
 export { EditStudentDialog } from "./edit-student-dialog"
 export { NamesToLinkCard, type UnlinkedName } from "./names-to-link-card"
 
