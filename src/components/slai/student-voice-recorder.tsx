@@ -280,9 +280,7 @@ function StudentVoiceRecorder({
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           {errorAlert}
-          <p>It helps your teacher know who said what when your group talks.</p>
           <p>Your teacher can listen to it. Your classmates can&apos;t.</p>
-          <p>You don&apos;t have to do this. It&apos;s okay to say no.</p>
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <Button className="h-11 w-full" onClick={() => setHasConfirmed(true)}>

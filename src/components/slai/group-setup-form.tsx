@@ -115,12 +115,12 @@ function VoiceCell({
  * `loading` covers creating the group on the server; `notice` explains why
  * the student is back here (e.g. the teacher removed their group).
  *
- * With a class `roster`, students tap their names instead of typing them, so
- * each member carries the roster id (`members` in `onContinue`). Names not on
- * the roster can still be typed.
+ * With a class `roster`, students tap their names in rows instead of typing
+ * them, so each member carries the roster id (`members` in `onContinue`). Names
+ * not on the roster can still be typed.
  *
- * With `voiceStatuses` and `onRecordVoice` as well, the roster becomes rows of
- * name and Voice, so students can also record their voice from here.
+ * With `voiceStatuses` and `onRecordVoice` as well, the rows gain a Voice column,
+ * so students can also record their voice from here.
  */
 function GroupSetupForm({
   onContinue,
@@ -169,13 +169,6 @@ function GroupSetupForm({
   const rosterByKey = new Map(
     (roster ?? []).map((student) => [nameKey(student.name), student])
   )
-  const suggestions = (roster ?? []).filter(
-    (student) =>
-      !addedKeys.has(nameKey(student.name)) &&
-      (!pendingStudent ||
-        nameKey(student.name).includes(nameKey(pendingStudent)))
-  )
-
   const showVoice = Boolean(roster?.length && voiceStatuses && onRecordVoice)
   // The rows list everyone, added or not, and stay in place as students are added
   const rows = (roster ?? []).filter(
@@ -310,20 +303,20 @@ function GroupSetupForm({
               )
             )}
 
-            {showVoice && rows.length > 0 && (
+            {rows.length > 0 && (
               <>
                 <FieldDescription>
-                  Tap your name to join the group. Tap Record to save your
-                  voice.
+                  Tap your name to join the group.
+                  {showVoice && " Tap Record to save your voice."}
                 </FieldDescription>
                 <div
                   role="group"
                   aria-label="Students in this class"
                   className="-mx-1 flex max-h-72 flex-col gap-1 overflow-y-auto p-1"
                 >
-                  <div className="flex justify-between px-3 text-sm text-muted-foreground">
-                    <span>Name</span>
-                    <span className="w-28">Voice</span>
+                  <div className="flex gap-2 text-sm text-muted-foreground">
+                    <span className="flex-1 px-3">Name</span>
+                    {showVoice && <span className="w-28 shrink-0">Voice</span>}
                   </div>
                   {rows.map((student) => {
                     const isAdded = addedKeys.has(nameKey(student.name))
@@ -344,13 +337,15 @@ function GroupSetupForm({
                           )}
                           <span className="truncate">{student.name}</span>
                         </Button>
-                        <div className="flex w-28 shrink-0 items-center">
-                          <VoiceCell
-                            student={student}
-                            status={voiceStatuses?.[student.id]}
-                            onRecord={() => void recordVoice(student)}
-                          />
-                        </div>
+                        {showVoice && (
+                          <div className="flex w-28 shrink-0 items-center">
+                            <VoiceCell
+                              student={student}
+                              status={voiceStatuses?.[student.id]}
+                              onRecord={() => void recordVoice(student)}
+                            />
+                          </div>
+                        )}
                       </div>
                     )
                   })}
@@ -358,36 +353,11 @@ function GroupSetupForm({
               </>
             )}
 
-            {!showVoice && !isFull && suggestions.length > 0 && (
-              <div
-                role="group"
-                aria-label="Students in this class"
-                className="flex max-h-32 flex-wrap gap-2 overflow-y-auto"
-              >
-                {suggestions.map((student) => (
-                  <Button
-                    key={student.id}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      addMember({ name: student.name, studentId: student.id })
-                    }
-                  >
-                    <PlusIcon data-icon="inline-start" />
-                    {student.name}
-                  </Button>
-                ))}
-              </div>
-            )}
-
             {students.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {members.map((member, index) =>
                   // The rows already show who's added from the roster
-                  showVoice &&
-                  member.studentId &&
-                  rosterIds.has(member.studentId) ? null : (
+                  member.studentId && rosterIds.has(member.studentId) ? null : (
                     <StudentChip
                       key={`${member.name}-${index}`}
                       name={member.name}

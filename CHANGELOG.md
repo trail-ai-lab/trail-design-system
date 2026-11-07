@@ -5,6 +5,21 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.6.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.6.0`.
+
+### Minor Changes
+
+- **One student list:** `GroupSetupForm` shows the roster as the same rows with or without a Voice
+  column, in place of name buttons and chips. Names not on the roster still show as chips. No code
+  changes needed.
+- `StudentVoiceRecorder`'s first screen is shorter.
+
+### Patch Changes
+
+- `GroupSetupForm`'s Voice title lines up with its column.
+
 ## 3.5.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.5.0`.

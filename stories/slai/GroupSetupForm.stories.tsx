@@ -43,8 +43,9 @@ export const GroupFull: Story = {
 }
 
 /**
- * With the class `roster`, students tap their names (filtered as they type) so
- * each member carries a roster id; names not on the roster can still be typed.
+ * With the class `roster`, students tap their names in rows (filtered as they
+ * type) so each member carries a roster id; names not on the roster can still
+ * be typed.
  */
 export const WithRoster: Story = {
   args: {
