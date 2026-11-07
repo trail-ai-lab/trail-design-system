@@ -5,6 +5,7 @@ import {
   ArrowDownIcon,
   AudioLinesIcon,
   CaptionsOffIcon,
+  CheckCheckIcon,
   ClockIcon,
   LanguagesIcon,
   QrCodeIcon,
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Card,
   CardAction,
@@ -163,8 +165,9 @@ function TranscriptRow({
  * A single group's students show as `StudentChip`s under the header, as on
  * the student's recording screen; without names, the meta line counts them.
  * A single group's `recordedSeconds` shows as a timer after the status badge.
- * Groups flagged `noisyAudio` get a warning above the lines; `checkIn` marks
- * where the latest check-in happened; `interimText` shows words still being
+ * Groups flagged `noisyAudio` get a warning above the lines; `checkIns` mark
+ * where each check-in happened, and `onCheckIn` adds the "Check in" button
+ * that lets a teacher mark how far they have read; `interimText` shows words still being
  * recognized; `transcriptionEnabled={false}` explains that live
  * transcription is off.
  *
@@ -192,7 +195,11 @@ function TranscriptCard({
   onHighlightedEntryIdChange,
   highlightedEntryIds,
   onHighlightedEntryIdsChange,
+  checkIns: checkInsProp,
   checkIn,
+  onCheckIn,
+  checkingIn = false,
+  checkInDisabled = false,
   interimText,
   transcriptionEnabled = true,
   onOpenLanguageSettings,
@@ -227,9 +234,17 @@ function TranscriptCard({
   highlightedEntryIds?: string[]
   /** Clears `highlightedEntryIds` (called with `[]` by "Back to latest") */
   onHighlightedEntryIdsChange?: (ids: string[]) => void
-  /** The latest check-in: a divider marks where it falls among the lines
-   * (needs `at` on entries). `label` is the formatted time, e.g. "3:42 PM". */
+  /** Check-ins to mark with a divider where each falls among the lines (needs
+   * `at` on entries). `label` is what follows "Checked in", e.g. "3:42 PM". */
+  checkIns?: { at: number | string; label: string }[]
+  /** @deprecated Use `checkIns` instead. */
   checkIn?: { at: number | string; label: string }
+  /** Adds a "Check in" button beside the scope badge */
+  onCheckIn?: () => void
+  /** Check-in request in flight */
+  checkingIn?: boolean
+  /** Disables "Check in", e.g. when nothing new was said since the last one */
+  checkInDisabled?: boolean
   /** Words still being recognized, shown muted after the last line */
   interimText?: string
   /** Live transcription is on for the session; when off, the card says so */
@@ -275,15 +290,24 @@ function TranscriptCard({
     }))
   }, [isAll, groups, activeGroup])
 
-  // The divider goes before the first line after the check-in, or after the
-  // last line when nothing has been said since.
-  const checkInIndex = React.useMemo(() => {
-    if (!checkIn || rows.length === 0) return -1
-    if (!rows.every(({ entry }) => entry.at !== undefined)) return -1
-    const time = toTime(checkIn.at)
-    const index = rows.findIndex(({ entry }) => toTime(entry.at!) > time)
-    return index === -1 ? rows.length : index
-  }, [checkIn, rows])
+  // Each divider goes before the first line after its check-in, or after the
+  // last line when nothing has been said since. Keyed by that line's index.
+  const dividers = React.useMemo(() => {
+    const byIndex = new Map<number, { at: number | string; label: string }[]>()
+    if (rows.length === 0) return byIndex
+    if (!rows.every(({ entry }) => entry.at !== undefined)) return byIndex
+    const checkIns = checkInsProp ?? (checkIn ? [checkIn] : [])
+    const oldestFirst = [...checkIns].sort(
+      (a, b) => toTime(a.at) - toTime(b.at)
+    )
+    for (const checkIn of oldestFirst) {
+      const time = toTime(checkIn.at)
+      const found = rows.findIndex(({ entry }) => toTime(entry.at!) > time)
+      const index = found === -1 ? rows.length : found
+      byIndex.set(index, [...(byIndex.get(index) ?? []), checkIn])
+    }
+    return byIndex
+  }, [checkInsProp, checkIn, rows])
 
   const noisyGroups = (isAll ? groups : activeGroup ? [activeGroup] : [])
     .filter((group) => group.noisyAudio)
@@ -384,7 +408,7 @@ function TranscriptCard({
             ))}
           </div>
         )}
-        {(scopeLabel || action || translationToggle) && (
+        {(scopeLabel || action || translationToggle || onCheckIn) && (
           <CardAction className="flex items-center gap-2">
             {translationToggle && (
               <div className="flex items-center gap-2">
@@ -402,6 +426,23 @@ function TranscriptCard({
               </div>
             )}
             {action}
+            {onCheckIn && transcriptionEnabled && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onCheckIn}
+                disabled={checkingIn || checkInDisabled}
+                aria-label="Check in"
+              >
+                {checkingIn ? (
+                  <Spinner data-icon="inline-start" />
+                ) : (
+                  <CheckCheckIcon data-icon="inline-start" />
+                )}
+                {/* A narrow card keeps the icon, so the scope badge still fits. */}
+                <span className="hidden @md/card-header:inline">Check in</span>
+              </Button>
+            )}
             {scopeLabel && <Badge variant="secondary">{scopeLabel}</Badge>}
           </CardAction>
         )}
@@ -464,9 +505,12 @@ function TranscriptCard({
               >
                 {rows.map(({ entry, group }, index) => (
                   <React.Fragment key={`${group?.id}-${entry.id}`}>
-                    {index === checkInIndex && checkIn && (
-                      <CheckInDivider label={checkIn.label} />
-                    )}
+                    {dividers.get(index)?.map((checkIn) => (
+                      <CheckInDivider
+                        key={`${checkIn.at}-${checkIn.label}`}
+                        label={checkIn.label}
+                      />
+                    ))}
                     <TranscriptRow
                       entry={
                         showTranslations
@@ -478,9 +522,12 @@ function TranscriptCard({
                     />
                   </React.Fragment>
                 ))}
-                {checkInIndex === rows.length && checkIn && (
-                  <CheckInDivider label={checkIn.label} />
-                )}
+                {dividers.get(rows.length)?.map((checkIn) => (
+                  <CheckInDivider
+                    key={`${checkIn.at}-${checkIn.label}`}
+                    label={checkIn.label}
+                  />
+                ))}
                 {interimText && (
                   <p
                     data-slot="transcript-interim"

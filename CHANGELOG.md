@@ -5,6 +5,24 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.4.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.4.0`.
+
+### Minor Changes
+
+- **Check-in moves to the transcript:** checking in now only marks how far a teacher has read, and
+  summarizing is separate. `TranscriptCard` takes `onCheckIn`, `checkingIn` and `checkInDisabled`,
+  which add a "Check in" button beside the scope badge, and `checkIns`, which marks every check-in
+  with a divider. `SummaryCard` takes `onSummarizeSinceCheckIn` with `lastCheckIn`, which add
+  "Summarize since {lastCheckIn}", and `noNewLines`, which disables it with a note.
+
+### Deprecated
+
+- `SummaryCard`'s `onCheckIn` and `checkingIn` ("Check in & summarize"): use `onCheckIn` and
+  `checkingIn` on `TranscriptCard`, and `onSummarizeSinceCheckIn` here.
+- `TranscriptCard`'s `checkIn`: use `checkIns`.
+
 ## 3.3.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.3.0`.

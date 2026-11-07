@@ -53,7 +53,7 @@ export interface SummaryVersion {
   id: string
   /** When it was generated, formatted, e.g. "Oct 9, 3:42 PM" */
   label: string
-  /** What it covers, e.g. "Check-in" or "Whole session" */
+  /** What it covers, e.g. "Since check-in" or "Whole session" */
   description?: string
   summary: string
 }
@@ -75,15 +75,19 @@ export interface SummaryPhase {
  *
  * `versions` (newest first) adds a history menu: picking an earlier version
  * shows it with a way back to the latest. In a live session, Summarize
- * covers the whole session and `onCheckIn` adds "Check in &
- * summarize" for what was said since the previous check-in; a badge says
- * which one is shown (`range`, with `since` for the check-in time).
+ * covers the whole session and, once there is a check-in (`lastCheckIn`),
+ * `onSummarizeSinceCheckIn` adds a button for what was said since then; a
+ * badge says which one is shown (`range`, with `since` for the check-in time).
+ * Checking in itself happens on `TranscriptCard`.
  */
 function SummaryCard({
   scopeLabel,
   summary,
   loading = false,
   onRegenerate,
+  onSummarizeSinceCheckIn,
+  lastCheckIn,
+  noNewLines = false,
   onCheckIn,
   checkingIn = false,
   since,
@@ -103,10 +107,15 @@ function SummaryCard({
   loading?: boolean
   /** The "Summarize" button */
   onRegenerate?: () => void
-  /** "Check in & summarize": summarize what was said since the previous
-   * check-in, then start a new one */
+  /** Adds "Summarize since {lastCheckIn}"; needs `lastCheckIn` */
+  onSummarizeSinceCheckIn?: () => void
+  /** The latest check-in, e.g. "10:42 AM" or "each group's last check-in" */
+  lastCheckIn?: string
+  /** Nothing was said since `lastCheckIn`, so there is nothing to summarize */
+  noNewLines?: boolean
+  /** @deprecated Use `onCheckIn` on `TranscriptCard` and `onSummarizeSinceCheckIn` here instead. */
   onCheckIn?: () => void
-  /** Check-in request in flight */
+  /** @deprecated Use `checkingIn` on `TranscriptCard` instead. */
   checkingIn?: boolean
   /** Time the current summary window started, e.g. "10:42 AM" */
   since?: string
@@ -314,6 +323,24 @@ function SummaryCard({
             )}
             {checkingIn ? "Checking in…" : "Check in & summarize"}
           </Button>
+        </CardFooter>
+      )}
+      {onSummarizeSinceCheckIn && lastCheckIn && (
+        <CardFooter className="flex-wrap gap-x-3 gap-y-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSummarizeSinceCheckIn}
+            disabled={loading || noNewLines}
+          >
+            <RefreshCwIcon data-icon="inline-start" />
+            Summarize since {lastCheckIn}
+          </Button>
+          {noNewLines && (
+            <span className="text-xs text-muted-foreground">
+              Nothing new since {lastCheckIn}
+            </span>
+          )}
         </CardFooter>
       )}
     </Card>

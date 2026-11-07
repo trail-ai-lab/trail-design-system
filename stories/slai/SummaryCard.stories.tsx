@@ -26,14 +26,14 @@ export const Empty: Story = {
   args: { scopeLabel: "Group 1" },
 }
 
-// `onCheckIn` adds the live-session "Check in & summarize" button; omit it (e.g. in
-// post-session) and only Summarize shows.
+// Before the first check-in, and after a session, only Summarize shows.
 export const WithSummary: Story = {
   args: {
     scopeLabel: "Group 1",
     summary:
       "Group 1 is testing how ramp angle affects ball speed. They connected steeper ramps to greater acceleration and are designing a three-angle comparison.",
-    onCheckIn: () => {},
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
   },
 }
 
@@ -49,12 +49,38 @@ export const Loading: Story = {
   args: { scopeLabel: "Group 1", loading: true },
 }
 
-export const CheckingIn: Story = {
+/** After a check-in, a second button summarizes what was said since. */
+export const WithCheckIn: Story = {
   args: {
     scopeLabel: "Group 1",
     summary: "Group 1 is comparing ramp angles.",
-    onCheckIn: () => {},
-    checkingIn: true,
+    range: "whole-session",
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
+  },
+}
+
+/** Nothing was said since the check-in, so there is nothing to summarize yet. */
+export const NothingNewSinceCheckIn: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    summary: "Group 1 is comparing ramp angles.",
+    range: "whole-session",
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
+    noNewLines: true,
+  },
+}
+
+/** In All groups, groups can have different check-in times. */
+export const EachGroupsCheckIn: Story = {
+  args: {
+    scopeLabel: "All groups",
+    since: "each group's last check-in",
+    summary:
+      "- Group 1 moved on to graphing\n- Group 2 is still building ramps",
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "each group's last check-in",
   },
 }
 
@@ -64,7 +90,8 @@ export const SinceCheckin: Story = {
     since: "10:42 AM",
     summary:
       "- Compared three ramp angles\n- Connected steeper ramps to faster balls\n- Still deciding how to measure speed",
-    onCheckIn: () => {},
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
   },
 }
 
@@ -74,7 +101,8 @@ export const ThinSummary: Story = {
     since: "10:55 AM",
     thinSummaryTurns: 3,
     summary: "Group 2 has only just started discussing friction.",
-    onCheckIn: () => {},
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
   },
 }
 
@@ -83,7 +111,8 @@ export const WithEarlierPhases: Story = {
     scopeLabel: "Group 1",
     since: "10:55 AM",
     summary: "- Moved on to graphing speed against angle",
-    onCheckIn: () => {},
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
     earlierPhases: [
       {
         id: "p2",
@@ -140,25 +169,27 @@ export const WholeSession: Story = {
     range: "whole-session",
     summary:
       "- Built the ramps and agreed on three angles\n- Compared the angles and connected steepness to speed\n- Moved on to graphing speed against angle",
-    onCheckIn: () => {},
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
   },
 }
 
-/** Check-in summaries and whole-session summaries share one history. */
+/** Since-check-in and whole-session summaries share one history. */
 export const MixedHistory: Story = {
   args: {
     scopeLabel: "Group 1",
     since: "3:30 PM",
     summary: "- Moved on to graphing speed against angle",
-    onCheckIn: () => {},
+    onSummarizeSinceCheckIn: () => {},
+    lastCheckIn: "10:42 AM",
     versions: [
       {
         ...VERSIONS[0],
         summary: "- Moved on to graphing speed against angle",
-        description: "Check-in",
+        description: "Since check-in",
       },
       { ...VERSIONS[1], description: "Whole session" },
-      { ...VERSIONS[2], description: "Check-in" },
+      { ...VERSIONS[2], description: "Since check-in" },
     ],
   },
 }

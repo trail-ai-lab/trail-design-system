@@ -273,12 +273,38 @@ export const SameMinuteOrdering: Story = {
   },
 }
 
-/** A divider marks the latest check-in among the lines. */
+/** "Check in" marks how far the teacher has read; a divider marks each check-in. */
 export const WithCheckIn: Story = {
   args: {
     groups: SAME_MINUTE.map((group) => ({ ...group, noisyAudio: false })),
     scope: ALL_GROUPS,
-    checkIn: { at: at("15:42:30"), label: "3:42 PM" },
+    onCheckIn: () => {},
+    checkIns: [
+      { at: at("15:42:30"), label: "3:42 PM" },
+      { at: at("15:42:10"), label: "3:42 PM · Group 1" },
+    ],
+    className: "h-full",
+  },
+}
+
+export const CheckingIn: Story = {
+  args: {
+    groups: SAME_MINUTE.map((group) => ({ ...group, noisyAudio: false })),
+    scope: "group-1",
+    onCheckIn: () => {},
+    checkingIn: true,
+    className: "h-full",
+  },
+}
+
+/** Nothing new was said since the last check-in. */
+export const CheckInDisabled: Story = {
+  args: {
+    groups: SAME_MINUTE.map((group) => ({ ...group, noisyAudio: false })),
+    scope: "group-1",
+    onCheckIn: () => {},
+    checkInDisabled: true,
+    checkIns: [{ at: at("15:59:00"), label: "3:59 PM" }],
     className: "h-full",
   },
 }

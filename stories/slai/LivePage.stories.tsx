@@ -160,7 +160,7 @@ const EARLIER_SUMMARIES: Record<string, SummaryVersion[]> = {
     {
       id: "g1-2",
       label: "Aug 21, 3:50 PM",
-      description: "Check-in",
+      description: "Since check-in",
       summary:
         "Group 1 linked gravity to the ball speeding up and proposed testing three angles.",
     },
@@ -227,22 +227,20 @@ function ActiveSessionPage() {
     setScope(remaining[0]?.id ?? ALL_GROUPS)
   }
   const scopeLabel = scope === ALL_GROUPS ? "All groups" : activeGroup?.name
-  // Summarize covers the whole session; Check in & summarize covers the time
-  // since the previous check-in (3:50 PM here) and starts a new one.
+  // Summarize covers the whole session; the other button covers the time since
+  // the latest check-in (3:50 PM here), which the transcript's "Check in" marks.
   const [range, setRange] = React.useState<SummaryRange>("whole-session")
   const [checkingIn, setCheckingIn] = React.useState(false)
   const checkIn = () => {
     setCheckingIn(true)
-    setTimeout(() => {
-      setCheckingIn(false)
-      setRange("since-checkin")
-    }, 1200)
+    setTimeout(() => setCheckingIn(false), 800)
   }
   const versions: SummaryVersion[] = [
     {
       id: `${scope}-latest`,
       label: "Aug 21, 4:02 PM",
-      description: range === "whole-session" ? "Whole session" : "Check-in",
+      description:
+        range === "whole-session" ? "Whole session" : "Since check-in",
       summary: SUMMARIES[scope],
     },
     ...(EARLIER_SUMMARIES[scope] ?? []),
@@ -302,8 +300,8 @@ function ActiveSessionPage() {
             since: range === "since-checkin" ? "3:50 PM" : undefined,
             versions,
             onRegenerate: () => setRange("whole-session"),
-            onCheckIn: checkIn,
-            checkingIn,
+            onSummarizeSinceCheckIn: () => setRange("since-checkin"),
+            lastCheckIn: "3:50 PM",
           }}
           chat={{
             scopeLabel,
@@ -327,6 +325,8 @@ function ActiveSessionPage() {
           onHighlightedEntryIdChange={(entryId) =>
             setHighlight({ scope, entryId })
           }
+          onCheckIn={checkIn}
+          checkingIn={checkingIn}
         />
       </div>
 
