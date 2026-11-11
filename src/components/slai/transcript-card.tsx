@@ -80,6 +80,10 @@ export interface TranscriptGroup {
   entries: TranscriptEntry[]
 }
 
+/** How close to the bottom still counts as "at the latest line". Small, so
+ * even a slight scroll up stops the transcript from following. */
+const PINNED_THRESHOLD_PX = 4
+
 function toTime(at: number | string) {
   return typeof at === "number" ? at : Date.parse(at)
 }
@@ -181,7 +185,8 @@ function TranscriptRow({
  * scrolling to the first. While a line is highlighted, `autoScroll` pauses
  * so new lines don't carry it away; with `onHighlightedEntryIdChange` or
  * `onHighlightedEntryIdsChange` a "Back to latest" button clears it and
- * resumes following.
+ * resumes following. `autoScroll` also pauses while the reader has scrolled
+ * up from the newest line, with "Back to latest" to return to it.
  */
 function TranscriptCard({
   title = "Live transcript",
@@ -321,19 +326,61 @@ function TranscriptCard({
   // Changes when the set of highlighted lines does, not on every new array.
   const highlightKey = [...highlighted].join("\n")
 
-  // Follow new lines, except while a line is highlighted. Keyed on the
-  // newest line rather than the count: a consumer that keeps only the latest
-  // N lines adds one and drops one, so the count stays the same.
-  const following = autoScroll && highlighted.size === 0
-  const last = rows[rows.length - 1]
-  const latestKey = last ? `${last.group?.id}-${last.entry.id}` : ""
+  const getViewport = React.useCallback(
+    () =>
+      scrollRef.current?.querySelector<HTMLElement>(
+        '[data-slot="scroll-area-viewport"]'
+      ) ?? null,
+    []
+  )
+
+  // Pinned while the reader is at the bottom. Scrolling up, even a little,
+  // unpins, so new lines don't pull the reader away from what they're
+  // reading; scrolling back to the bottom (or "Back to latest") re-pins.
+  const [pinned, setPinned] = React.useState(true)
   React.useEffect(() => {
+    const viewport = getViewport()
+    if (!viewport) return
+    const onScroll = () => {
+      const fromBottom =
+        viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight
+      setPinned(fromBottom <= PINNED_THRESHOLD_PX)
+    }
+    viewport.addEventListener("scroll", onScroll, { passive: true })
+    return () => viewport.removeEventListener("scroll", onScroll)
+  }, [getViewport])
+
+  // A different scope starts at its newest line.
+  const [pinnedScope, setPinnedScope] = React.useState(scope)
+  if (pinnedScope !== scope) {
+    setPinnedScope(scope)
+    setPinned(true)
+  }
+
+  // Follow new lines while pinned and no line is highlighted. A layout
+  // effect, so the jump lands before the browser paints or fires a scroll
+  // event for the grown content (which would read as "scrolled up"). Keyed
+  // on `rows` rather than the count: a consumer that keeps only the latest N
+  // lines adds one and drops one, and a late translation grows a line.
+  const following = autoScroll && pinned && highlighted.size === 0
+  React.useLayoutEffect(() => {
     if (!following) return
-    const viewport = scrollRef.current?.querySelector(
-      '[data-slot="scroll-area-viewport"]'
-    )
+    const viewport = getViewport()
     viewport?.scrollTo({ top: viewport.scrollHeight })
-  }, [following, scope, latestKey, interimText])
+  }, [following, getViewport, scope, rows, interimText, showTranslations])
+
+  const canClearHighlight = Boolean(
+    onHighlightedEntryIdChange || onHighlightedEntryIdsChange
+  )
+  const showBackToLatest =
+    autoScroll && (!pinned || (highlighted.size > 0 && canClearHighlight))
+  const backToLatest = () => {
+    onHighlightedEntryIdChange?.(undefined)
+    onHighlightedEntryIdsChange?.([])
+    setPinned(true)
+    const viewport = getViewport()
+    viewport?.scrollTo({ top: viewport.scrollHeight })
+  }
 
   // Bring the highlighted line into view (the page too, on small screens).
   React.useEffect(() => {
@@ -539,22 +586,17 @@ function TranscriptCard({
               </div>
             )}
           </ScrollArea>
-          {autoScroll &&
-            highlighted.size > 0 &&
-            (onHighlightedEntryIdChange || onHighlightedEntryIdsChange) && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="absolute bottom-3 left-1/2 -translate-x-1/2 shadow-raised"
-                onClick={() => {
-                  onHighlightedEntryIdChange?.(undefined)
-                  onHighlightedEntryIdsChange?.([])
-                }}
-              >
-                <ArrowDownIcon data-icon="inline-start" />
-                Back to latest
-              </Button>
-            )}
+          {showBackToLatest && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="absolute bottom-3 left-1/2 -translate-x-1/2 shadow-raised"
+              onClick={backToLatest}
+            >
+              <ArrowDownIcon data-icon="inline-start" />
+              Back to latest
+            </Button>
+          )}
         </div>
         <div className="px-(--card-spacing)">
           <Separator className="-mx-2 mt-1 w-auto!" />

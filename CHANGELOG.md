@@ -5,6 +5,17 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.6.2
+
+Install with `github:trail-ai-lab/trail-design-system#v3.6.2`.
+
+### Patch Changes
+
+- `TranscriptCard` stops following new lines once the reader scrolls up, even slightly, so a teacher
+  reading earlier lines is no longer pulled back to the bottom when a line or interim text arrives.
+  "Back to latest" now shows whenever the reader is away from the newest line (not only while a line
+  is highlighted) and returns them there; following resumes when they scroll back to the bottom.
+
 ## 3.6.1
 
 Install with `github:trail-ai-lab/trail-design-system#v3.6.1`.

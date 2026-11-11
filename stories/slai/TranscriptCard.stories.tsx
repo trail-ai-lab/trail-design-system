@@ -383,6 +383,52 @@ export const FollowsLatestLinesWindow: Story = {
   },
 }
 
+/** Scrolling up pauses following: new lines don't pull the reader back
+ * down, and "Back to latest" returns them to the newest line. */
+export const PausesWhileReadingEarlierLines: Story = {
+  render: FollowsLatestLinesWindow.render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const viewport = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="scroll-area-viewport"]'
+    )!
+    const fromBottom = () =>
+      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight
+    await waitFor(() => expect(fromBottom()).toBeLessThanOrEqual(1))
+    expect(canvas.queryByRole("button", { name: "Back to latest" })).toBeNull()
+
+    // Scroll up a little, as a teacher starting to read back would.
+    viewport.scrollTop -= 40
+    const backToLatest = await canvas.findByRole("button", {
+      name: "Back to latest",
+    })
+    // The line being read; the window drops the oldest line as one arrives,
+    // so compare where it sits on screen rather than scrollTop.
+    const reading = canvas.getByText(/^Line 10:/)
+    const readingAt = reading.getBoundingClientRect().top
+
+    await userEvent.click(canvas.getByRole("button", { name: "Add a line" }))
+    await canvas.findByText(/^Line 13:/)
+    expect(
+      Math.abs(reading.getBoundingClientRect().top - readingAt)
+    ).toBeLessThanOrEqual(1)
+    expect(fromBottom()).toBeGreaterThan(1)
+
+    await userEvent.click(backToLatest)
+    await waitFor(() => expect(fromBottom()).toBeLessThanOrEqual(1))
+    await waitFor(() =>
+      expect(
+        canvas.queryByRole("button", { name: "Back to latest" })
+      ).toBeNull()
+    )
+
+    // Back at the bottom, new lines are followed again.
+    await userEvent.click(canvas.getByRole("button", { name: "Add a line" }))
+    await canvas.findByText(/^Line 14:/)
+    await waitFor(() => expect(fromBottom()).toBeLessThanOrEqual(1))
+  },
+}
+
 /** Live transcription is off for the session. */
 export const TranscriptionOff: Story = {
   args: {
