@@ -186,8 +186,14 @@ const CHATS: Record<string, ChatMessage[]> = {
       role: "assistant",
       content:
         "Group 1 — they linked a steeper ramp angle to the ball speeding up and are now timing runs at three angles, which sets up a comparison of how speed changes over time. Group 2 is still establishing their baseline.",
+      grounding: "transcript-curriculum",
       materials: [
-        { name: "Unit 3 — Forces and motion.pptx", location: "slide 14" },
+        {
+          name: "Unit 3 — Forces and motion.pptx",
+          location: "slide 14",
+          excerpt:
+            "Acceleration is how quickly velocity changes. Compare how long the ball takes over equal distances to see whether it is speeding up.",
+        },
       ],
     },
   ],
@@ -202,6 +208,7 @@ const CHATS: Record<string, ChatMessage[]> = {
       role: "assistant",
       content:
         "Yes — they're varying ramp angle and measuring time per run while keeping the ball and ramp length fixed, which is a clean controlled comparison. Click to see where they said it.",
+      grounding: "transcript",
       highlight: "Let's test it with three different angles and time each run.",
     },
   ],
@@ -216,6 +223,8 @@ function ActiveSessionPage() {
   >(null)
   // Course materials: the class library and what this session uses.
   const sessionMaterials = useSessionMaterials("Period 3 — Aug 21")
+  // Whether new answers also draw on course materials; off by default.
+  const [curriculum, setCurriculum] = React.useState(false)
   const [activity, setActivity] = React.useState("none")
   const [groups, setGroups] = React.useState(GROUPS)
   const [scope, setScope] = React.useState(GROUPS[0].id)
@@ -309,6 +318,8 @@ function ActiveSessionPage() {
             onMessageClick: showSource,
             materials: sessionMaterials.counts,
             onMaterialsClick: () => setSheet("materials"),
+            curriculum,
+            onCurriculumChange: setCurriculum,
             suggestions: [
               "Which group needs help?",
               "Summarize misconceptions",

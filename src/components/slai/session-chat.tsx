@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import {
+  BookOpenTextIcon,
+  ChevronDownIcon,
   ChevronRightIcon,
   CornerDownLeftIcon,
   FileTextIcon,
@@ -10,8 +12,26 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useControllableState } from "@/lib/use-controllable-state"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Collapsible,
   CollapsibleContent,
@@ -21,7 +41,6 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -51,6 +70,35 @@ export interface ChatMaterialSource {
   section?: string
   /** Where in it, e.g. "p. 12" or "slide 4" */
   location?: string
+  /** The cited passage itself; makes the row a button that shows it */
+  excerpt?: string
+}
+
+/** What an answer was grounded in: the transcript alone, or the transcript
+ * plus the class's course materials (curriculum). */
+export type ChatGrounding = "transcript" | "transcript-curriculum"
+
+const GROUNDING: Record<
+  ChatGrounding,
+  {
+    label: string
+    badge: string
+    description: string
+    icon: typeof SparklesIcon
+  }
+> = {
+  transcript: {
+    label: "Transcript only",
+    badge: "Transcript",
+    description: "Answers from what students said",
+    icon: MessageSquareQuoteIcon,
+  },
+  "transcript-curriculum": {
+    label: "Transcript + curriculum",
+    badge: "Transcript + curriculum",
+    description: "Also draws on this class's course materials",
+    icon: BookOpenTextIcon,
+  },
 }
 
 export interface ChatMessage {
@@ -62,6 +110,8 @@ export interface ChatMessage {
   sources?: string[]
   /** Course materials the answer drew on, listed with a document icon */
   materials?: ChatMaterialSource[]
+  /** What the answer was grounded in; shows a badge above it */
+  grounding?: ChatGrounding
   /** Transcript entry id the answer points to; makes the row clickable
    * (with `onMessageClick`, when the answer has no `sources` to click) */
   highlight?: string
@@ -106,8 +156,8 @@ function MaterialRow({ material }: { material: ChatMaterialSource }) {
   const details = [material.section, material.location]
     .filter(Boolean)
     .join(" · ")
-  return (
-    <div className={EVIDENCE_ROW}>
+  const content = (
+    <>
       <FileTextIcon
         className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
         aria-hidden
@@ -116,7 +166,62 @@ function MaterialRow({ material }: { material: ChatMaterialSource }) {
         <span>{material.name}</span>
         {details && <span className="text-muted-foreground">{details}</span>}
       </span>
-    </div>
+    </>
+  )
+  if (!material.excerpt) return <div className={EVIDENCE_ROW}>{content}</div>
+  // The passage opens beside the list rather than inside it, so the list of
+  // sources keeps its shape and the passage can be read at full width.
+  return (
+    <Popover>
+      <PopoverTrigger
+        className={cn(
+          EVIDENCE_ROW,
+          "cursor-pointer outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 data-[state=open]:bg-muted"
+        )}
+      >
+        {content}
+      </PopoverTrigger>
+      <PopoverContent
+        data-slot="material-excerpt"
+        align="start"
+        className="w-80 gap-3"
+      >
+        <PopoverHeader>
+          <PopoverTitle className="text-sm wrap-anywhere">
+            {material.name}
+          </PopoverTitle>
+          {details && (
+            <PopoverDescription className="text-xs wrap-anywhere">
+              {details}
+            </PopoverDescription>
+          )}
+        </PopoverHeader>
+        {/* A long passage scrolls, and a scroll box must be reachable by
+            keyboard (axe scrollable-region-focusable). */}
+        <blockquote
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+          aria-label="Cited passage"
+          className="max-h-48 overflow-y-auto rounded-xl bg-muted px-3 py-2 text-xs leading-relaxed wrap-anywhere whitespace-pre-line text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {material.excerpt}
+        </blockquote>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+function GroundingBadge({ grounding }: { grounding: ChatGrounding }) {
+  const { badge, icon: Icon } = GROUNDING[grounding]
+  return (
+    <Badge
+      data-slot="grounding-badge"
+      variant="outline"
+      className="font-normal text-muted-foreground"
+    >
+      <Icon data-icon="inline-start" aria-hidden />
+      {badge}
+    </Badge>
   )
 }
 
@@ -205,6 +310,7 @@ function ChatRow({
         </AvatarFallback>
       </Avatar>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
+        {message.grounding && <GroundingBadge grounding={message.grounding} />}
         {clickable ? (
           <button
             type="button"
@@ -230,23 +336,33 @@ function ChatRow({
 function MaterialsLine({
   materials,
   onClick,
+  withPicker = false,
 }: {
   materials: { ready: number; processing?: number }
   onClick?: () => void
+  /** The answer-source picker sits beside it and already says whether the
+   * transcript alone is used, so the line only counts materials. */
+  withPicker?: boolean
 }) {
   const { ready, processing = 0 } = materials
-  const label =
-    ready === 0 && processing === 0
+  const none = ready === 0 && processing === 0
+  const count = `${ready} course material${ready === 1 ? "" : "s"}`
+  const label = withPicker
+    ? none
+      ? onClick
+        ? ""
+        : "No course materials"
+      : count
+    : none
       ? "Transcript only"
-      : `Transcript + ${ready} course material${ready === 1 ? "" : "s"}`
-  const action =
-    ready === 0 && processing === 0 ? "Add course materials" : undefined
+      : `Transcript + ${count}`
+  const action = none ? "Add course materials" : undefined
   return (
     <span data-slot="materials-line" className="flex flex-wrap gap-x-1">
       <span>
         {label}
         {processing > 0 && ` · ${processing} processing`}
-        {onClick && " ·"}
+        {onClick && label && " ·"}
       </span>
       {onClick && (
         <button
@@ -258,6 +374,74 @@ function MaterialsLine({
         </button>
       )}
     </span>
+  )
+}
+
+/**
+ * Picks what new answers draw on, like a composer's model picker: a quiet
+ * button under the input that opens a short list with a description each.
+ */
+function GroundingPicker({
+  value,
+  onValueChange,
+  curriculumDisabled = false,
+}: {
+  value: ChatGrounding
+  onValueChange: (value: ChatGrounding) => void
+  /** No course materials ready yet */
+  curriculumDisabled?: boolean
+}) {
+  const { label } = GROUNDING[value]
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          data-slot="grounding-picker"
+          variant="ghost"
+          size="xs"
+          aria-label={`Answers use: ${label}`}
+          className="ml-auto shrink-0 text-muted-foreground"
+        >
+          {label}
+          <ChevronDownIcon data-icon="inline-end" aria-hidden />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuGroup>
+          <DropdownMenuRadioGroup
+            value={value}
+            onValueChange={(next) => onValueChange(next as ChatGrounding)}
+          >
+            {(Object.keys(GROUNDING) as ChatGrounding[]).map((key) => {
+              const option = GROUNDING[key]
+              const disabled =
+                key === "transcript-curriculum" && curriculumDisabled
+              return (
+                <DropdownMenuRadioItem
+                  key={key}
+                  value={key}
+                  disabled={disabled}
+                  className="items-start"
+                >
+                  <option.icon
+                    className="mt-0.5 text-muted-foreground"
+                    aria-hidden
+                  />
+                  <span className="flex flex-col">
+                    <span>{option.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {disabled
+                        ? "Add course materials to use this"
+                        : option.description}
+                    </span>
+                  </span>
+                </DropdownMenuRadioItem>
+              )
+            })}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -278,6 +462,9 @@ function SessionChatCard({
   showDisclaimer = false,
   materials,
   onMaterialsClick,
+  curriculum,
+  defaultCurriculum = false,
+  onCurriculumChange,
   className,
 }: {
   messages: ChatMessage[]
@@ -297,14 +484,31 @@ function SessionChatCard({
   /** Makes each of an answer's `sources` a button, e.g. to show that passage
    * in the transcript; called with the answer and the source's index */
   onSourceClick?: (message: ChatMessage, index: number) => void
-  /** Footer reminding that AI answers can be wrong */
+  /** Footer reminding that AI answers can be wrong. Not shown once the
+   * row under the input has `materials` or the curriculum picker.
+   * @deprecated Use `materials` and `onCurriculumChange`; the row under the
+   * input says what answers draw on instead. */
   showDisclaimer?: boolean
-  /** Course materials Q&A can draw on; shows a line under the title */
+  /** Course materials Q&A can draw on; shows a line under the input, on the left */
   materials?: { ready: number; processing?: number }
   /** Makes the materials line a button, e.g. to open `UploadMaterialsSheet` */
   onMaterialsClick?: () => void
+  /** Whether new answers also draw on course materials (controlled) */
+  curriculum?: boolean
+  /** Starting value when uncontrolled; off by default */
+  defaultCurriculum?: boolean
+  /** Shows a picker under the input, on the right, to turn curriculum on or
+   * off. Called with the new value. */
+  onCurriculumChange?: (curriculum: boolean) => void
   className?: string
 }) {
+  const [curriculumOn, setCurriculumOn] = useControllableState({
+    value: curriculum,
+    defaultValue: defaultCurriculum,
+    onChange: onCurriculumChange,
+  })
+  const showPicker = Boolean(onCurriculumChange) || curriculum !== undefined
+  const showToolbar = showPicker || Boolean(materials)
   const resolvedPlaceholder =
     placeholder ??
     (scopeLabel ? `Ask about ${scopeLabel}...` : "Ask about the session…")
@@ -328,11 +532,6 @@ function SessionChatCard({
     <Card className={cn("flex min-h-0 flex-col", className)}>
       <CardHeader>
         <CardTitle>Ask SLAI</CardTitle>
-        {materials && (
-          <CardDescription>
-            <MaterialsLine materials={materials} onClick={onMaterialsClick} />
-          </CardDescription>
-        )}
         {scopeLabel && (
           <CardAction>
             <Badge variant="secondary">{scopeLabel}</Badge>
@@ -414,7 +613,7 @@ function SessionChatCard({
           )}
         </ScrollArea>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex-col items-stretch gap-1.5">
         <InputGroup>
           <InputGroupInput
             placeholder={resolvedPlaceholder}
@@ -435,8 +634,33 @@ function SessionChatCard({
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
+        {showToolbar && (
+          <div
+            data-slot="session-chat-toolbar"
+            className="flex min-h-6 items-center gap-2 pl-1 text-xs text-muted-foreground"
+          >
+            {materials && (
+              <MaterialsLine
+                materials={materials}
+                onClick={onMaterialsClick}
+                withPicker={showPicker}
+              />
+            )}
+            {showPicker && (
+              <GroundingPicker
+                value={curriculumOn ? "transcript-curriculum" : "transcript"}
+                onValueChange={(next) =>
+                  setCurriculumOn(next === "transcript-curriculum")
+                }
+                curriculumDisabled={
+                  materials !== undefined && materials.ready === 0
+                }
+              />
+            )}
+          </div>
+        )}
       </CardFooter>
-      {showDisclaimer && (
+      {showDisclaimer && !showToolbar && (
         <p className="px-(--card-spacing) text-center text-xs text-muted-foreground">
           SLAI can make mistakes. Double-check important responses.
         </p>

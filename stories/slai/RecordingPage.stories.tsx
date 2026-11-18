@@ -87,7 +87,6 @@ function RecordingPage({
               chat={{
                 messages: [],
                 welcomeMessage: "Hi, how can I help you today?",
-                showDisclaimer: true,
               }}
             />
             <Tabs

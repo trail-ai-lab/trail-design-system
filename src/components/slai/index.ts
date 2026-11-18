@@ -60,6 +60,7 @@ export {
   SessionChatCard,
   type ChatMessage,
   type ChatMaterialSource,
+  type ChatGrounding,
 } from "./session-chat"
 
 // Post-session (review) components

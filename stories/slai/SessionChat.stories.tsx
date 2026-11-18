@@ -60,7 +60,11 @@ export const Empty: Story = {
 
 export const Conversation: Story = {
   args: {
-    messages: MESSAGES.slice(0, 2),
+    messages: MESSAGES.slice(0, 2).map((message) =>
+      message.role === "assistant"
+        ? { ...message, grounding: "transcript" as const }
+        : message
+    ),
     scopeLabel: "All groups",
     className: "h-full",
   },
@@ -75,13 +79,17 @@ export const Loading: Story = {
   },
 }
 
-/** Answers cite course materials (with page or slide) alongside transcript sources, in one list. */
+/** Answers cite course materials (with page or slide) alongside transcript
+ * sources, in one list. A badge above each answer says what it drew on; a
+ * material with an `excerpt` opens the cited passage. */
 export const MaterialCitations: Story = {
   args: {
     scopeLabel: "Group 1",
     className: "h-full",
     materials: { ready: 3, processing: 1 },
     onMaterialsClick: () => {},
+    defaultCurriculum: true,
+    onCurriculumChange: () => {},
     messages: [
       {
         id: "1",
@@ -93,10 +101,22 @@ export const MaterialCitations: Story = {
         role: "assistant",
         content:
           "Mostly. They say a steeper ramp makes the ball faster, which matches the Unit 3 slides, but they haven't separated speed from acceleration yet — the lab handout asks them to compare times over equal distances to see it.",
+        grounding: "transcript-curriculum",
         sources: ["Group 1 · 3:40 PM"],
         materials: [
-          { name: "Unit 3 — Forces and motion.pptx", location: "slide 14" },
-          { name: "Inclined plane lab handout.docx", location: "p. 2" },
+          {
+            name: "Unit 3 — Forces and motion.pptx",
+            location: "slide 14",
+            excerpt:
+              "Acceleration is how quickly velocity changes. On a steeper ramp, a larger share of gravity acts along the slope, so the ball's speed increases faster.",
+          },
+          {
+            name: "Inclined plane lab handout.docx",
+            section: "Part B > Equal distances",
+            location: "p. 2",
+            excerpt:
+              "Mark three equal distances on the ramp and time each one. If the ball covers each later distance in less time, it is accelerating.",
+          },
         ],
       },
     ],
@@ -124,6 +144,8 @@ export const LongMaterialCitations: Story = {
             section:
               "LESSON 16: How can we design a cup system to slow energy transfer into the liquid inside it? > Lesson 16 • Learning Plan Snapshot",
             location: "p. 3",
+            excerpt:
+              "Students design a cup system that slows energy transfer into the liquid. They test materials and explain, using the particle model, why some layers slow the transfer more than others.",
           },
           { name: "Teacher Edition  Lessons 16-18.pdf", location: "p. 5" },
         ],
@@ -132,7 +154,49 @@ export const LongMaterialCitations: Story = {
   },
 }
 
-/** No materials yet: the header says answers use the transcript only and links to add some. */
+/** The row under the input: course materials on the left (with Manage), and
+ * on the right a picker for what new answers draw on — transcript only (the
+ * default) or transcript + curriculum. Each answer keeps the badge for what it
+ * was answered from, so switching doesn't relabel earlier answers. */
+export const CurriculumPicker: Story = {
+  args: {
+    scopeLabel: "Group 1",
+    className: "h-full",
+    materials: { ready: 3 },
+    onMaterialsClick: () => {},
+    onCurriculumChange: () => {},
+    messages: [
+      { id: "1", role: "user", content: "What is Group 1 testing?" },
+      {
+        id: "2",
+        role: "assistant",
+        content: "How the ramp's angle changes the time the ball takes.",
+        grounding: "transcript",
+        sources: ["Group 1 · 3:38 PM"],
+      },
+      { id: "3", role: "user", content: "Is that what the lab asks for?" },
+      {
+        id: "4",
+        role: "assistant",
+        content:
+          "Partly. The lab handout asks them to time equal distances, not the whole ramp, so they can see the ball speeding up.",
+        grounding: "transcript-curriculum",
+        sources: ["Group 1 · 3:40 PM"],
+        materials: [
+          {
+            name: "Inclined plane lab handout.docx",
+            location: "p. 2",
+            excerpt:
+              "Mark three equal distances on the ramp and time each one. If the ball covers each later distance in less time, it is accelerating.",
+          },
+        ],
+      },
+    ],
+  },
+}
+
+/** No materials yet: the line offers to add some, and the picker can't turn
+ * curriculum on until there are. */
 export const NoMaterials: Story = {
   args: {
     messages: [],
@@ -140,10 +204,25 @@ export const NoMaterials: Story = {
     className: "h-full",
     materials: { ready: 0 },
     onMaterialsClick: () => {},
+    onCurriculumChange: () => {},
     suggestions: ["Which group needs help?", "Summarize misconceptions"],
   },
 }
 
+/** Without the picker (curriculum flag off), the line keeps saying what
+ * answers use: "Transcript + 3 course materials". */
+export const MaterialsWithoutPicker: Story = {
+  args: {
+    messages: [],
+    scopeLabel: "All groups",
+    className: "h-full",
+    materials: { ready: 3 },
+    onMaterialsClick: () => {},
+  },
+}
+
+/** `showDisclaimer` is deprecated: it only shows when the row under the
+ * input (materials, curriculum picker) isn't used. */
 export const WithWelcomeAndDisclaimer: Story = {
   args: {
     messages: [],
@@ -192,7 +271,10 @@ export const ClickableSources: Story = {
     scopeLabel: "Team Beta",
     className: "h-full",
     welcomeMessage: "Hi, how can I help you today?",
-    showDisclaimer: true,
+    materials: { ready: 1 },
+    onMaterialsClick: () => {},
+    defaultCurriculum: true,
+    onCurriculumChange: () => {},
     onMessageClick: () => {},
     onSourceClick: () => {},
     messages: [
@@ -207,6 +289,7 @@ export const ClickableSources: Story = {
         role: "assistant",
         content:
           "The conversation is about how gravity and air resistance affect falling objects, specifically exploring why heavier objects do not necessarily fall faster than lighter ones.",
+        grounding: "transcript-curriculum",
         highlight: "The worksheet says objects fall because of gravity.",
         sources: [
           "Lucía: “The worksheet says objects fall because of gravity. But why do bigger things not always hit the ground first?”",
@@ -220,6 +303,8 @@ export const ClickableSources: Story = {
             name: "Teacher Edition  Lessons 16-18.pdf",
             section: "Lesson 16 > Learning Plan Snapshot",
             location: "p. 3",
+            excerpt:
+              "Students explain that all objects fall at the same rate without air, and that air resistance is why a feather falls more slowly than a rock.",
           },
         ],
       },

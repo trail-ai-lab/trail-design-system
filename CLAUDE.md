@@ -62,6 +62,7 @@
 - **Label–value facts** (a recording's name/duration/size, event details) use `DetailList` — not a hand-rolled `dl` grid.
 - **People in lists** get an `Avatar size="sm"` (or `PersonRow`); color dots only where color is the key (speaker mapping).
 - **AI panel:** Summary and Q&A live together in `SummaryQaPanel`, always in the left column, in both Live and Session review.
+- **AI answers show their grounding:** every Q&A answer says what it drew on with a badge above it ("Transcript" / "Transcript + curriculum", `ChatMessage.grounding`), and every piece of evidence can be opened — transcript passages jump to the transcript, course-material passages open the cited excerpt in a popover (prose, not a code block). What new answers draw on is picked in the row under the Q&A input: materials line on the left, `GroundingPicker`-style ghost dropdown on the right (curriculum off by default). No "AI can make mistakes" disclaimer; the grounding and openable evidence do that job.
 
 ## Component API Conventions (Radix/shadcn style)
 

@@ -180,6 +180,7 @@ const GROUP_1 = {
       role: "assistant",
       content:
         "All three spoke. Aarav contributed the most (42% of turns) and drove the reasoning; Jordan participated least (25%) but ran the timing. Consider prompting Jordan to explain the 'why' next time.",
+      grounding: "transcript",
     },
     { id: "3", role: "user", content: "How much faster was the steeper ramp?" },
     {
@@ -188,8 +189,14 @@ const GROUP_1 = {
       content:
         "About twice as fast: the run at thirty degrees took about one second, against two at fifteen. That matches the lab handout's prediction. Click to see where they said it.",
       highlight: "At thirty degrees it was way faster, about one second.",
+      grounding: "transcript-curriculum",
       materials: [
-        { name: "Inclined plane lab handout.docx", location: "p. 2" },
+        {
+          name: "Inclined plane lab handout.docx",
+          location: "p. 2",
+          excerpt:
+            "Predict: doubling the ramp angle from 15° to 30° should roughly halve the time the ball takes to reach the bottom.",
+        },
       ],
     },
   ] as ChatMessage[],
@@ -245,6 +252,7 @@ const GROUP_2 = {
       role: "assistant",
       content:
         "Yes — they set up a clean baseline before changing variables, which is solid experimental method. Sam led; encourage Priya to propose the next variable to test.",
+      grounding: "transcript",
     },
   ] as ChatMessage[],
 }
@@ -320,8 +328,15 @@ const ALL_CHAT: ChatMessage[] = [
     role: "assistant",
     content:
       "Group 2 moved slower and only reached the baseline, so they'd benefit from a nudge to vary the angle next session. Group 1 finished the comparison and is ready for a harder question, like predicting the time at 60° — the extension on slide 18 of Unit 3.",
+    grounding: "transcript-curriculum",
     materials: [
-      { name: "Unit 3 — Forces and motion.pptx", location: "slide 18" },
+      {
+        name: "Unit 3 — Forces and motion.pptx",
+        section: "Extension",
+        location: "slide 18",
+        excerpt:
+          "Extension: predict the time at 60°, then test it. Does the pattern from 15° and 30° still hold?",
+      },
     ],
   },
 ]
@@ -341,9 +356,13 @@ function SessionReviewPage() {
   >(null)
   // Course materials: what this session's Q&A uses; add what you forgot after class.
   const sessionMaterials = useSessionMaterials("Period 3 — Aug 21")
+  // Whether new answers also draw on course materials; off by default.
+  const [curriculum, setCurriculum] = React.useState(false)
   const chatMaterials = {
     materials: sessionMaterials.counts,
     onMaterialsClick: () => setDialog("materials"),
+    curriculum,
+    onCurriculumChange: setCurriculum,
   }
   const isAll = scope === ALL_GROUPS
   const activeGroup = GROUPS.find((group) => group.id === scope)

@@ -5,6 +5,32 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.7.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.7.0`.
+
+### Minor Changes
+
+- **Q&A says what each answer drew on:** `SessionChatCard` shows a badge above an answer with the
+  new `ChatMessage.grounding` — "Transcript" (`"transcript"`) or "Transcript + curriculum"
+  (`"transcript-curriculum"`). New exported type `ChatGrounding`. Answers without `grounding` show
+  no badge.
+- **Curriculum evidence opens:** a course material in an answer's sources with the new
+  `ChatMaterialSource.excerpt` is a button that opens the cited passage in a popover, with the file
+  name, section and page above it. Materials without `excerpt` stay plain rows.
+- **Curriculum picker under the input:** `SessionChatCard` takes `curriculum`, `defaultCurriculum`
+  (off by default) and `onCurriculumChange`, which add a picker on the right of a new row under the
+  input: "Transcript only" or "Transcript + curriculum", each with a short description. It can't
+  turn curriculum on while `materials.ready` is 0.
+- **Materials line moves under the input:** `materials` now shows on the left of that row instead
+  of under the title. With the picker it only counts materials ("3 course materials · Manage", or
+  "Add course materials"), since the picker says whether the transcript is used alone.
+
+### Deprecated
+
+- `SessionChatCard`'s `showDisclaimer`: the row under the input replaces it, and it no longer shows
+  when `materials` or the curriculum picker is used.
+
 ## 3.6.2
 
 Install with `github:trail-ai-lab/trail-design-system#v3.6.2`.
