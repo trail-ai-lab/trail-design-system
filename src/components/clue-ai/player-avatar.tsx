@@ -1,9 +1,12 @@
+"use client"
+
 import { BotIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { StatusBadge } from "@/components/patterns/status-badge"
 import type { Player } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 /**
  * A player's avatar: their photo, else initials. An AI teammate always shows
@@ -39,9 +42,10 @@ function PlayerAvatar({
 
 /** "AI" tag shown after an AI teammate's name. */
 function AiTag({ className }: { className?: string }) {
+  const labels = useClueAiLabels()
   return (
     <StatusBadge data-slot="ai-tag" tone="primary" className={className}>
-      AI
+      {labels.common.aiTag}
     </StatusBadge>
   )
 }

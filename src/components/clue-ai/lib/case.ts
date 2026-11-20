@@ -136,8 +136,13 @@ export interface SummarySentenceData {
 }
 
 /** "You" for the current player, their name otherwise. */
-export function playerLabel(player: Player) {
-  return player.isYou ? "You" : player.name
+/**
+ * A player's name as shown, with the current player as `you` ("You" by
+ * default). In components prefer `usePlayerLabel()`, which uses the
+ * localized word.
+ */
+export function playerLabel(player: Player, you: string = "You") {
+  return player.isYou ? you : player.name
 }
 
 /**

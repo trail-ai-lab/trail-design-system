@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { LockIcon } from "lucide-react"
 
@@ -16,24 +18,18 @@ import {
   type StatusTone,
 } from "@/components/patterns/status-badge"
 import { VERDICTS, type Suspect, type Verdict } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 /** Where a suspect stands on the board. */
 export type SuspectStatus =
   "required" | "available" | "in-progress" | "completed" | "locked"
 
-const STATUS: Record<
-  SuspectStatus,
-  { label: string; tone: StatusTone; action: string }
-> = {
-  required: {
-    label: "Start here",
-    tone: "primary",
-    action: "Start investigation",
-  },
-  available: { label: "Open lead", tone: "neutral", action: "Investigate" },
-  "in-progress": { label: "In progress", tone: "info", action: "Continue" },
-  completed: { label: "Investigated", tone: "success", action: "Review case" },
-  locked: { label: "Locked", tone: "muted", action: "Locked" },
+const STATUS_TONE: Record<SuspectStatus, StatusTone> = {
+  required: "primary",
+  available: "neutral",
+  "in-progress": "info",
+  completed: "success",
+  locked: "muted",
 }
 
 /**
@@ -47,7 +43,7 @@ function SuspectCard({
   sentenceCount,
   score,
   verdict,
-  lockedReason = "Finish the first lead",
+  lockedReason,
   onSelect,
   className,
 }: {
@@ -64,7 +60,11 @@ function SuspectCard({
   onSelect?: () => void
   className?: string
 }) {
-  const meta = STATUS[status]
+  const labels = useClueAiLabels()
+  const meta = {
+    ...labels.suspectCard.status[status],
+    tone: STATUS_TONE[status],
+  }
   const isLocked = status === "locked"
 
   return (
@@ -121,9 +121,11 @@ function SuspectCard({
       <CardContent className="flex flex-1 flex-col justify-end gap-2 text-body-sm">
         {verdict ? (
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-muted-foreground">Team verdict</span>
+            <span className="text-muted-foreground">
+              {labels.suspectCard.teamVerdict}
+            </span>
             <StatusBadge tone={VERDICTS[verdict.verdict].tone}>
-              {VERDICTS[verdict.verdict].label}
+              {labels.verdicts[verdict.verdict].label}
             </StatusBadge>
             {verdict.motive && (
               <span className="text-muted-foreground">· {verdict.motive}</span>
@@ -131,14 +133,14 @@ function SuspectCard({
           </div>
         ) : null}
         <p className="text-muted-foreground tabular-nums">
-          {score !== undefined ? (
-            <>
-              <span className="font-medium text-foreground">{score}</span>/
-              {sentenceCount} sentences correct
-            </>
-          ) : (
-            `${sentenceCount} sentences to check`
-          )}
+          {score !== undefined
+            ? labels.suspectCard.sentencesCorrect({
+                score: (
+                  <span className="font-medium text-foreground">{score}</span>
+                ),
+                total: sentenceCount,
+              })
+            : labels.suspectCard.sentencesToCheck({ count: sentenceCount })}
         </p>
       </CardContent>
       <CardFooter>
@@ -151,10 +153,19 @@ function SuspectCard({
           }
           disabled={isLocked}
           onClick={onSelect}
-          aria-label={isLocked ? undefined : `${meta.action}: ${suspect.name}`}
+          aria-label={
+            isLocked
+              ? undefined
+              : labels.suspectCard.actionLabel({
+                  action: meta.action,
+                  suspect: suspect.name,
+                })
+          }
         >
           {isLocked && <LockIcon data-icon="inline-start" />}
-          {isLocked ? lockedReason : meta.action}
+          {isLocked
+            ? (lockedReason ?? labels.suspectCard.lockedReason)
+            : meta.action}
         </Button>
       </CardFooter>
     </Card>

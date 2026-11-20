@@ -27,7 +27,8 @@ import {
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
 import { StatusBadge } from "@/components/patterns/status-badge"
-import { notYetClassName, playerLabel, type Player } from "./lib/case"
+import { notYetClassName, type Player } from "./lib/case"
+import { useClueAiLabels, usePlayerLabel } from "./lib/labels"
 import { AiTag, PlayerAvatar } from "./player-avatar"
 
 /**
@@ -62,6 +63,8 @@ function SessionLobbyCard({
   joinStatus?: "idle" | "joining" | "error"
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
   const uid = React.useId()
   const [copied, setCopied] = React.useState(false)
   const [joinCode, setJoinCode] = React.useState("")
@@ -71,16 +74,15 @@ function SessionLobbyCard({
   return (
     <Card data-slot="session-lobby-card" className={className}>
       <CardHeader>
-        <CardTitle>Investigate with a partner</CardTitle>
-        <CardDescription>
-          Share your code with your partner. You'll each check the evidence on
-          your own, then compare notes and decide together.
-        </CardDescription>
+        <CardTitle>{labels.lobby.title}</CardTitle>
+        <CardDescription>{labels.lobby.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor={`${uid}-code`}>Your session code</FieldLabel>
+            <FieldLabel htmlFor={`${uid}-code`}>
+              {labels.lobby.yourCode}
+            </FieldLabel>
             <InputGroup className="h-11">
               <InputGroupInput
                 id={`${uid}-code`}
@@ -101,14 +103,14 @@ function SessionLobbyCard({
                   ) : (
                     <CopyIcon />
                   )}
-                  {copied ? "Copied" : "Copy"}
+                  {copied ? labels.lobby.copied : labels.lobby.copy}
                 </InputGroupButton>
               </InputGroupAddon>
             </InputGroup>
           </Field>
 
           <ul
-            aria-label="Team"
+            aria-label={labels.lobby.team}
             className="flex flex-col divide-y divide-border rounded-2xl border border-border"
           >
             {players.map((player) => (
@@ -118,14 +120,16 @@ function SessionLobbyCard({
               >
                 <PlayerAvatar player={player} />
                 <span className="flex flex-1 items-center gap-1.5 text-body-sm font-medium">
-                  {player.isYou ? `${player.name} (you)` : playerLabel(player)}
+                  {player.isYou
+                    ? labels.common.youNamed({ name: player.name })
+                    : playerLabel(player)}
                   {player.isAi && <AiTag />}
                 </span>
                 {player.id === hostId && (
-                  <StatusBadge tone="muted">Host</StatusBadge>
+                  <StatusBadge tone="muted">{labels.lobby.host}</StatusBadge>
                 )}
                 <StatusBadge tone="success" dot>
-                  Ready
+                  {labels.lobby.ready}
                 </StatusBadge>
               </li>
             ))}
@@ -135,9 +139,14 @@ function SessionLobbyCard({
                 className="flex items-center gap-3 px-3 py-2.5 text-muted-foreground"
               >
                 <span className="flex size-8 items-center justify-center rounded-full border border-dashed border-border">
-                  <Spinner className="size-3.5" aria-label="Waiting" />
+                  <Spinner
+                    className="size-3.5"
+                    aria-label={labels.lobby.waiting}
+                  />
                 </span>
-                <span className="text-body-sm">Waiting for your partner…</span>
+                <span className="text-body-sm">
+                  {labels.lobby.waitingForPartner}
+                </span>
               </li>
             ))}
           </ul>
@@ -145,11 +154,11 @@ function SessionLobbyCard({
           {onJoin && (
             <>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                Or join your partner
+                {labels.lobby.orJoin}
               </FieldSeparator>
               <Field data-invalid={joinStatus === "error" || undefined}>
                 <FieldLabel htmlFor={`${uid}-join`}>
-                  Partner's session code
+                  {labels.lobby.partnerCode}
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupInput
@@ -158,7 +167,7 @@ function SessionLobbyCard({
                     onChange={(event) =>
                       setJoinCode(event.target.value.toUpperCase())
                     }
-                    placeholder="XXXX-XX"
+                    placeholder={labels.lobby.codePlaceholder}
                     aria-invalid={joinStatus === "error" || undefined}
                     className="font-mono tracking-widest"
                   />
@@ -170,14 +179,12 @@ function SessionLobbyCard({
                       onClick={() => onJoin(joinCode.trim())}
                     >
                       {joinStatus === "joining" && <Spinner />}
-                      Join
+                      {labels.lobby.join}
                     </InputGroupButton>
                   </InputGroupAddon>
                 </InputGroup>
                 {joinStatus === "error" && (
-                  <FieldError>
-                    No session with that code. Check it with your partner.
-                  </FieldError>
+                  <FieldError>{labels.lobby.joinError}</FieldError>
                 )}
               </Field>
             </>
@@ -190,11 +197,11 @@ function SessionLobbyCard({
           onClick={onStart}
           className={notYetClassName}
         >
-          Start investigating
+          {labels.lobby.start}
         </Button>
         {!isFull && (
           <p className="text-center text-caption text-muted-foreground">
-            The timers start for everyone at once, so wait for your partner.
+            {labels.lobby.startHint}
           </p>
         )}
       </CardFooter>

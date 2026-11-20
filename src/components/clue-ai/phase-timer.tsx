@@ -1,7 +1,10 @@
+"use client"
+
 import { HourglassIcon, LockIcon, TimerIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { formatElapsed } from "@/lib/format"
+import { useClueAiLabels } from "./lib/labels"
 
 export type PhaseTimerStatus = "idle" | "running" | "expired"
 
@@ -25,6 +28,7 @@ function PhaseTimer({
   status?: PhaseTimerStatus
   className?: string
 }) {
+  const labels = useClueAiLabels()
   const isLow = status === "running" && remainingSeconds <= 60
   const elapsed =
     status === "idle"
@@ -60,7 +64,11 @@ function PhaseTimer({
       <span className="text-muted-foreground">{label}</span>
       <span
         role="timer"
-        aria-label={`${label}: ${status === "expired" ? "time's up" : `${formatElapsed(remainingSeconds)} left`}`}
+        aria-label={labels.phaseTimer.label({
+          phase: label,
+          expired: status === "expired",
+          remaining: formatElapsed(remainingSeconds),
+        })}
         className={cn(
           "font-medium tabular-nums",
           isLow && "text-warning",
@@ -68,7 +76,7 @@ function PhaseTimer({
         )}
       >
         {status === "expired"
-          ? "Time's up"
+          ? labels.phaseTimer.timesUp
           : formatElapsed(status === "idle" ? totalSeconds : remainingSeconds)}
       </span>
       {status !== "idle" && (

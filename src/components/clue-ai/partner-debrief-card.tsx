@@ -1,3 +1,5 @@
+"use client"
+
 import { BotIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -9,12 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { StatusBadge } from "@/components/patterns/status-badge"
-import {
-  AI_PARTNER_BEHAVIORS,
-  playerLabel,
-  type AiPartnerBehavior,
-  type Player,
-} from "./lib/case"
+import type { AiPartnerBehavior, Player } from "./lib/case"
+import { useClueAiLabels, usePlayerLabel } from "./lib/labels"
 
 export interface PartnerDebriefStats {
   /** Team answers the AI suggested in chat */
@@ -44,26 +42,26 @@ function PartnerDebriefCard({
   stats: PartnerDebriefStats
   className?: string
 }) {
-  const name = playerLabel(partner)
-  const meta = AI_PARTNER_BEHAVIORS[behavior]
+  const labels = useClueAiLabels()
+  const name = usePlayerLabel()(partner)
+  const meta = labels.aiBehaviors[behavior]
   const items = [
     {
-      label: "Suggestions you accepted",
+      label: labels.debrief.accepted,
       value: `${stats.accepted}/${stats.proposals}`,
     },
-    { label: `Times ${name} changed its mind`, value: stats.changedMind },
+    { label: labels.debrief.changedMind({ name }), value: stats.changedMind },
     {
-      label: "Team answers that matched the key",
+      label: labels.debrief.matchedKey,
       value: `${stats.teamCorrect}/${stats.totalSentences}`,
     },
   ]
   return (
     <Card data-slot="partner-debrief-card" className={className}>
       <CardHeader>
-        <CardTitle>How {name} played</CardTitle>
+        <CardTitle>{labels.debrief.title({ name })}</CardTitle>
         <CardDescription>
-          {name} wasn't trying to solve the case the same way you were. Here's
-          how it was set up to argue.
+          {labels.debrief.description({ name })}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

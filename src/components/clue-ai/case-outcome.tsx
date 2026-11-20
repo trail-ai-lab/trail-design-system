@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import {
   GavelIcon,
@@ -20,6 +22,7 @@ import {
 import { DetailList } from "@/components/patterns/detail-list"
 import { StatusBadge } from "@/components/patterns/status-badge"
 import { VERDICTS, type Suspect, type Verdict } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 /** How the final call went: right person and motive, right person only, or wrong person. */
 export type CaseOutcomeResult = "solved" | "partial" | "unsolved"
@@ -27,30 +30,22 @@ export type CaseOutcomeResult = "solved" | "partial" | "unsolved"
 const RESULT: Record<
   CaseOutcomeResult,
   {
-    kicker: string
-    stamp: string
     tone: "success" | "warning" | "destructive"
     icon: LucideIcon
     stampClassName: string
   }
 > = {
   solved: {
-    kicker: "Case closed",
-    stamp: "Charged",
     tone: "success",
     icon: TrophyIcon,
     stampClassName: "text-success",
   },
   partial: {
-    kicker: "Case not proven",
-    stamp: "Released",
     tone: "warning",
     icon: SearchXIcon,
     stampClassName: "text-warning",
   },
   unsolved: {
-    kicker: "The case went cold",
-    stamp: "Convicted",
     tone: "destructive",
     icon: GavelIcon,
     stampClassName: "text-destructive",
@@ -132,7 +127,9 @@ function CaseOutcome({
   children?: React.ReactNode
   className?: string
 }) {
-  const meta = RESULT[result]
+  const labels = useClueAiLabels()
+  const t = labels.outcome
+  const meta = { ...RESULT[result], ...t.results[result] }
   const Icon = meta.icon
   const isGrim = result !== "solved"
 
@@ -242,7 +239,7 @@ function CaseOutcome({
                 />
                 <div className="flex flex-col">
                   <span className="text-caption text-muted-foreground">
-                    Your rank
+                    {t.rank}
                   </span>
                   <span className="font-heading text-title">{rank}</span>
                 </div>
@@ -274,8 +271,8 @@ function CaseOutcome({
       <div className="grid gap-(--shell-gap) md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Your final call</CardTitle>
-            <CardDescription>What the team submitted</CardDescription>
+            <CardTitle>{t.finalCallTitle}</CardTitle>
+            <CardDescription>{t.finalCallDescription}</CardDescription>
           </CardHeader>
           <CardContent>
             <DetailList items={accusation} />
@@ -284,10 +281,12 @@ function CaseOutcome({
 
         <Card>
           <CardHeader>
-            <CardTitle>Suspects</CardTitle>
+            <CardTitle>{t.suspectsTitle}</CardTitle>
             <CardDescription>
-              {suspects.filter((s) => s.verdict).length} of {suspects.length}{" "}
-              investigated
+              {t.investigated({
+                count: suspects.filter((s) => s.verdict).length,
+                total: suspects.length,
+              })}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -306,16 +305,16 @@ function CaseOutcome({
                     </span>
                     <span className="text-caption text-muted-foreground tabular-nums">
                       {score !== undefined
-                        ? `${score}/${sentenceCount} sentences correct`
-                        : "Not investigated"}
+                        ? t.sentencesCorrect({ score, total: sentenceCount })
+                        : t.notInvestigated}
                     </span>
                   </div>
                   {verdict ? (
                     <StatusBadge tone={VERDICTS[verdict].tone}>
-                      {VERDICTS[verdict].label}
+                      {labels.verdicts[verdict].label}
                     </StatusBadge>
                   ) : (
-                    <StatusBadge tone="muted">Skipped</StatusBadge>
+                    <StatusBadge tone="muted">{t.skipped}</StatusBadge>
                   )}
                 </li>
               ))}
@@ -327,7 +326,7 @@ function CaseOutcome({
       {timeline && timeline.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Investigation timeline</CardTitle>
+            <CardTitle>{t.timelineTitle}</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="relative flex flex-col gap-4 before:absolute before:inset-y-1.5 before:left-1 before:w-px before:bg-border">

@@ -22,6 +22,7 @@ import {
   type Classification,
   type SummarySentenceData,
 } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 export type SummaryClassifications = Record<string, Classification | null>
 
@@ -68,6 +69,7 @@ function AiSummaryCard({
   footer?: React.ReactNode
   className?: string
 }) {
+  const labels = useClueAiLabels()
   const [value, setValue] = useControllableState<SummaryClassifications>({
     value: valueProp,
     defaultValue: defaultValue ?? {},
@@ -89,11 +91,13 @@ function AiSummaryCard({
   return (
     <Card data-slot="ai-summary-card" className={className}>
       <CardHeader>
-        <CardTitle>AI summary of {suspectName}</CardTitle>
+        <CardTitle>
+          {labels.aiSummary.title({ suspect: suspectName })}
+        </CardTitle>
         <CardDescription>
           {answers
-            ? "The answer key, based on what each source actually says."
-            : `Scotland Yard's case assistant wrote this from ${suspectName}'s files. Check each sentence against its source before you mark it.`}
+            ? labels.aiSummary.answerKeyDescription
+            : labels.aiSummary.description({ suspect: suspectName })}
         </CardDescription>
         <CardAction>
           <span className="text-body-sm font-medium tabular-nums">
@@ -101,14 +105,20 @@ function AiSummaryCard({
             <span className="text-muted-foreground">/{total}</span>
           </span>
           <span className="sr-only">
-            {answers ? " correct" : " classified"}
+            {answers
+              ? labels.aiSummary.correctSuffix
+              : labels.aiSummary.classifiedSuffix}
           </span>
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <Progress
           value={total ? (progress / total) * 100 : 0}
-          aria-label={answers ? "Sentences correct" : "Sentences classified"}
+          aria-label={
+            answers
+              ? labels.aiSummary.progressCorrect
+              : labels.aiSummary.progressClassified
+          }
           className="h-1.5 *:bg-foreground"
         />
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-caption text-muted-foreground">
@@ -121,7 +131,7 @@ function AiSummaryCard({
                   aria-hidden
                   className={cn("size-3.5", toneTextClassName[meta.tone])}
                 />
-                {meta.label}
+                {labels.classifications[classification].label}
                 <span className="font-medium text-foreground tabular-nums">
                   {count}
                 </span>

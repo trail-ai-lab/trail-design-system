@@ -3,6 +3,32 @@
 All notable changes are recorded here. Versions follow [Semantic Versioning](https://semver.org);
 see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
+## Unreleased
+
+## 3.9.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.9.0`.
+
+### Minor Changes
+
+- **Clue AI is translatable:** every built-in string in the Clue AI components (titles, buttons,
+  placeholders, aria-labels, screen-reader text, tooltips, defaults) now comes from
+  `useClueAiLabels()`. Wrap the app in `ClueAiLabelsProvider labels={…}` with any subset of
+  `ClueAiLabels` — the rest stays English. New exports from `…/clue-ai`: `ClueAiLabelsProvider`,
+  `useClueAiLabels`, `usePlayerLabel`, `defaultClueAiLabels`, `mergeClueAiLabels`, and the types
+  `ClueAiLabels` / `ClueAiLabelsOverrides`. Without a provider nothing changes. `playerLabel` takes an
+  optional second argument (the word for the current player, default "You") and `chatTopicLabel` an
+  optional `labels` argument (`useClueAiLabels().chat.topic`); existing calls keep working. Every
+  Clue AI component is now a client component (`"use client"`). New story: **ClueAI/Localization**.
+- **`CaseSidebar` `onSelectNav`:** called when a nav item without a `navHrefs` link is picked, for
+  apps that switch the briefing / suspects / final call views in state instead of by route.
+
+### Patch Changes
+
+- **React peer range is `^19.2.0`:** the bundle uses `Activity` (via `react-resizable-panels`), which
+  React added in 19.2, so apps on 19.0–19.1 failed to build. In Next.js apps this means Next 16, whose
+  bundled React has it.
+
 ## 3.8.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.8.0`.

@@ -1,8 +1,11 @@
+"use client"
+
 import { FileTextIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import type { CitedDocument } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 /**
  * The case files a message or rationale relies on, as small chips. With
@@ -21,11 +24,12 @@ function CitedDocuments({
   activeDocumentId?: string
   className?: string
 }) {
+  const labels = useClueAiLabels()
   if (documents.length === 0) return null
   return (
     <ul
       data-slot="cited-documents"
-      aria-label="Cited files"
+      aria-label={labels.evidence.citedFiles}
       className={cn("flex flex-wrap gap-1.5", className)}
     >
       {documents.map((document) => (

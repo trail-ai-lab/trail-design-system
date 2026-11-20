@@ -13,6 +13,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useClueAiLabels } from "./lib/labels"
 
 export interface CasePanel {
   value: string
@@ -80,6 +81,7 @@ function CasePanels({
   onOpenChange?: (open: boolean) => void
   className?: string
 }) {
+  const labels = useClueAiLabels()
   const isLarge = useIsLarge()
   const [value, setValue] = useControllableState({
     value: valueProp,
@@ -167,7 +169,7 @@ function CasePanels({
           <DrawerHeader className="sr-only">
             <DrawerTitle>{active?.label}</DrawerTitle>
             <DrawerDescription>
-              {panels.map((p) => p.label).join(" and ")}
+              {labels.panels.drawerDescription(panels.map((p) => p.label))}
             </DrawerDescription>
           </DrawerHeader>
           <div className="flex min-h-0 flex-1 flex-col p-(--shell-gap) pt-2">

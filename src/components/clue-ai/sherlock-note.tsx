@@ -1,8 +1,11 @@
+"use client"
+
 import * as React from "react"
 import { SearchIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useClueAiLabels } from "./lib/labels"
 
 export type SherlockNoteVariant = "default" | "success" | "destructive"
 
@@ -21,7 +24,7 @@ const bubbleClassName: Record<SherlockNoteVariant, string> = {
  * `destructive` when it put an innocent behind bars.
  */
 function SherlockNote({
-  title = "Sherlock",
+  title,
   avatarUrl,
   variant = "default",
   actions,
@@ -37,6 +40,7 @@ function SherlockNote({
   children: React.ReactNode
   className?: string
 }) {
+  const labels = useClueAiLabels()
   return (
     <figure
       data-slot="sherlock-note"
@@ -51,7 +55,7 @@ function SherlockNote({
       </Avatar>
       <div className="flex min-w-0 flex-1 flex-col items-start gap-1.5">
         <figcaption className="text-caption font-medium text-muted-foreground">
-          {title}
+          {title ?? labels.sherlock.name}
         </figcaption>
         <blockquote
           className={cn(

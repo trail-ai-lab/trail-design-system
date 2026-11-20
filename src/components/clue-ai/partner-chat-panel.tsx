@@ -38,12 +38,17 @@ import { CitedDocuments } from "./cited-documents"
 import { ClassificationBadge } from "./classification-badge"
 import {
   VERDICTS,
-  playerLabel,
   type CitedDocument,
   type Classification,
   type Player,
   type Verdict,
 } from "./lib/case"
+import {
+  defaultClueAiLabels,
+  useClueAiLabels,
+  usePlayerLabel,
+  type ClueAiLabels,
+} from "./lib/labels"
 import { AiTag, PlayerAvatar } from "./player-avatar"
 
 /** What a message is about: one sentence, the verdict, or the motive. */
@@ -52,9 +57,16 @@ export type ChatTopic =
   | { kind: "verdict" }
   | { kind: "motive" }
 
-export function chatTopicLabel(topic: ChatTopic) {
-  if (topic.kind === "sentence") return `Sentence ${topic.index}`
-  return topic.kind === "verdict" ? "Verdict" : "Motive"
+/**
+ * A topic's name, e.g. "Sentence 3". Pass `labels` (from
+ * `useClueAiLabels().chat.topic`) for localized text; English by default.
+ */
+export function chatTopicLabel(
+  topic: ChatTopic,
+  labels: ClueAiLabels["chat"]["topic"] = defaultClueAiLabels.chat.topic
+) {
+  if (topic.kind === "sentence") return labels.sentence({ index: topic.index })
+  return topic.kind === "verdict" ? labels.verdict : labels.motive
 }
 
 function topicKey(topic?: ChatTopic | null) {
@@ -160,6 +172,9 @@ function PartnerChatPanel({
   activeDocumentId?: string
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
+  const t = labels.chat
   const uid = React.useId()
   const [topic, setTopic] = useControllableState<ChatTopic | null>({
     value: topicProp,
@@ -187,7 +202,7 @@ function PartnerChatPanel({
         ref={scrollRef}
         tabIndex={0}
         role="region"
-        aria-label={`Chat with ${name}`}
+        aria-label={t.region({ name })}
         className="min-h-0 flex-1 overflow-y-auto mask-t-from-90% pt-(--card-spacing)"
       >
         {status === "waiting" && messages.length === 0 ? (
@@ -196,15 +211,18 @@ function PartnerChatPanel({
               <EmptyMedia variant="icon">
                 <MessageCircleIcon />
               </EmptyMedia>
-              <EmptyTitle>Chat opens at deliberation</EmptyTitle>
+              <EmptyTitle>{t.waitingTitle}</EmptyTitle>
               <EmptyDescription>
-                Once you and {name} both submit your answers, you can compare
-                them here and argue out the differences.
+                {t.waitingDescription({ name })}
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
         ) : (
-          <ChatLog loading={typing} className="py-1">
+          <ChatLog
+            loading={typing}
+            aria-label={t.conversation}
+            className="py-1"
+          >
             {messages.map((message) => {
               if (message.type === "event") {
                 const Icon = message.icon ? EVENT_ICON[message.icon] : null
@@ -226,7 +244,7 @@ function PartnerChatPanel({
               const sender = byId(message.from)
               const topicBadge = message.topic && (
                 <StatusBadge tone="muted">
-                  {chatTopicLabel(message.topic)}
+                  {chatTopicLabel(message.topic, t.topic)}
                 </StatusBadge>
               )
               const documents = message.documents?.length ? (
@@ -253,7 +271,7 @@ function PartnerChatPanel({
               const header = (
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="text-caption font-medium">
-                    {sender ? playerLabel(sender) : "Teammate"}
+                    {sender ? playerLabel(sender) : labels.common.teammate}
                   </span>
                   {sender?.isAi && <AiTag />}
                   {topicBadge}
@@ -311,7 +329,7 @@ function PartnerChatPanel({
             {typing && (
               <ChatTypingRow
                 avatar={<PlayerAvatar player={partner} size="sm" />}
-                label={`${name} is typing`}
+                label={t.typing({ name })}
               />
             )}
           </ChatLog>
@@ -323,12 +341,12 @@ function PartnerChatPanel({
           disabled={!isOpen}
           placeholder={
             status === "closed"
-              ? "Deliberation time is up"
+              ? t.placeholderClosed
               : status === "waiting"
-                ? `Waiting for you and ${name} to submit`
-                : `Message ${name}…`
+                ? t.placeholderWaiting({ name })
+                : t.placeholder({ name })
           }
-          sendLabel={`Send to ${name}`}
+          sendLabel={t.send({ name })}
           onSend={send}
           leading={
             isOpen && (topics.length > 0 || suggestions.length > 0) ? (
@@ -337,21 +355,25 @@ function PartnerChatPanel({
                   <Select
                     value={topicKey(topic)}
                     onValueChange={(key) =>
-                      setTopic(topics.find((t) => topicKey(t) === key) ?? null)
+                      setTopic(
+                        topics.find((item) => topicKey(item) === key) ?? null
+                      )
                     }
                   >
-                    <SelectTrigger
-                      size="sm"
-                      aria-label="What your message is about"
-                    >
+                    <SelectTrigger size="sm" aria-label={t.topicLabel}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="general">General</SelectItem>
-                        {topics.map((t) => (
-                          <SelectItem key={topicKey(t)} value={topicKey(t)}>
-                            {chatTopicLabel(t)}
+                        <SelectItem value="general">
+                          {t.topic.general}
+                        </SelectItem>
+                        {topics.map((item) => (
+                          <SelectItem
+                            key={topicKey(item)}
+                            value={topicKey(item)}
+                          >
+                            {chatTopicLabel(item, t.topic)}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -372,11 +394,7 @@ function PartnerChatPanel({
               </div>
             ) : undefined
           }
-          toolbar={
-            status === "closed"
-              ? "The chat is closed. Your team answers are as you left them."
-              : `${name} can suggest answers. You have the final say.`
-          }
+          toolbar={status === "closed" ? t.hintClosed : t.hintOpen({ name })}
         />
       </CardFooter>
     </Card>
@@ -399,12 +417,8 @@ function ProposalCard({
   disabled: boolean
   onRespond?: (response: "accepted" | "declined") => void
 }) {
-  const what =
-    proposal.kind === "classification"
-      ? topic
-        ? `team answer for ${chatTopicLabel(topic).toLowerCase()}`
-        : "team answer"
-      : "team verdict"
+  const labels = useClueAiLabels()
+  const t = labels.chat
   return (
     <div
       data-slot="partner-proposal"
@@ -413,13 +427,19 @@ function ProposalCard({
     >
       <div className="flex flex-wrap items-center gap-2">
         <span id={`${id}-label`} className="text-caption text-muted-foreground">
-          Suggests as the {what}
+          {t.suggests({
+            kind: proposal.kind,
+            topic:
+              proposal.kind === "classification" && topic
+                ? chatTopicLabel(topic, t.topic)
+                : undefined,
+          })}
         </span>
         {proposal.kind === "classification" ? (
           <ClassificationBadge classification={proposal.classification} />
         ) : (
           <StatusBadge tone={VERDICTS[proposal.verdict].tone}>
-            {VERDICTS[proposal.verdict].label}
+            {labels.verdicts[proposal.verdict].label}
             {proposal.motiveLabel && ` · ${proposal.motiveLabel}`}
           </StatusBadge>
         )}
@@ -437,7 +457,7 @@ function ProposalCard({
             onClick={() => onRespond?.("accepted")}
           >
             <CheckIcon data-icon="inline-start" />
-            Accept
+            {t.accept}
           </Button>
           <Button
             size="sm"
@@ -445,7 +465,7 @@ function ProposalCard({
             disabled={disabled}
             onClick={() => onRespond?.("declined")}
           >
-            Keep mine
+            {t.keepMine}
           </Button>
         </div>
       ) : (
@@ -455,7 +475,7 @@ function ProposalCard({
           ) : (
             <Undo2Icon aria-hidden className="size-3.5" />
           )}
-          {status === "accepted" ? "You accepted this" : "You kept your answer"}
+          {status === "accepted" ? t.accepted : t.declined}
         </p>
       )}
     </div>

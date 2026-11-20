@@ -37,11 +37,11 @@ import { Spinner } from "@/components/ui/spinner"
 import {
   VERDICTS,
   notYetClassName,
-  playerLabel,
   type Motive,
   type Player,
   type Verdict,
 } from "./lib/case"
+import { useClueAiLabels, usePlayerLabel } from "./lib/labels"
 import { PlayerAvatar } from "./player-avatar"
 
 export interface VerdictValue {
@@ -93,6 +93,8 @@ function VerdictForm({
   disabledReason?: string
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
   const uid = React.useId()
   const [value, setValue] = useControllableState<VerdictValue>({
     value: valueProp,
@@ -109,13 +111,13 @@ function VerdictForm({
     <Card data-slot="verdict-form" className={className}>
       <CardHeader>
         <CardTitle>
-          {isTeam ? "Team verdict" : "Your verdict"} on {suspectName}
+          {labels.verdictForm.title({ suspect: suspectName, isTeam })}
         </CardTitle>
         <CardDescription>
           {description ??
             (isTeam
-              ? "Talk it through with your partner, then commit to one call together. It uses one of your team verdicts."
-              : `Based on the summary and its sources, does the case against ${suspectName} hold up?`)}
+              ? labels.verdictForm.teamDescription
+              : labels.verdictForm.soloDescription({ suspect: suspectName }))}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -129,7 +131,7 @@ function VerdictForm({
           <FieldGroup>
             <FieldSet>
               <FieldLegend variant="label" className="sr-only">
-                Verdict
+                {labels.verdictForm.legend}
               </FieldLegend>
               <RadioGroup
                 value={value.verdict ?? ""}
@@ -143,7 +145,7 @@ function VerdictForm({
                 className="grid gap-3 sm:grid-cols-2"
               >
                 {(Object.keys(VERDICTS) as Verdict[]).map((verdict) => {
-                  const meta = VERDICTS[verdict]
+                  const meta = labels.verdicts[verdict]
                   const pickedBy =
                     picks?.filter((p) => p.verdict === verdict) ?? []
                   const id = `${uid}-${verdict}`
@@ -175,14 +177,18 @@ function VerdictForm({
             </FieldSet>
             {needsMotive && (
               <Field>
-                <FieldLabel htmlFor={`${uid}-motive`}>Motive</FieldLabel>
+                <FieldLabel htmlFor={`${uid}-motive`}>
+                  {labels.common.motive}
+                </FieldLabel>
                 <Select
                   value={value.motive ?? ""}
                   onValueChange={(motive) => setValue({ ...value, motive })}
                   disabled={disabled}
                 >
                   <SelectTrigger id={`${uid}-motive`} className="w-full">
-                    <SelectValue placeholder="What drove them to it?" />
+                    <SelectValue
+                      placeholder={labels.common.motivePlaceholder}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -196,13 +202,14 @@ function VerdictForm({
                 </Select>
                 {isTeam && picks.some((p) => p.motive) && (
                   <FieldDescription>
-                    {picks
-                      .filter((p) => p.motive)
-                      .map(
-                        (p) =>
-                          `${playerLabel(p.player)}: ${motiveLabel(p.motive)}`
-                      )
-                      .join(" · ")}
+                    {labels.verdictForm.motivePicks(
+                      picks
+                        .filter((p) => p.motive)
+                        .map((p) => ({
+                          player: playerLabel(p.player),
+                          motive: motiveLabel(p.motive) ?? "",
+                        }))
+                    )}
                   </FieldDescription>
                 )}
               </Field>
@@ -218,7 +225,7 @@ function VerdictForm({
           className={cn(!loading && notYetClassName)}
         >
           {loading && <Spinner data-icon="inline-start" />}
-          {isTeam ? "Submit team verdict" : "Submit verdict"}
+          {isTeam ? labels.verdictForm.submitTeam : labels.verdictForm.submit}
         </Button>
         {disabledReason && (disabled || !isComplete) && (
           <p className="text-center text-caption text-muted-foreground">
@@ -238,12 +245,14 @@ function PickedBy({
   players: Player[]
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
   if (players.length === 0) {
     return (
       <span
         className={cn("mt-1 text-caption text-muted-foreground", className)}
       >
-        No one picked this
+        {labels.verdictForm.nobodyPicked}
       </span>
     )
   }
@@ -255,7 +264,7 @@ function PickedBy({
         ))}
       </AvatarGroup>
       <span className="text-caption text-muted-foreground">
-        {players.map(playerLabel).join(" and ")}
+        {labels.common.list(players.map(playerLabel))}
       </span>
     </span>
   )

@@ -26,40 +26,17 @@ import {
 } from "@/components/ui/field"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
-import {
-  notYetClassName,
-  playerLabel,
-  type Player,
-  type PlayMode,
-} from "./lib/case"
+import { notYetClassName, type Player, type PlayMode } from "./lib/case"
+import { useClueAiLabels, usePlayerLabel } from "./lib/labels"
 import { PlayerAvatar } from "./player-avatar"
 
-const MODES: Record<
+const MODE_ICON: Record<
   PlayMode,
-  {
-    title: string
-    description: string
-    icon: React.ComponentType<React.ComponentProps<"svg">>
-  }
+  React.ComponentType<React.ComponentProps<"svg">>
 > = {
-  solo: {
-    title: "On your own",
-    description:
-      "Classify the summaries, judge each suspect and make the final call alone.",
-    icon: UserIcon,
-  },
-  partner: {
-    title: "With a friend",
-    description:
-      "Pair up with a session code. You investigate separately, then agree on team answers.",
-    icon: UsersIcon,
-  },
-  ai: {
-    title: "With an AI teammate",
-    description:
-      "An AI reads the same files and makes its own calls. You compare answers and talk them through in chat.",
-    icon: BotIcon,
-  },
+  solo: UserIcon,
+  partner: UsersIcon,
+  ai: BotIcon,
 }
 
 const MODE_ORDER: PlayMode[] = ["solo", "partner", "ai"]
@@ -100,6 +77,9 @@ function PlayModeForm({
   loading?: boolean
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
+  const t = labels.playMode
   const uid = React.useId()
   const [value, setValue] = useControllableState<Partial<PlayModeValue>>({
     value: valueProp,
@@ -116,11 +96,8 @@ function PlayModeForm({
   return (
     <Card data-slot="play-mode-form" className={className}>
       <CardHeader>
-        <CardTitle>How do you want to play?</CardTitle>
-        <CardDescription>
-          Every mode has the same case, files and timers. Only who you work it
-          with changes.
-        </CardDescription>
+        <CardTitle>{t.title}</CardTitle>
+        <CardDescription>{t.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <form
@@ -137,7 +114,7 @@ function PlayModeForm({
           <FieldGroup>
             <FieldSet>
               <FieldLegend variant="label" className="sr-only">
-                Play mode
+                {t.legend}
               </FieldLegend>
               <RadioGroup
                 value={value.mode ?? ""}
@@ -147,8 +124,8 @@ function PlayModeForm({
                 className="grid gap-3"
               >
                 {modes.map((mode) => {
-                  const meta = MODES[mode]
-                  const Icon = meta.icon
+                  const meta = t.modes[mode]
+                  const Icon = MODE_ICON[mode]
                   const id = `${uid}-${mode}`
                   return (
                     <FieldLabel key={mode} htmlFor={id}>
@@ -179,10 +156,8 @@ function PlayModeForm({
             </FieldSet>
             {picksTeammate && (
               <FieldSet>
-                <FieldLegend variant="label">Pick your teammate</FieldLegend>
-                <FieldDescription>
-                  Each one reads the same files and makes its own calls.
-                </FieldDescription>
+                <FieldLegend variant="label">{t.teammateLegend}</FieldLegend>
+                <FieldDescription>{t.teammateDescription}</FieldDescription>
                 <RadioGroup
                   value={value.teammateId ?? ""}
                   onValueChange={(teammateId) =>
@@ -226,12 +201,12 @@ function PlayModeForm({
         >
           {loading && <Spinner data-icon="inline-start" />}
           {value.mode === "partner"
-            ? "Continue to pairing"
+            ? t.continuePairing
             : value.mode === "ai"
               ? teammate
-                ? `Start with ${playerLabel(teammate)}`
-                : "Pick a teammate to start"
-              : "Start the case"}
+                ? t.startWith({ name: playerLabel(teammate) })
+                : t.pickTeammate
+              : t.start}
         </Button>
       </CardFooter>
     </Card>

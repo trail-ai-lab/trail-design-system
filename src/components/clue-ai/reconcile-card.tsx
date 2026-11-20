@@ -31,12 +31,12 @@ import { ClassificationPicker } from "./classification-picker"
 import { CitedDocuments } from "./cited-documents"
 import {
   classificationHighlightClassName,
-  playerLabel,
   type Classification,
   type Player,
   type Rationale,
   type SummarySentenceData,
 } from "./lib/case"
+import { useClueAiLabels, usePlayerLabel } from "./lib/labels"
 import { AiTag, PlayerAvatar } from "./player-avatar"
 
 /** Each player's classification per sentence: `picks[sentenceId][playerId]`. */
@@ -102,6 +102,8 @@ function ReconcileCard({
   footer?: React.ReactNode
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
   const agreedAnswer = React.useCallback(
     (id: string) => {
       const values = players.map((p) => picks[id]?.[p.id] ?? null)
@@ -131,22 +133,30 @@ function ReconcileCard({
   const resolved = sentences.filter((s) => value[s.id]).length
   const visible = filter === "all" ? numbered : conflicts
   const partner = players.find((p) => !p.isYou)
+  const partnerName = partner ? playerLabel(partner) : labels.reconcile.partner
 
   return (
     <Card data-slot="reconcile-card" className={className}>
       <CardHeader>
-        <CardTitle>Agree on the team answers</CardTitle>
+        <CardTitle>{labels.reconcile.title}</CardTitle>
         <CardDescription>
           {conflicts.length === 0
-            ? `You and ${partner ? playerLabel(partner) : "your partner"} classified every sentence about ${suspectName} the same way.`
-            : `You and ${partner ? playerLabel(partner) : "your partner"} disagreed on ${conflicts.length} of ${sentences.length} sentences. Check the source together, then pick one answer for each.`}
+            ? labels.reconcile.allAgreed({
+                partner: partnerName,
+                suspect: suspectName,
+              })
+            : labels.reconcile.disagreed({
+                partner: partnerName,
+                count: conflicts.length,
+                total: sentences.length,
+              })}
         </CardDescription>
         <CardAction>
           <span className="text-body-sm font-medium tabular-nums">
             {resolved}
             <span className="text-muted-foreground">/{sentences.length}</span>
           </span>
-          <span className="sr-only"> agreed</span>
+          <span className="sr-only">{labels.reconcile.agreedSuffix}</span>
         </CardAction>
       </CardHeader>
       <CardContent>
@@ -157,16 +167,16 @@ function ReconcileCard({
           spacing={0}
           value={filter}
           onValueChange={(next) => next && setFilter(next as ReconcileFilter)}
-          aria-label="Show sentences"
+          aria-label={labels.reconcile.filterLabel}
         >
           <ToggleGroupItem value="disagreements">
-            Disagreements
+            {labels.reconcile.disagreements}
             <span className="text-muted-foreground tabular-nums">
               {conflicts.length}
             </span>
           </ToggleGroupItem>
           <ToggleGroupItem value="all">
-            All sentences
+            {labels.reconcile.allSentences}
             <span className="text-muted-foreground tabular-nums">
               {sentences.length}
             </span>
@@ -181,10 +191,9 @@ function ReconcileCard({
               <EmptyMedia variant="icon">
                 <HandshakeIcon />
               </EmptyMedia>
-              <EmptyTitle>No disagreements</EmptyTitle>
+              <EmptyTitle>{labels.reconcile.emptyTitle}</EmptyTitle>
               <EmptyDescription>
-                Every team answer is already settled. Review all sentences or
-                move on to the team verdict.
+                {labels.reconcile.emptyDescription}
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -263,6 +272,8 @@ function ReconcileSentence({
   disabled?: boolean
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
   return (
     <li
       data-slot="reconcile-sentence"
@@ -282,7 +293,9 @@ function ReconcileSentence({
       <div className="@container flex min-w-0 flex-1 flex-col gap-3">
         <div className="flex items-start gap-3">
           <p className="flex-1 text-body-sm leading-relaxed">
-            <span className="sr-only">Sentence {index}: </span>
+            <span className="sr-only">
+              {labels.common.sentenceNumber({ index })}
+            </span>
             <mark
               className={cn(
                 "rounded-sm bg-transparent box-decoration-clone px-0.5 text-inherit transition-colors duration-base ease-standard",
@@ -294,10 +307,10 @@ function ReconcileSentence({
           </p>
           {isConflict ? (
             <StatusBadge tone="warning" dot>
-              Disagree
+              {labels.reconcile.disagree}
             </StatusBadge>
           ) : (
-            <StatusBadge tone="muted">Agreed</StatusBadge>
+            <StatusBadge tone="muted">{labels.reconcile.agreed}</StatusBadge>
           )}
         </div>
         <ul className="flex flex-col gap-1.5 rounded-lg border border-border px-3 py-2">
@@ -344,7 +357,9 @@ function ReconcileSentence({
                 className="text-muted-foreground aria-pressed:text-foreground"
               >
                 <FileSearchIcon data-icon="inline-start" />
-                {isActive ? "Viewing source" : "Check source"}
+                {isActive
+                  ? labels.common.viewingSource
+                  : labels.common.checkSource}
               </Button>
             )}
             {onDiscuss && (
@@ -356,17 +371,21 @@ function ReconcileSentence({
                 className="text-muted-foreground aria-pressed:text-foreground"
               >
                 <MessageCircleIcon data-icon="inline-start" />
-                {isDiscussing ? "Discussing" : "Discuss"}
+                {isDiscussing
+                  ? labels.reconcile.discussing
+                  : labels.reconcile.discuss}
               </Button>
             )}
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-caption text-muted-foreground">Team</span>
+            <span className="text-caption text-muted-foreground">
+              {labels.reconcile.team}
+            </span>
             <ClassificationPicker
               value={value}
               onValueChange={onValueChange}
               disabled={disabled}
-              aria-label={`Team answer for sentence ${index}`}
+              aria-label={labels.reconcile.teamAnswerLabel({ index })}
             />
           </div>
         </div>

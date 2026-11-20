@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
 import { notYetClassName, type Motive, type Suspect } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 export interface FinalCallValue {
   suspectId?: string
@@ -71,6 +72,7 @@ function FinalCallForm({
   loading?: boolean
   className?: string
 }) {
+  const labels = useClueAiLabels()
   const uid = React.useId()
   const [value, setValue] = useControllableState<FinalCallValue>({
     value: valueProp,
@@ -82,11 +84,8 @@ function FinalCallForm({
   return (
     <Card data-slot="final-call-form" className={className}>
       <CardHeader>
-        <CardTitle>Make the final call</CardTitle>
-        <CardDescription>
-          Name the murderer and the motive you can defend with the evidence.
-          Decide together — you only get one.
-        </CardDescription>
+        <CardTitle>{labels.finalCall.title}</CardTitle>
+        <CardDescription>{labels.finalCall.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <form
@@ -98,7 +97,9 @@ function FinalCallForm({
         >
           <FieldGroup>
             <FieldSet>
-              <FieldLegend variant="label">Murderer</FieldLegend>
+              <FieldLegend variant="label">
+                {labels.finalCall.murderer}
+              </FieldLegend>
               <RadioGroup
                 value={value.suspectId ?? ""}
                 onValueChange={(suspectId) => setValue({ ...value, suspectId })}
@@ -133,13 +134,15 @@ function FinalCallForm({
               </RadioGroup>
             </FieldSet>
             <Field>
-              <FieldLabel htmlFor={`${uid}-motive`}>Motive</FieldLabel>
+              <FieldLabel htmlFor={`${uid}-motive`}>
+                {labels.common.motive}
+              </FieldLabel>
               <Select
                 value={value.motive ?? ""}
                 onValueChange={(motive) => setValue({ ...value, motive })}
               >
                 <SelectTrigger id={`${uid}-motive`} className="w-full">
-                  <SelectValue placeholder="What drove them to it?" />
+                  <SelectValue placeholder={labels.common.motivePlaceholder} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -154,9 +157,9 @@ function FinalCallForm({
             </Field>
             <Alert>
               <GavelIcon />
-              <AlertTitle>This closes the case</AlertTitle>
+              <AlertTitle>{labels.finalCall.warningTitle}</AlertTitle>
               <AlertDescription>
-                Name the wrong person and the real murderer walks free.
+                {labels.finalCall.warningDescription}
               </AlertDescription>
             </Alert>
           </FieldGroup>
@@ -170,11 +173,11 @@ function FinalCallForm({
           className={cn(!loading && notYetClassName)}
         >
           {loading && <Spinner data-icon="inline-start" />}
-          Submit final call
+          {labels.finalCall.submit}
         </Button>
         {onBack && (
           <Button variant="ghost" onClick={onBack}>
-            Back to suspects
+            {labels.finalCall.back}
           </Button>
         )}
       </CardFooter>

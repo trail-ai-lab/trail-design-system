@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/lib/utils"
+import { useClueAiLabels } from "./lib/labels"
 
 /**
  * How many team verdicts the case allows before the final call is forced: a
@@ -14,6 +17,7 @@ function AttemptsMeter({
   max: number
   className?: string
 }) {
+  const labels = useClueAiLabels()
   const left = Math.max(max - used, 0)
   return (
     <div
@@ -21,15 +25,19 @@ function AttemptsMeter({
       className={cn("flex flex-col gap-2", className)}
     >
       <div className="flex items-baseline justify-between gap-4">
-        <span className="text-body-sm font-medium">Team verdicts</span>
+        <span className="text-body-sm font-medium">
+          {labels.attempts.title}
+        </span>
         <span className="text-body-sm text-muted-foreground tabular-nums">
-          <span className="font-medium text-foreground">{used}</span> of {max}{" "}
-          used
+          {labels.attempts.used({
+            used: <span className="font-medium text-foreground">{used}</span>,
+            max,
+          })}
         </span>
       </div>
       <div
         role="meter"
-        aria-label="Team verdicts used"
+        aria-label={labels.attempts.meterLabel}
         aria-valuemin={0}
         aria-valuemax={max}
         aria-valuenow={used}
@@ -52,9 +60,7 @@ function AttemptsMeter({
           left === 0 && "font-medium text-warning"
         )}
       >
-        {left === 0
-          ? "No verdicts left — only the final call remains."
-          : `${left} left before the final call.`}
+        {left === 0 ? labels.attempts.noneLeft : labels.attempts.left({ left })}
       </p>
     </div>
   )

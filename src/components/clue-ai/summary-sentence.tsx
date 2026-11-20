@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button"
 import { ClassificationBadge } from "./classification-badge"
 import { ClassificationPicker } from "./classification-picker"
 import {
-  CLASSIFICATIONS,
   classificationHighlightClassName,
   type Classification,
 } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 /**
  * One sentence of the AI summary, as a row: its number, the sentence (tinted
@@ -48,6 +48,7 @@ function SummarySentence({
   answer?: Classification
   className?: string
 }) {
+  const labels = useClueAiLabels()
   const isAnswerKey = answer !== undefined
   // In answer-key mode the highlight shows the truth, not the guess.
   const highlight = isAnswerKey ? answer : value
@@ -70,7 +71,9 @@ function SummarySentence({
       </span>
       <div className="@container flex min-w-0 flex-1 flex-col gap-2.5">
         <p className="text-body-sm leading-relaxed">
-          <span className="sr-only">Sentence {index}: </span>
+          <span className="sr-only">
+            {labels.common.sentenceNumber({ index })}
+          </span>
           <mark
             className={cn(
               "rounded-sm bg-transparent box-decoration-clone px-0.5 text-inherit transition-colors duration-base ease-standard",
@@ -90,7 +93,9 @@ function SummarySentence({
               className="-ml-2 text-muted-foreground aria-pressed:text-foreground"
             >
               <FileSearchIcon data-icon="inline-start" />
-              {isActive ? "Viewing source" : "Check source"}
+              {isActive
+                ? labels.common.viewingSource
+                : labels.common.checkSource}
             </Button>
           ) : (
             <span />
@@ -107,7 +112,7 @@ function SummarySentence({
               defaultValue={defaultValue}
               onValueChange={onValueChange}
               disabled={disabled}
-              aria-label={`Classify sentence ${index}`}
+              aria-label={labels.classificationPicker.sentenceLabel({ index })}
               className="ml-auto"
             />
           )}
@@ -126,22 +131,25 @@ function AnswerKeyResult({
   answer: Classification
   isCorrect: boolean
 }) {
+  const labels = useClueAiLabels()
   return (
     <div className="ml-auto flex flex-wrap items-center justify-end gap-2 text-caption">
       {isCorrect ? (
         <span className="flex items-center gap-1 font-medium text-success">
           <CheckIcon className="size-3.5" aria-hidden />
-          Correct
+          {labels.answerKey.correct}
         </span>
       ) : (
         <>
           <span className="flex items-center gap-1 font-medium text-destructive">
             <XIcon className="size-3.5" aria-hidden />
-            You said
+            {labels.answerKey.youSaid}
           </span>
           <ClassificationBadge classification={value} showIcon={false} />
           <span className="text-muted-foreground">
-            · it was {CLASSIFICATIONS[answer].label.toLowerCase()}
+            {labels.answerKey.itWas({
+              answer: labels.classifications[answer].label,
+            })}
           </span>
         </>
       )}

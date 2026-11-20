@@ -1,19 +1,22 @@
+"use client"
+
 import { cn } from "@/lib/utils"
 import {
   statusToneDotClassName,
   type StatusTone,
 } from "@/components/patterns/status-badge"
-import { playerLabel, type Player } from "./lib/case"
+import type { Player } from "./lib/case"
+import { useClueAiLabels, usePlayerLabel } from "./lib/labels"
 import { AiTag, PlayerAvatar } from "./player-avatar"
 
 /** Where a player is in the current phase. */
 export type PlayerPhaseStatus = "waiting" | "working" | "submitted" | "offline"
 
-const STATUS: Record<PlayerPhaseStatus, { label: string; tone: StatusTone }> = {
-  waiting: { label: "Not started", tone: "muted" },
-  working: { label: "Working", tone: "info" },
-  submitted: { label: "Submitted", tone: "success" },
-  offline: { label: "Offline", tone: "muted" },
+const STATUS_TONE: Record<PlayerPhaseStatus, StatusTone> = {
+  waiting: "muted",
+  working: "info",
+  submitted: "success",
+  offline: "muted",
 }
 
 export interface TeamMember {
@@ -33,17 +36,22 @@ function TeamStatus({
   members: TeamMember[]
   className?: string
 }) {
+  const labels = useClueAiLabels()
+  const playerLabel = usePlayerLabel()
   return (
     <ul
       data-slot="team-status"
-      aria-label="Team"
+      aria-label={labels.teamStatus.label}
       className={cn(
         "flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4",
         className
       )}
     >
       {members.map(({ player, status }) => {
-        const meta = STATUS[status]
+        const meta = {
+          label: labels.teamStatus.status[status],
+          tone: STATUS_TONE[status],
+        }
         return (
           <li key={player.id} className="flex items-center gap-2">
             <PlayerAvatar player={player} size="sm" />

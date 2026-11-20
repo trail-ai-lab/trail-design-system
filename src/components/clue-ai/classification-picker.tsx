@@ -15,6 +15,7 @@ import {
   classificationSelectedClassName,
   type Classification,
 } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 /**
  * The three highlighters: Accurate, Misrepresentation, Hallucination. A
@@ -31,7 +32,7 @@ function ClassificationPicker({
   onValueChange,
   disabled = false,
   size = "sm",
-  "aria-label": ariaLabel = "Classification",
+  "aria-label": ariaLabel,
   className,
 }: {
   value?: Classification | null
@@ -42,6 +43,7 @@ function ClassificationPicker({
   "aria-label"?: string
   className?: string
 }) {
+  const labels = useClueAiLabels()
   const [value, setValue] = useControllableState<Classification | null>({
     value: valueProp,
     defaultValue: defaultValue ?? null,
@@ -57,30 +59,30 @@ function ClassificationPicker({
       value={value ?? ""}
       onValueChange={(next) => setValue((next || null) as Classification)}
       disabled={disabled}
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? labels.classificationPicker.label}
       data-slot="classification-picker"
       className={cn("flex-wrap", className)}
     >
       {CLASSIFICATION_ORDER.map((classification) => {
-        const meta = CLASSIFICATIONS[classification]
-        const Icon = meta.icon
+        const Icon = CLASSIFICATIONS[classification].icon
+        const text = labels.classifications[classification]
         return (
           <Tooltip key={classification}>
             <TooltipTrigger asChild>
               <ToggleGroupItem
                 value={classification}
-                aria-label={meta.label}
+                aria-label={text.label}
                 className={cn(
                   "text-muted-foreground",
                   classificationSelectedClassName[classification]
                 )}
               >
                 <Icon data-icon="inline-start" aria-hidden />
-                <span className="@max-md:sr-only">{meta.label}</span>
+                <span className="@max-md:sr-only">{text.label}</span>
               </ToggleGroupItem>
             </TooltipTrigger>
             <TooltipContent>
-              {meta.label} — {meta.description.toLowerCase()}
+              {labels.classificationPicker.tooltip(text)}
             </TooltipContent>
           </Tooltip>
         )

@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/empty"
 import { Separator } from "@/components/ui/separator"
 import { SectionLabel } from "@/components/patterns/section-label"
+import { useClueAiLabels } from "./lib/labels"
 
 /** What kind of case file a document is; picks its icon. */
 export type EvidenceKind =
@@ -56,6 +57,7 @@ function EvidencePanel({
   children?: React.ReactNode
   className?: string
 }) {
+  const labels = useClueAiLabels()
   if (!document) {
     return (
       <Card
@@ -68,10 +70,9 @@ function EvidencePanel({
               <EmptyMedia variant="icon">
                 <FileSearchIcon />
               </EmptyMedia>
-              <EmptyTitle>No source open</EmptyTitle>
+              <EmptyTitle>{labels.evidence.emptyTitle}</EmptyTitle>
               <EmptyDescription>
-                Choose “Check source” on a sentence to read the file it came
-                from, side by side with the summary.
+                {labels.evidence.emptyDescription}
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -96,7 +97,7 @@ function EvidencePanel({
               variant="ghost"
               size="icon-sm"
               onClick={onClose}
-              aria-label="Close source"
+              aria-label={labels.evidence.close}
             >
               <XIcon />
             </Button>
@@ -105,9 +106,9 @@ function EvidencePanel({
       </CardHeader>
       {citedBy && citedBy.length > 0 && (
         <p className="px-(--card-spacing) pb-3 text-caption text-muted-foreground">
-          Cited by sentence{citedBy.length > 1 ? "s" : ""}{" "}
+          {labels.evidence.citedBy({ count: citedBy.length })}{" "}
           <span className="font-medium text-foreground tabular-nums">
-            {formatList(citedBy)}
+            {labels.common.list(citedBy.map(String))}
           </span>
         </p>
       )}
@@ -122,11 +123,6 @@ function EvidencePanel({
       </CardContent>
     </Card>
   )
-}
-
-function formatList(numbers: number[]) {
-  if (numbers.length < 2) return numbers.join("")
-  return `${numbers.slice(0, -1).join(", ")} and ${numbers[numbers.length - 1]}`
 }
 
 /** A titled part of a document body, e.g. "Background" or "Timeline". */
@@ -172,6 +168,7 @@ function EvidenceTranscript({
   lines: EvidenceTranscriptLine[]
   className?: string
 }) {
+  const labels = useClueAiLabels()
   return (
     <div
       data-slot="evidence-transcript"
@@ -200,7 +197,7 @@ function EvidenceTranscript({
                 )}
                 {line.isCited && (
                   <span className="ml-auto text-caption font-medium text-primary">
-                    Cited in summary
+                    {labels.evidence.citedInSummary}
                   </span>
                 )}
               </div>

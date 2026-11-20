@@ -1,7 +1,10 @@
+"use client"
+
 import { CircleDashedIcon } from "lucide-react"
 
 import { StatusBadge } from "@/components/patterns/status-badge"
 import { CLASSIFICATIONS, type Classification } from "./lib/case"
+import { useClueAiLabels } from "./lib/labels"
 
 /**
  * A sentence's classification as a tinted pill with its icon: Accurate,
@@ -18,6 +21,7 @@ function ClassificationBadge({
   showIcon?: boolean
   className?: string
 }) {
+  const labels = useClueAiLabels()
   if (!classification) {
     return (
       <StatusBadge
@@ -26,7 +30,7 @@ function ClassificationBadge({
         icon={showIcon ? CircleDashedIcon : undefined}
         className={className}
       >
-        Not classified
+        {labels.notClassified}
       </StatusBadge>
     )
   }
@@ -38,7 +42,7 @@ function ClassificationBadge({
       icon={showIcon ? meta.icon : undefined}
       className={className}
     >
-      {meta.label}
+      {labels.classifications[classification].label}
     </StatusBadge>
   )
 }

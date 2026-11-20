@@ -18,6 +18,15 @@ export {
   type SummarySentenceData,
   type Verdict,
 } from "./lib/case"
+export {
+  ClueAiLabelsProvider,
+  defaultClueAiLabels,
+  mergeClueAiLabels,
+  useClueAiLabels,
+  usePlayerLabel,
+  type ClueAiLabels,
+  type ClueAiLabelsOverrides,
+} from "./lib/labels"
 export { AiSummaryCard, type SummaryClassifications } from "./ai-summary-card"
 export { AttemptsMeter } from "./attempts-meter"
 export { BreakingNewsCard } from "./breaking-news-card"

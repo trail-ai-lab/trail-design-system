@@ -12,10 +12,10 @@ consumers install it from a git release tag and bump the tag themselves when the
 newer version. No registry config or auth token is needed.
 
 ```
-pnpm add github:trail-ai-lab/trail-design-system#v3.8.0
+pnpm add github:trail-ai-lab/trail-design-system#v3.9.0
 ```
 
-(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v3.8.0"`
+(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v3.9.0"`
 entry in `package.json`). Installing runs this repo's `prepare` script, which builds `dist/`.
 
 ### Requirements
@@ -62,7 +62,7 @@ entry in `package.json`). Installing runs this repo's `prepare` script, which bu
 | `@trail-ai-lab/trail-design-system/ui`          | The primitives without Chart, Calendar and Combobox, for apps that don't need those heavier dependencies.                                                                                                                                    |
 | `@trail-ai-lab/trail-design-system/patterns`    | Shared patterns used across tools: `AppShell`, `ChatLog`/`ChatRow`/`ChatComposer`, `SectionLabel`, `PageBreadcrumb`, `PersonRow`, `IconTile`, `CardLink`, `ConfirmDialog`, `ModeToggle`, auth screens. Also re-exported from the main entry. |
 | `@trail-ai-lab/trail-design-system/slai`        | Components specific to the SLAI tool (recording flow, transcripts, activity picker, `AppShell`/`SlaiSidebar` page shell).                                                                                                                    |
-| `@trail-ai-lab/trail-design-system/clue-ai`     | Components specific to Clue AI (AI summary critique, evidence panel, partner reconciliation, verdicts, `CaseSidebar`).                                                                                                                       |
+| `@trail-ai-lab/trail-design-system/clue-ai`     | Components specific to Clue AI (AI summary critique, evidence panel, partner reconciliation, verdicts, `CaseSidebar`); all text translatable via `ClueAiLabelsProvider`.                                                                     |
 | `@trail-ai-lab/trail-design-system/lab-website` | Components for the Trail Lab marketing site (`Header`, `LabFooter`, `Hero`, `PersonCard`, `ResourceCard`, etc.).                                                                                                                             |
 | `@trail-ai-lab/trail-design-system/styles.css`  | **The stylesheet to import** — combines the files below and registers the package with Tailwind.                                                                                                                                             |
 | `…/globals.css`                                 | Theme tokens (colors, radius) generated from the design preset, plus Tailwind.                                                                                                                                                               |

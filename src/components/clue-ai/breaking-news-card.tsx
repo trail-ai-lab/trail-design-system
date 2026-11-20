@@ -1,9 +1,12 @@
+"use client"
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { StatusBadge } from "@/components/patterns/status-badge"
+import { useClueAiLabels } from "./lib/labels"
 
 /**
  * The case opener, styled as a front page: a "Breaking news" kicker and
@@ -39,12 +42,13 @@ function BreakingNewsCard({
   children?: React.ReactNode
   className?: string
 }) {
+  const labels = useClueAiLabels()
   return (
     <Card data-slot="breaking-news-card" className={cn("gap-0", className)}>
       <CardContent className="flex flex-col gap-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <StatusBadge tone="primary" dot pulse>
-            Breaking news
+            {labels.breakingNews.kicker}
           </StatusBadge>
           {dateline && (
             <span className="text-caption text-muted-foreground">
