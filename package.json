@@ -1,9 +1,9 @@
 {
   "name": "@trail-ai-lab/trail-design-system",
-  "version": "3.7.0",
+  "version": "3.8.0",
   "private": false,
   "license": "MIT",
-  "description": "TRAIL Lab design system — shared foundations, primitives and patterns for TRAIL lab tools (SLAI, Lab Website).",
+  "description": "TRAIL Lab design system — shared foundations, primitives and patterns for TRAIL lab tools (SLAI, Clue AI, Lab Website).",
   "exports": {
     ".": {
       "import": {
@@ -53,6 +53,16 @@
       "require": {
         "types": "./dist/lab-website/index.d.ts",
         "default": "./dist/lab-website/index.js"
+      }
+    },
+    "./clue-ai": {
+      "import": {
+        "types": "./dist/clue-ai/index.d.mts",
+        "default": "./dist/clue-ai/index.mjs"
+      },
+      "require": {
+        "types": "./dist/clue-ai/index.d.ts",
+        "default": "./dist/clue-ai/index.js"
       }
     },
     "./styles.css": "./src/tokens/styles.css",

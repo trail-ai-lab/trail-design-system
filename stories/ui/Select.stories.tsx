@@ -27,7 +27,7 @@ export const Default: Story = {
           <SelectItem value="slai">SLAI</SelectItem>
           <SelectItem value="aibat">AIBAT</SelectItem>
           <SelectItem value="casting-lab">Casting Lab</SelectItem>
-          <SelectItem value="murder-mystery">Murder Mystery</SelectItem>
+          <SelectItem value="clue-ai">Clue AI</SelectItem>
           <SelectItem value="trail-console">Trail Console</SelectItem>
           <SelectItem value="bias-audit">Bias Audit</SelectItem>
         </SelectGroup>

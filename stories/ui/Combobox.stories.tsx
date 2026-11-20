@@ -19,7 +19,7 @@ const tools = [
   "SLAI",
   "AIBAT",
   "Casting Lab",
-  "Murder Mystery",
+  "Clue AI",
   "Trail Console",
   "Bias Audit",
 ]

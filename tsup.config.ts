@@ -7,6 +7,7 @@ export default defineConfig({
     "patterns/index": "src/components/patterns/index.ts",
     "slai/index": "src/components/slai/index.ts",
     "lab-website/index": "src/components/lab-website/index.ts",
+    "clue-ai/index": "src/components/clue-ai/index.ts",
   },
   format: ["cjs", "esm"],
   // tsup's d.ts step sets `baseUrl` internally, which TypeScript 6 deprecates.

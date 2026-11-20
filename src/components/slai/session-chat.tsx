@@ -5,7 +5,6 @@ import {
   BookOpenTextIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-  CornerDownLeftIcon,
   FileTextIcon,
   MessageSquareQuoteIcon,
   SparklesIcon,
@@ -46,12 +45,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group"
-import {
   Empty,
   EmptyContent,
   EmptyDescription,
@@ -60,7 +53,12 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Spinner } from "@/components/ui/spinner"
+import {
+  ChatComposer,
+  ChatLog,
+  ChatRow,
+  ChatTypingRow,
+} from "@/components/patterns/chat"
 
 /** A course material an answer drew on, e.g. "Unit 3 slides", "p. 12". */
 export interface ChatMaterialSource {
@@ -279,7 +277,15 @@ function AnswerEvidence({
   )
 }
 
-function ChatRow({
+const ASSISTANT_AVATAR = (
+  <Avatar size="sm" aria-hidden>
+    <AvatarFallback>
+      <SparklesIcon className="size-3 text-primary" />
+    </AvatarFallback>
+  </Avatar>
+)
+
+function SessionChatRow({
   message,
   onMessageClick,
   onSourceClick,
@@ -289,13 +295,7 @@ function ChatRow({
   onSourceClick?: (message: ChatMessage, index: number) => void
 }) {
   if (message.role === "user") {
-    return (
-      <div className="flex justify-end">
-        <p className="max-w-5/6 rounded-2xl bg-primary px-3.5 py-2 text-sm leading-relaxed wrap-anywhere text-primary-foreground">
-          {message.content}
-        </p>
-      </div>
-    )
+    return <ChatRow from="self">{message.content}</ChatRow>
   }
   const hasSources = Boolean(message.sources && message.sources.length > 0)
   // Clickable sources replace the clickable answer.
@@ -303,33 +303,30 @@ function ChatRow({
     message.highlight && onMessageClick && !(hasSources && onSourceClick)
   )
   return (
-    <div className="flex gap-3">
-      <Avatar size="sm" aria-hidden>
-        <AvatarFallback>
-          <SparklesIcon className="size-3 text-primary" />
-        </AvatarFallback>
-      </Avatar>
-      <div className="flex min-w-0 flex-1 flex-col gap-2">
-        {message.grounding && <GroundingBadge grounding={message.grounding} />}
-        {clickable ? (
-          <button
-            type="button"
-            onClick={() => onMessageClick?.(message)}
-            className="cursor-pointer rounded-md text-left text-sm leading-relaxed wrap-anywhere text-foreground underline-offset-4 outline-none hover:underline focus-visible:underline focus-visible:ring-3 focus-visible:ring-ring/50"
-          >
-            {message.content}
-          </button>
-        ) : (
-          <p className="text-sm leading-relaxed wrap-anywhere text-foreground">
-            {message.content}
-          </p>
-        )}
-        {(hasSources ||
-          (message.materials && message.materials.length > 0)) && (
+    <ChatRow
+      from="other"
+      avatar={ASSISTANT_AVATAR}
+      header={
+        message.grounding && <GroundingBadge grounding={message.grounding} />
+      }
+      footer={
+        (hasSources || (message.materials && message.materials.length > 0)) && (
           <AnswerEvidence message={message} onSourceClick={onSourceClick} />
-        )}
-      </div>
-    </div>
+        )
+      }
+    >
+      {clickable ? (
+        <button
+          type="button"
+          onClick={() => onMessageClick?.(message)}
+          className="cursor-pointer rounded-md text-left text-sm leading-relaxed wrap-anywhere text-foreground underline-offset-4 outline-none hover:underline focus-visible:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {message.content}
+        </button>
+      ) : (
+        message.content
+      )}
+    </ChatRow>
   )
 }
 
@@ -512,14 +509,7 @@ function SessionChatCard({
   const resolvedPlaceholder =
     placeholder ??
     (scopeLabel ? `Ask about ${scopeLabel}...` : "Ask about the session…")
-  const [question, setQuestion] = React.useState("")
   const scrollRef = React.useRef<HTMLDivElement>(null)
-
-  const submit = (text: string) => {
-    if (!text.trim()) return
-    onSend?.(text.trim())
-    setQuestion("")
-  }
 
   React.useEffect(() => {
     const viewport = scrollRef.current?.querySelector(
@@ -566,7 +556,10 @@ function SessionChatCard({
                       className="h-auto py-1 font-normal whitespace-normal hover:bg-muted"
                       asChild
                     >
-                      <button type="button" onClick={() => submit(suggestion)}>
+                      <button
+                        type="button"
+                        onClick={() => onSend?.(suggestion)}
+                      >
                         {suggestion}
                       </button>
                     </Badge>
@@ -575,15 +568,9 @@ function SessionChatCard({
               )}
             </Empty>
           ) : (
-            <div
-              role="log"
-              aria-live="polite"
-              aria-label="Conversation"
-              aria-busy={loading}
-              className="flex flex-col gap-4 px-(--card-spacing) py-1"
-            >
+            <ChatLog loading={loading} className="px-(--card-spacing) py-1">
               {welcomeMessage && (
-                <ChatRow
+                <SessionChatRow
                   message={{
                     id: "welcome",
                     role: "assistant",
@@ -592,73 +579,51 @@ function SessionChatCard({
                 />
               )}
               {messages.map((message) => (
-                <ChatRow
+                <SessionChatRow
                   key={message.id}
                   message={message}
                   onMessageClick={onMessageClick}
                   onSourceClick={onSourceClick}
                 />
               ))}
-              {loading && (
-                <div className="flex items-center gap-3">
-                  <Avatar size="sm" aria-hidden>
-                    <AvatarFallback>
-                      <SparklesIcon className="size-3 text-primary" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <Spinner className="size-3.5 text-muted-foreground" />
-                </div>
-              )}
-            </div>
+              {loading && <ChatTypingRow avatar={ASSISTANT_AVATAR} />}
+            </ChatLog>
           )}
         </ScrollArea>
       </CardContent>
-      <CardFooter className="flex-col items-stretch gap-1.5">
-        <InputGroup>
-          <InputGroupInput
-            placeholder={resolvedPlaceholder}
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") submit(question)
-            }}
-          />
-          <InputGroupAddon align="inline-end">
-            <InputGroupButton
-              size="icon-xs"
-              aria-label="Send question"
-              disabled={!question.trim()}
-              onClick={() => submit(question)}
-            >
-              <CornerDownLeftIcon />
-            </InputGroupButton>
-          </InputGroupAddon>
-        </InputGroup>
-        {showToolbar && (
-          <div
-            data-slot="session-chat-toolbar"
-            className="flex min-h-6 items-center gap-2 pl-1 text-xs text-muted-foreground"
-          >
-            {materials && (
-              <MaterialsLine
-                materials={materials}
-                onClick={onMaterialsClick}
-                withPicker={showPicker}
-              />
-            )}
-            {showPicker && (
-              <GroundingPicker
-                value={curriculumOn ? "transcript-curriculum" : "transcript"}
-                onValueChange={(next) =>
-                  setCurriculumOn(next === "transcript-curriculum")
-                }
-                curriculumDisabled={
-                  materials !== undefined && materials.ready === 0
-                }
-              />
-            )}
-          </div>
-        )}
+      <CardFooter className="flex-col items-stretch">
+        <ChatComposer
+          className="w-full"
+          placeholder={resolvedPlaceholder}
+          onSend={onSend}
+          sendLabel="Send question"
+          toolbar={
+            showToolbar && (
+              <>
+                {materials && (
+                  <MaterialsLine
+                    materials={materials}
+                    onClick={onMaterialsClick}
+                    withPicker={showPicker}
+                  />
+                )}
+                {showPicker && (
+                  <GroundingPicker
+                    value={
+                      curriculumOn ? "transcript-curriculum" : "transcript"
+                    }
+                    onValueChange={(next) =>
+                      setCurriculumOn(next === "transcript-curriculum")
+                    }
+                    curriculumDisabled={
+                      materials !== undefined && materials.ready === 0
+                    }
+                  />
+                )}
+              </>
+            )
+          }
+        />
       </CardFooter>
       {showDisclaimer && !showToolbar && (
         <p className="px-(--card-spacing) text-center text-xs text-muted-foreground">

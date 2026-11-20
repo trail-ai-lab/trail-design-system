@@ -12,10 +12,10 @@ consumers install it from a git release tag and bump the tag themselves when the
 newer version. No registry config or auth token is needed.
 
 ```
-pnpm add github:trail-ai-lab/trail-design-system#v3.7.0
+pnpm add github:trail-ai-lab/trail-design-system#v3.8.0
 ```
 
-(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v3.7.0"`
+(or the equivalent `"@trail-ai-lab/trail-design-system": "github:trail-ai-lab/trail-design-system#v3.8.0"`
 entry in `package.json`). Installing runs this repo's `prepare` script, which builds `dist/`.
 
 ### Requirements
@@ -56,22 +56,23 @@ entry in `package.json`). Installing runs this repo's `prepare` script, which bu
 
 ## Subpaths
 
-| Import                                          | What it's for                                                                                                                                                                                |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@trail-ai-lab/trail-design-system`             | Everything shared: the shadcn primitives in `src/components/ui/` (`Button`, `Card`, `Dialog`, `Sidebar`, …) plus all patterns.                                                               |
-| `@trail-ai-lab/trail-design-system/ui`          | The primitives without Chart, Calendar and Combobox, for apps that don't need those heavier dependencies.                                                                                    |
-| `@trail-ai-lab/trail-design-system/patterns`    | Shared patterns used across tools: `SectionLabel`, `PageBreadcrumb`, `PersonRow`, `IconTile`, `CardLink`, `ConfirmDialog`, `ModeToggle`, auth screens. Also re-exported from the main entry. |
-| `@trail-ai-lab/trail-design-system/slai`        | Components specific to the SLAI tool (recording flow, transcripts, activity picker, `AppShell`/`SlaiSidebar` page shell).                                                                    |
-| `@trail-ai-lab/trail-design-system/lab-website` | Components for the Trail Lab marketing site (`Header`, `LabFooter`, `Hero`, `PersonCard`, `ResourceCard`, etc.).                                                                             |
-| `@trail-ai-lab/trail-design-system/styles.css`  | **The stylesheet to import** — combines the files below and registers the package with Tailwind.                                                                                             |
-| `…/globals.css`                                 | Theme tokens (colors, radius) generated from the design preset, plus Tailwind.                                                                                                               |
-| `…/semantic.css`                                | Trail's color layer: meaning colors, status aliases, contrast fixes, focus ring.                                                                                                             |
-| `…/scales.css`                                  | Type scale, elevation, motion and z-index utilities; reduced-motion handling.                                                                                                                |
-| `…/layout.css`                                  | Page-chrome spacing tokens (`--shell-*`) used by `AppShell`.                                                                                                                                 |
-| `…/fonts.css`                                   | Default font families for `--font-sans`, `--font-heading`, `--font-mono`.                                                                                                                    |
+| Import                                          | What it's for                                                                                                                                                                                                                                |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@trail-ai-lab/trail-design-system`             | Everything shared: the shadcn primitives in `src/components/ui/` (`Button`, `Card`, `Dialog`, `Sidebar`, …) plus all patterns.                                                                                                               |
+| `@trail-ai-lab/trail-design-system/ui`          | The primitives without Chart, Calendar and Combobox, for apps that don't need those heavier dependencies.                                                                                                                                    |
+| `@trail-ai-lab/trail-design-system/patterns`    | Shared patterns used across tools: `AppShell`, `ChatLog`/`ChatRow`/`ChatComposer`, `SectionLabel`, `PageBreadcrumb`, `PersonRow`, `IconTile`, `CardLink`, `ConfirmDialog`, `ModeToggle`, auth screens. Also re-exported from the main entry. |
+| `@trail-ai-lab/trail-design-system/slai`        | Components specific to the SLAI tool (recording flow, transcripts, activity picker, `AppShell`/`SlaiSidebar` page shell).                                                                                                                    |
+| `@trail-ai-lab/trail-design-system/clue-ai`     | Components specific to Clue AI (AI summary critique, evidence panel, partner reconciliation, verdicts, `CaseSidebar`).                                                                                                                       |
+| `@trail-ai-lab/trail-design-system/lab-website` | Components for the Trail Lab marketing site (`Header`, `LabFooter`, `Hero`, `PersonCard`, `ResourceCard`, etc.).                                                                                                                             |
+| `@trail-ai-lab/trail-design-system/styles.css`  | **The stylesheet to import** — combines the files below and registers the package with Tailwind.                                                                                                                                             |
+| `…/globals.css`                                 | Theme tokens (colors, radius) generated from the design preset, plus Tailwind.                                                                                                                                                               |
+| `…/semantic.css`                                | Trail's color layer: meaning colors, status aliases, contrast fixes, focus ring.                                                                                                                                                             |
+| `…/scales.css`                                  | Type scale, elevation, motion and z-index utilities; reduced-motion handling.                                                                                                                                                                |
+| `…/layout.css`                                  | Page-chrome spacing tokens (`--shell-*`) used by `AppShell`.                                                                                                                                                                                 |
+| `…/fonts.css`                                   | Default font families for `--font-sans`, `--font-heading`, `--font-mono`.                                                                                                                                                                    |
 
 `src/components/` also holds placeholder folders for future tools (`aibat`,
-`bias-audit`, `casting-lab`, `murder-mystery`, `trail-console`). They have no
+`bias-audit`, `casting-lab`, `trail-console`). They have no
 components and no subpath yet; when a tool gets its first component, add its entry
 to `tsup.config.ts` and `package.json` `exports`.
 

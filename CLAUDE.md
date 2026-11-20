@@ -3,7 +3,7 @@
 ## Purpose & Scope
 
 - This is the shared design system for every TRAIL lab tool. All tools should look consistent and follow the same structure; layouts vary with each tool's needs, but the overall feel stays the same.
-- Current consumers: the **Lab Website** (`src/components/lab-website/`, already built on this system) and **SLAI** (`src/components/slai/`, the first tool being designed). More tools will follow and most of what they need will be shared. Until then, design for these two. (Other `src/components/{tool}/` folders exist but are not in active scope.)
+- Current consumers: the **Lab Website** (`src/components/lab-website/`, already built on this system), **SLAI** (`src/components/slai/`, the first tool designed) and **Clue AI** (`src/components/clue-ai/`). More tools will follow and most of what they need will be shared. (Other `src/components/{tool}/` folders exist but are not in active scope.)
 - Structure it like a standard design system: foundations (tokens) → primitives (`ui/`) → shared patterns (`patterns/`) → tool-specific components (`{tool}/`) → page stories. When a pattern appears in two places (e.g. Lab Website and SLAI, or two SLAI screens), promote it to `patterns/` instead of duplicating it.
 
 ## Visual Direction
@@ -30,6 +30,18 @@
   - Page titles use `PageBreadcrumb`; page stories use the shared `PageSidebar` from `stories/slai/_page-fixtures.tsx`.
 - Irreversible or disruptive actions (end session, delete, discard, reset an invite link) always go through `ConfirmDialog` / `DeleteConfirmDialog`.
 - Copy is sentence case everywhere (nav, titles, buttons, tabs).
+
+## Clue AI Product Model
+
+- Object model: **Case** (the Harpe murder) → **Suspect** → **Summary sentence**. Two players (a **team**, paired in a session by code) check an AI's summary of each suspect sentence by sentence against its source (**evidence**), mark each one, then give a **verdict** (guilty / inconclusive, plus a **motive** when guilty). The case ends with the **final call** (murderer + motive).
+- Classifications are always the three in `lib/case.ts` (`CLASSIFICATIONS`): Accurate = `success`, Misrepresentation = `warning`, Hallucination = `destructive`, each with its icon so color is never the only cue. Shown picked with `ClassificationPicker`, read-only with `ClassificationBadge`, and as a highlighter tint on the sentence.
+- Layout of every working screen (investigate, compare, answer key): the summary (and the verdict under it) on the left, the open source in `EvidencePanel` on the right — mirroring SLAI's AI-left / content-right split. Phase timers (`PhaseTimer`) and `TeamStatus` sit in the `AppShell` toolbar, never in the breadcrumb.
+- **Red is not progress.** The brand red is also "Hallucination", so Clue AI keeps it for that and the main call to action only: progress bars, meters, timers and your own chat bubbles are `foreground`; a primary button that can't be pressed yet uses `notYetClassName` (grey, not faded red). AI suggestions get equal-weight Accept / Keep mine buttons so the UI doesn't nudge players.
+- The right-hand side of a working screen is `CasePanels`: a column (tabs when there's more than one panel) on large screens, a pinned bar that opens a drawer on phones.
+- Sherlock (the narrator) speaks through `SherlockNote` — briefings, nudges and feedback — never as a card title or toast.
+- **Play modes** (`PlayMode`): solo, with a friend, or with an AI teammate (`PlayModeForm`). The AI teammate is a `Player` with `isAi` — `PlayerAvatar` gives it the bot mark and `AiTag`, everywhere a player shows. Each behavior (`AiPartnerBehavior`: `defensive` marks every summary sentence accurate and defends it; `reasonable` weighs the evidence and concedes) is its own named teammate — Quinn and Riley in the stories — and the player picks one by name in `PlayModeForm` (`aiTeammates`). Teammates look identical and share one description, so nothing on screen says which is which; shuffle their order per player. Players play once, so no one meets both. The behavior is revealed only in `PartnerDebriefCard` after the case.
+- AI deliberation: `ReconcileCard` on the left with the AI's `rationales` (reasoning + `CitedDocuments`) under its picks and a Discuss button per sentence; the right column is `CasePanels` — "Chat with {name}" (`PartnerChatPanel`) and "Source" (`EvidencePanel`). The AI can propose team answers (Accept / Keep mine) but never submit them; the person has the final say.
+- Page stories use `CasePage` from `stories/clue-ai/_page-shell.tsx` and the shared fixtures in `_case-fixtures.tsx` (AI teammate data in `_ai-partner-fixtures.tsx`).
 
 ## Component Rules
 

@@ -109,6 +109,18 @@ const preview: Preview = {
           "Patterns",
           "SLAI",
           ["Pages", "Shell"],
+          "ClueAI",
+          [
+            "Pages",
+            [
+              "Case",
+              "Investigation",
+              "Reconcile",
+              "AIPartner",
+              "AnswerKey",
+              "Auth",
+            ],
+          ],
           "LabWebsite",
           "Preview",
           ["Showcase 01", "Showcase 02", "Blocks 01", "Blocks 02"],

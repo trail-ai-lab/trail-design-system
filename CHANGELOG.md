@@ -3,7 +3,58 @@
 All notable changes are recorded here. Versions follow [Semantic Versioning](https://semver.org);
 see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
-## Unreleased
+## 3.8.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.8.0`.
+
+### Minor Changes
+
+- **Clue AI components:** new `@trail-ai-lab/trail-design-system/clue-ai` subpath with
+  the tool's design: `AiSummaryCard` and `SummarySentence` (sentence-by-sentence critique with
+  highlighter tints and an answer-key mode), `ClassificationPicker` / `ClassificationBadge`
+  (Accurate · Misrepresentation · Hallucination), `EvidencePanel` with `EvidenceSection`,
+  `EvidenceTranscript` and `EvidenceFigure`, `ReconcileCard` / `ReconcileSentence` (agree on team
+  answers), `VerdictForm` (solo and team verdicts, with motive), `FinalCallForm`, `SuspectCard`,
+  `AttemptsMeter`, `PhaseTimer`, `TeamStatus`, `SessionLobbyCard`, `SherlockNote`,
+  `BreakingNewsCard`, `CaseOutcome` and `CaseSidebar`, plus the `lib/case` model
+  (`CLASSIFICATIONS`, `VERDICTS`, `Player`, `Suspect`, …). Page stories under
+  **ClueAI/Pages** cover the whole game. No new color tokens.
+- **`AppShell` is a shared pattern:** it moves to `patterns/` and is exported from
+  `@trail-ai-lab/trail-design-system/patterns` (and the main entry) so every tool uses the same page
+  chrome. The `…/slai` export and `@/components/slai/app-shell` path keep working.
+- **Shared Chat pattern:** `ChatLog`, `ChatRow`, `ChatTypingRow` and `ChatComposer` in
+  `@trail-ai-lab/trail-design-system/patterns` — the message list, bubbles, typing row and composer
+  every TRAIL chat shares. SLAI's `SessionChatCard` and Clue AI's partner chat are both built on it.
+- **Clue AI — play with an AI teammate:** `PlayModeForm` (solo, with a friend, or with an AI
+  teammate picked by name from `aiTeammates` — one per behavior, presented identically; submits a
+  `PlayModeValue` of `{ mode, teammateId }`), `PartnerChatPanel` (deliberation chat with topic tags, cited files, Accept / Keep
+  mine proposals and change-of-mind events), `PartnerDebriefCard` (reveals the AI's behavior after
+  the case), `PlayerAvatar` / `AiTag` and `CitedDocuments`. `Player` gains `isAi`; `lib/case` adds
+  `PlayMode`, `AiPartnerBehavior` (`defensive` · `reasonable`), `Rationale` and `CitedDocument`.
+  `ReconcileCard` takes `rationales`, `onOpenDocument`, `discussingSentenceId` and `onDiscuss`;
+  `VerdictForm` takes `description`. New page stories under **ClueAI/Pages/AIPartner**.
+- **Clue AI end screen is a closing front page:** `CaseOutcome` now bookends the opening
+  `BreakingNewsCard` — the person your call sent to court fills the photo under a rubber stamp
+  (Charged · Released · Convicted, grayscale when the case goes cold), with a headline and deck, an
+  `aside` for who walked free or that the real killer is still at large, a score row (`stats`) and
+  a detective `rank`. New props: `headline` (required), `masthead`, `dateline`, `featured`,
+  `stamp`, `aside`, `stats`, `rank`; new type `CaseOutcomeAside`.
+
+### Patch Changes
+
+- **Clue AI design review:** progress bars, the verdicts meter, the phase timer and your own
+  partner-chat bubbles are neutral instead of brand red (red stays "Hallucination"); disabled
+  primary buttons read as grey "not yet" (`notYetClassName`); new `CasePanels` keeps the source
+  and chat one tap away on phones (pinned bar + drawer); `PartnerChatPanel` drops its duplicate
+  header, puts the AI's messages in Sherlock-style bubbles, fades the top edge and gives Accept /
+  Keep mine equal weight; `ReconcileSentence` groups Check source and Discuss; `AiSummaryCard`
+  and `EvidencePanel` titles are text only; `SuspectCard` moves its status badge onto the photo so names fit and roles get two lines;
+  `CaseSidebar` marks the current suspect with an icon instead of a red dot; `TeamStatus` shows
+  only status dots on phones.
+- `PageBreadcrumb` collapses to a back arrow and the current page on phones.
+- `ChatRow` takes `tone="neutral"` for the person's own bubble and `bubble` for the other side.
+
+- `SessionChatCard` renders through the shared Chat pattern. No API or visual change.
 
 ## 3.7.0
 

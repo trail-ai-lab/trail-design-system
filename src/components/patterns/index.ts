@@ -37,3 +37,5 @@ export {
   useLinkComponent,
   type LinkComponent,
 } from "./link-provider"
+export { AppShell } from "./app-shell"
+export { ChatComposer, ChatLog, ChatRow, ChatTypingRow } from "./chat"

@@ -7,7 +7,7 @@ import { Logo } from "@/components/patterns/logo"
 const TOOLS = [
   { name: "AIBAT", href: "#" },
   { name: "Casting Lab", href: "#" },
-  { name: "Murder Mystery", href: "#" },
+  { name: "Clue AI", href: "#" },
 ]
 
 const aside = (
