@@ -4,6 +4,7 @@ import type { CourseMaterial } from "@/components/slai/lib/course-material"
 import { NewSessionForm } from "@/components/slai/new-session-form"
 import { UploadMaterialsSheet } from "@/components/slai/upload-materials-sheet"
 import { PHYSICS_MATERIALS, useSimulatedUploads } from "./_material-fixtures"
+import { STANDARDS } from "./_standard-fixtures"
 
 const INITIAL_LIBRARY: Record<string, CourseMaterial[]> = {
   Physics: PHYSICS_MATERIALS,
@@ -49,6 +50,7 @@ export function NewSessionWithMaterials({
         materials={materials}
         materialIds={materialIds}
         onMaterialIdsChange={setMaterialIds}
+        standards={STANDARDS}
         onUploadMaterials={(klass) => {
           setSheetIds([])
           setSheetClass(klass)

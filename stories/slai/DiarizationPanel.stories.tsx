@@ -1,7 +1,10 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
+import { Button } from "@/components/ui/button"
+import { RefreshCwIcon } from "lucide-react"
 import { ContributionPanel } from "@/components/slai/contribution-panel"
+import { HeaderSwitch } from "@/components/slai/header-switch"
 import { DiarizationPanel } from "@/components/slai/diarization-panel"
 import { RecordedTranscriptCard } from "@/components/slai/recorded-transcript-card"
 import { SpeakerForm } from "@/components/slai/speaker-form"
@@ -99,5 +102,29 @@ export const Ready: Story = {
         ]}
       />,
     ],
+  },
+}
+
+/**
+ * A recording with one transcript, shown by speaker: the panel takes the
+ * transcript's title and header (Translation, Speakers, Retranscribe), so
+ * turning Speakers off swaps in the TranscriptCard without moving them.
+ */
+export const AsTranscript: Story = {
+  ...Ready,
+  args: {
+    ...Ready.args,
+    title: "Transcript",
+    action: (
+      <>
+        <HeaderSwitch label="Translation" defaultChecked />
+        <HeaderSwitch label="Speakers" defaultChecked />
+        {/* A narrow header keeps the icon, so the scope badge still fits */}
+        <Button variant="outline" size="sm" aria-label="Retranscribe">
+          <RefreshCwIcon data-icon="inline-start" />
+          <span className="hidden @xl/card-header:inline">Retranscribe…</span>
+        </Button>
+      </>
+    ),
   },
 }

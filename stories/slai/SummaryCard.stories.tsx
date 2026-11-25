@@ -26,6 +26,11 @@ export const Empty: Story = {
   args: { scopeLabel: "Group 1" },
 }
 
+/** In a tall panel (Live, review): the empty state sits in the middle. */
+export const EmptyInPanel: Story = {
+  args: { scopeLabel: "Group 1", className: "h-120" },
+}
+
 // Before the first check-in, and after a session, only Summarize shows.
 export const WithSummary: Story = {
   args: {

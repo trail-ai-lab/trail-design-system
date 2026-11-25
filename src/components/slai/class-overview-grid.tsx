@@ -20,14 +20,25 @@ export interface OverviewStudent {
   name: string
   /** Primary language, shown under the name */
   language?: string
-  /** Null for native English speakers (no WIDA verdict) */
-  wida: Verdict | null
-  standard: Verdict
+  /**
+   * Null for native English speakers (no WIDA verdict). Leave it out when
+   * WIDA isn't assessed: with no student's set, the WIDA column is hidden.
+   */
+  wida?: Verdict | null
+  /** Null when there wasn't enough to judge (e.g. the student barely spoke) */
+  standard: Verdict | null
 }
 
-function VerdictCell({ verdict }: { verdict: Verdict | null }) {
+function VerdictCell({
+  verdict,
+  emptyLabel,
+}: {
+  verdict: Verdict | null | undefined
+  /** Shown when there's no verdict; a dash without it */
+  emptyLabel?: string
+}) {
   if (!verdict) {
-    return <span className="text-muted-foreground">–</span>
+    return <span className="text-muted-foreground">{emptyLabel ?? "–"}</span>
   }
   return (
     <span className="inline-flex items-center gap-1.5">
@@ -40,7 +51,9 @@ function VerdictCell({ verdict }: { verdict: Verdict | null }) {
 /**
  * Class-at-a-glance card: one table row per student with their WIDA and
  * standard verdicts. Selecting a row calls `onSelectStudent` so the page can
- * scroll to that student's card.
+ * scroll to that student's card. The WIDA column shows only when some
+ * student has `wida` set (null counts: a native English speaker); a student
+ * without a standard verdict shows "No verdict".
  */
 function ClassOverviewGrid({
   students,
@@ -54,19 +67,22 @@ function ClassOverviewGrid({
   onSelectStudent?: (id: string) => void
   className?: string
 }) {
+  const showWida = students.some((student) => student.wida !== undefined)
   return (
-    <Card className={className}>
+    <Card data-slot="class-overview-grid" className={className}>
       <CardContent>
         <Table aria-label="Class overview">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="text-muted-foreground">Student</TableHead>
-              <TableHead
-                className="text-muted-foreground"
-                title="WIDA proficiency level"
-              >
-                WIDA
-              </TableHead>
+              {showWida && (
+                <TableHead
+                  className="text-muted-foreground"
+                  title="WIDA proficiency level"
+                >
+                  WIDA
+                </TableHead>
+              )}
               <TableHead
                 className="text-muted-foreground"
                 title="Content standard"
@@ -112,11 +128,16 @@ function ClassOverviewGrid({
                     </div>
                   </div>
                 </TableCell>
+                {showWida && (
+                  <TableCell>
+                    <VerdictCell verdict={student.wida} />
+                  </TableCell>
+                )}
                 <TableCell>
-                  <VerdictCell verdict={student.wida} />
-                </TableCell>
-                <TableCell>
-                  <VerdictCell verdict={student.standard} />
+                  <VerdictCell
+                    verdict={student.standard}
+                    emptyLabel="No verdict"
+                  />
                 </TableCell>
               </TableRow>
             ))}

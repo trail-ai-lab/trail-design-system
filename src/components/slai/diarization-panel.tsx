@@ -35,9 +35,16 @@ export type DiarizationState = "idle" | "loading" | "error" | "empty" | "ready"
  * subsections divided by separators — pass the `embedded` variants of
  * ContributionPanel / ParticipationCard and RecordedTranscriptCard. The card's
  * content scrolls, so give the panel a bounded height.
+ *
+ * When the speaker view replaces a recording's transcript (one transcript,
+ * shown with or without speakers), give it the transcript's `title` and the
+ * same header `action`s as its TranscriptCard, so switching views keeps the
+ * header in place.
  */
 function DiarizationPanel({
   state,
+  title = "Speakers",
+  action,
   form,
   scopeLabel,
   elapsedSeconds = 0,
@@ -47,6 +54,10 @@ function DiarizationPanel({
   className,
 }: {
   state: DiarizationState
+  /** The card's title */
+  title?: string
+  /** Header actions before the scope badge, e.g. `HeaderSwitch`es */
+  action?: React.ReactNode
   form?: React.ReactNode
   /** Label of the active scope, e.g. "Group 1", shown as a badge */
   scopeLabel?: string
@@ -66,10 +77,11 @@ function DiarizationPanel({
       className={cn("flex min-h-0 flex-1 flex-col", className)}
     >
       <CardHeader>
-        <CardTitle>Speakers</CardTitle>
-        {scopeLabel && (
-          <CardAction>
-            <Badge variant="secondary">{scopeLabel}</Badge>
+        <CardTitle>{title}</CardTitle>
+        {(scopeLabel || action) && (
+          <CardAction className="flex items-center gap-2">
+            {action}
+            {scopeLabel && <Badge variant="secondary">{scopeLabel}</Badge>}
           </CardAction>
         )}
       </CardHeader>

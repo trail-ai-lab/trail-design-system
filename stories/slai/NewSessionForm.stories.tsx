@@ -3,6 +3,7 @@ import { expect, screen } from "storybook/test"
 
 import { NewSessionForm } from "@/components/slai/new-session-form"
 import { PHYSICS_MATERIALS } from "./_material-fixtures"
+import { STANDARDS } from "./_standard-fixtures"
 import { NewSessionWithMaterials } from "./_new-session-with-materials"
 
 const CLASSES = [
@@ -108,4 +109,25 @@ export const UploadWhileCreating: Story = {
       className={args.className}
     />
   ),
+}
+
+/** With `standards`, the form picks the session's standard (optional). */
+export const WithStandard: Story = {
+  args: {
+    defaultClass: "Mathematics",
+    standards: STANDARDS,
+    defaultStandardGrade: 7,
+  },
+}
+
+export const StandardChosen: Story = {
+  args: {
+    defaultClass: "Mathematics",
+    standards: STANDARDS,
+    defaultStandardCode: "7.RP.2a",
+  },
+}
+
+export const StandardsLoading: Story = {
+  args: { defaultClass: "Mathematics", standards: [], standardsLoading: true },
 }

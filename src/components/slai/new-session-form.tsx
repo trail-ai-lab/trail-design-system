@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -41,6 +42,10 @@ import type { LanguageOptions } from "@/components/slai/lib/language-option"
 import type { CourseMaterial } from "@/components/slai/lib/course-material"
 import { SessionMaterialsPicker } from "@/components/slai/session-materials-picker"
 import { isNameTaken } from "@/components/slai/lib/name-key"
+import {
+  StandardPicker,
+  type StandardOption,
+} from "@/components/slai/standard-picker"
 
 const NEW_CLASS = "__new_class__"
 
@@ -49,6 +54,8 @@ const NEW_CLASS = "__new_class__"
  * Collects class, session name, language settings and — with `materials` —
  * the course materials this session's answers should look at first. The
  * materials section always shows; its picker and Upload wait for a class.
+ * With `standards`, a "Standard" section picks the one standard (optional)
+ * the session works on.
  */
 function NewSessionForm({
   classes,
@@ -65,6 +72,13 @@ function NewSessionForm({
   defaultMaterialIds = [],
   onMaterialIdsChange,
   onUploadMaterials,
+  standards,
+  standardsLoading = false,
+  standardCode: standardCodeProp,
+  defaultStandardCode = null,
+  onStandardCodeChange,
+  defaultStandardGrade,
+  onStandardGradeChange,
   className,
 }: {
   classes: string[]
@@ -75,6 +89,8 @@ function NewSessionForm({
     languages: LanguageSettingsValue
     /** Picked course materials' ids; empty without `materials` */
     materialIds: string[]
+    /** The standard picked; null without one or without `standards` */
+    standardCode: string | null
   }) => void
   /** Session is being created; disables the form and shows a spinner */
   loading?: boolean
@@ -101,6 +117,17 @@ function NewSessionForm({
    * `materialIds` so this session uses them
    */
   onUploadMaterials?: (klass: string) => void
+  /** The standards a session can work on; shows the "Standard" section */
+  standards?: StandardOption[]
+  /** The standards are still loading */
+  standardsLoading?: boolean
+  /** The picked standard's code (null for none) */
+  standardCode?: string | null
+  defaultStandardCode?: string | null
+  onStandardCodeChange?: (code: string | null) => void
+  /** Passed to `StandardPicker`: the grade it opens on, e.g. the last one used */
+  defaultStandardGrade?: number
+  onStandardGradeChange?: (grade: number) => void
   className?: string
 }) {
   const uid = React.useId()
@@ -117,6 +144,11 @@ function NewSessionForm({
     onChange: onMaterialIdsChange,
   })
   const classMaterials = materials?.[resolvedClass] ?? []
+  const [standardCode, setStandardCode] = useControllableState<string | null>({
+    value: standardCodeProp,
+    defaultValue: defaultStandardCode,
+    onChange: onStandardCodeChange,
+  })
 
   return (
     <Card className={className}>
@@ -252,6 +284,37 @@ function NewSessionForm({
             </FieldSet>
           )}
 
+          {standards && (
+            <FieldSet>
+              <SectionLabel asChild>
+                <legend className="mb-3">Standard</legend>
+              </SectionLabel>
+              <Field>
+                <FieldLabel htmlFor={`${uid}-new-session-standard`}>
+                  Session standard
+                  <span className="font-normal text-muted-foreground">
+                    — optional
+                  </span>
+                </FieldLabel>
+                <StandardPicker
+                  id={`${uid}-new-session-standard`}
+                  standards={standards}
+                  loading={standardsLoading}
+                  value={standardCode}
+                  onValueChange={setStandardCode}
+                  noneLabel="No standard"
+                  defaultGrade={defaultStandardGrade}
+                  onGradeChange={onStandardGradeChange}
+                  disabled={loading}
+                />
+                <FieldDescription>
+                  Each student&apos;s talk is checked against it after the
+                  session. You can also choose it later.
+                </FieldDescription>
+              </Field>
+            </FieldSet>
+          )}
+
           <FieldSet>
             <SectionLabel asChild>
               <legend className="mb-3">Languages</legend>
@@ -278,6 +341,7 @@ function NewSessionForm({
               session,
               languages: languagesRef.current,
               materialIds,
+              standardCode: standards ? standardCode : null,
             })
           }
         >

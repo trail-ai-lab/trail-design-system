@@ -62,3 +62,25 @@ export const WithoutLanguages: Story = {
     ],
   },
 }
+
+/** WIDA not assessed (no student has `wida`): the column is hidden. */
+export const StandardOnly: Story = {
+  args: {
+    students: [
+      { id: "mei", name: "Mei", language: "Mandarin", standard: "not-yet" },
+      { id: "liam", name: "Liam", language: "English", standard: "met" },
+      { id: "rosa", name: "Rosa", language: "Spanish", standard: "partial" },
+    ],
+  },
+}
+
+/** A student with too little to judge has no standard verdict. */
+export const WithNoVerdict: Story = {
+  args: {
+    students: [
+      { id: "mei", name: "Mei", language: "Mandarin", standard: "met" },
+      { id: "liam", name: "Liam", language: "English", standard: null },
+      { id: "rosa", name: "Rosa", language: "Spanish", standard: "partial" },
+    ],
+  },
+}

@@ -33,9 +33,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { HeaderSwitch } from "@/components/slai/header-switch"
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import { NoisyAudioBanner } from "@/components/slai/noisy-audio-banner"
 import { RecordingTimer } from "@/components/slai/recording-timer"
@@ -262,7 +260,10 @@ function TranscriptCard({
   showTranslations?: boolean
   defaultShowTranslations?: boolean
   onShowTranslationsChange?: (show: boolean) => void
-  /** Header action beside the scope badge, e.g. a "Retranscribe…" button */
+  /**
+   * Header actions beside the scope badge, after the Translation switch, e.g.
+   * a "Speakers" `HeaderSwitch` and a "Retranscribe…" button
+   */
   action?: React.ReactNode
   /** A callout above the lines, e.g. an InsightCallout saying the transcript
    * may be unreliable; shown with the noisy-audio warning */
@@ -273,7 +274,6 @@ function TranscriptCard({
   const activeGroup = groups.find((group) => group.id === scope)
   const scopeLabel = isAll ? allLabel : activeGroup?.name
   const scrollRef = React.useRef<HTMLDivElement>(null)
-  const uid = React.useId()
   const [showTranslationsState, setShowTranslationsState] = React.useState(
     defaultShowTranslations
   )
@@ -458,19 +458,11 @@ function TranscriptCard({
         {(scopeLabel || action || translationToggle || onCheckIn) && (
           <CardAction className="flex items-center gap-2">
             {translationToggle && (
-              <div className="flex items-center gap-2">
-                <Label
-                  htmlFor={`${uid}-translation`}
-                  className="font-normal text-muted-foreground"
-                >
-                  Translation
-                </Label>
-                <Switch
-                  id={`${uid}-translation`}
-                  checked={showTranslations}
-                  onCheckedChange={setShowTranslations}
-                />
-              </div>
+              <HeaderSwitch
+                label="Translation"
+                checked={showTranslations}
+                onCheckedChange={setShowTranslations}
+              />
             )}
             {action}
             {onCheckIn && transcriptionEnabled && (
@@ -597,12 +589,6 @@ function TranscriptCard({
               Back to latest
             </Button>
           )}
-        </div>
-        <div className="px-(--card-spacing)">
-          <Separator className="-mx-2 mt-1 w-auto!" />
-          <p className="pt-3 text-center text-xs text-muted-foreground">
-            SLAI can make mistakes. Double-check important responses.
-          </p>
         </div>
       </CardContent>
     </Card>

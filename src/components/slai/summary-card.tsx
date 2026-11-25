@@ -154,6 +154,9 @@ function SummaryCard({
         ? `Since ${since}`
         : undefined
 
+  const isEmpty =
+    !loading && !shownSummary && !earlier && earlierPhases.length === 0
+
   return (
     <Card
       data-slot="summary-card"
@@ -219,94 +222,103 @@ function SummaryCard({
         </CardAction>
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
-        <ScrollArea className="min-h-0 flex-1">
-          <div
-            aria-live="polite"
-            aria-busy={loading}
-            className="px-(--card-spacing) py-1"
-          >
-            {earlier && !loading && (
-              <div
-                data-slot="summary-earlier-version"
-                className="mb-3 flex items-center justify-between gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground"
-              >
-                <span className="flex items-center gap-1.5">
-                  <HistoryIcon className="size-3.5" />
-                  Earlier version · {earlier.label}
-                  {earlier.description && ` · ${earlier.description}`}
-                </span>
-                <Button
-                  variant="link"
-                  size="xs"
-                  className="h-auto p-0"
-                  onClick={() => setVersionId(null)}
+        {/* Nothing to scroll: centered in the card, like the other empty panels */}
+        {isEmpty ? (
+          <Empty className="flex-1 p-6">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileTextIcon />
+              </EmptyMedia>
+              <EmptyTitle>No summary yet</EmptyTitle>
+              <EmptyDescription>
+                Summarize what {scopeLabel ?? "the class"} discussed.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : (
+          <ScrollArea className="min-h-0 flex-1">
+            <div
+              aria-live="polite"
+              aria-busy={loading}
+              className="px-(--card-spacing) py-1"
+            >
+              {earlier && !loading && (
+                <div
+                  data-slot="summary-earlier-version"
+                  className="mb-3 flex items-center justify-between gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground"
                 >
-                  Show latest
-                </Button>
-              </div>
-            )}
-            {loading ? (
-              <div className="flex flex-col gap-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-11/12" />
-                <Skeleton className="h-4 w-3/5" />
-              </div>
-            ) : shownSummary ? (
-              <div className="flex flex-col gap-3">
-                {coverage && !earlier && (
-                  <Badge
-                    variant="outline"
-                    className="w-fit text-muted-foreground"
+                  <span className="flex items-center gap-1.5">
+                    <HistoryIcon className="size-3.5" />
+                    Earlier version · {earlier.label}
+                    {earlier.description && ` · ${earlier.description}`}
+                  </span>
+                  <Button
+                    variant="link"
+                    size="xs"
+                    className="h-auto p-0"
+                    onClick={() => setVersionId(null)}
                   >
-                    {coverage}
-                  </Badge>
-                )}
-                {thinSummaryTurns !== undefined && !earlier && (
-                  <p className="flex items-center gap-1.5 text-xs text-warning">
-                    <TriangleAlertIcon className="size-3.5" />
-                    Only {thinSummaryTurns} turns since the last check-in — the
-                    summary may be thin.
-                  </p>
-                )}
-                <SummaryText text={shownSummary} />
-              </div>
-            ) : (
-              <Empty className="p-6">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <FileTextIcon />
-                  </EmptyMedia>
-                  <EmptyTitle>No summary yet</EmptyTitle>
-                  <EmptyDescription>
-                    Summarize what {scopeLabel ?? "the class"} discussed.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            )}
-            {earlierPhases.length > 0 && (
-              <Collapsible className="mt-4 border-t border-border pt-3">
-                <CollapsibleTrigger className="group/phases flex w-full items-center gap-1.5 text-xs font-medium text-muted-foreground outline-none hover:text-foreground">
-                  <ChevronDownIcon className="size-3.5 transition-transform group-data-[state=open]/phases:rotate-180" />
-                  {earlierPhases.length} earlier{" "}
-                  {earlierPhases.length === 1 ? "phase" : "phases"}
-                </CollapsibleTrigger>
-                <CollapsibleContent className="mt-3 flex flex-col gap-3">
-                  {earlierPhases.map((phase) => (
-                    <div key={phase.id} className="flex flex-col gap-1">
-                      <span className="text-xs text-muted-foreground">
-                        Before {phase.checkinAt}
-                      </span>
-                      <SummaryText
-                        text={phase.summary}
-                        className="line-clamp-3 text-muted-foreground"
-                      />
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-            )}
-          </div>
-        </ScrollArea>
+                    Show latest
+                  </Button>
+                </div>
+              )}
+              {loading ? (
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-11/12" />
+                  <Skeleton className="h-4 w-3/5" />
+                </div>
+              ) : shownSummary ? (
+                <div className="flex flex-col gap-3">
+                  {coverage && !earlier && (
+                    <Badge
+                      variant="outline"
+                      className="w-fit text-muted-foreground"
+                    >
+                      {coverage}
+                    </Badge>
+                  )}
+                  {thinSummaryTurns !== undefined && !earlier && (
+                    <p className="flex items-center gap-1.5 text-xs text-warning">
+                      <TriangleAlertIcon className="size-3.5" />
+                      Only {thinSummaryTurns} turns since the last check-in —
+                      the summary may be thin.
+                    </p>
+                  )}
+                  <SummaryText text={shownSummary} />
+                </div>
+              ) : (
+                // No summary yet, above the earlier phases
+                <p className="text-sm text-muted-foreground">
+                  No summary yet. Summarize what {scopeLabel ?? "the class"}{" "}
+                  discussed.
+                </p>
+              )}
+              {earlierPhases.length > 0 && (
+                <Collapsible className="mt-4 border-t border-border pt-3">
+                  <CollapsibleTrigger className="group/phases flex w-full items-center gap-1.5 text-xs font-medium text-muted-foreground outline-none hover:text-foreground">
+                    <ChevronDownIcon className="size-3.5 transition-transform group-data-[state=open]/phases:rotate-180" />
+                    {earlierPhases.length} earlier{" "}
+                    {earlierPhases.length === 1 ? "phase" : "phases"}
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-3 flex flex-col gap-3">
+                    {earlierPhases.map((phase) => (
+                      <div key={phase.id} className="flex flex-col gap-1">
+                        <span className="text-xs text-muted-foreground">
+                          Before {phase.checkinAt}
+                        </span>
+                        <SummaryText
+                          text={phase.summary}
+                          className="line-clamp-3 text-muted-foreground"
+                        />
+                      </div>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+            </div>
+          </ScrollArea>
+        )}
       </CardContent>
       {onCheckIn && (
         <CardFooter>

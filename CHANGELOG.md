@@ -5,6 +5,42 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.10.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.10.0`.
+
+### Minor Changes
+
+- **`StandardPicker`** (new, `…/slai`): a searchable single-select of content standards (e.g.
+  Common Core math), grouped by domain, with lettered parts indented under their standard. With more
+  than one grade, a grade switch picks the grade listed (`defaultGrade`, `onGradeChange`); typing
+  searches every grade by code or words. Takes `StandardOption[]` (also exported). Stories:
+  **SLAI/StandardPicker**.
+- **`NewSessionForm` standard:** pass `standards` to add a "Standard" section with a `StandardPicker`
+  (optional field). Control it with `standardCode` / `defaultStandardCode` / `onStandardCodeChange`;
+  `standardsLoading`, `defaultStandardGrade` and `onStandardGradeChange` pass through to the picker.
+  `onStartSession` now also gets `standardCode` (`null` without one). Without `standards` nothing
+  changes.
+- **`HeaderSwitch`** (new, `…/slai`): the labelled switch for a card header's view options
+  ("Translation", "Speakers"). `TranscriptCard`'s Translation switch now uses it.
+- **`DiarizationPanel` `title` and `action`:** the title (default "Speakers") and header actions
+  before the scope badge, so a recording with one transcript can show its speaker view as the same
+  "Transcript" card with the same header (Translation, Speakers, Retranscribe). Story:
+  **SLAI/DiarizationPanel › As transcript**.
+
+- **`ClassOverviewGrid` without WIDA, and students without a verdict:** `OverviewStudent.wida` is
+  optional; when no student has it, the WIDA column is hidden (null still means a native English
+  speaker, shown as "–"). `standard` may be `null`, shown as "No verdict". Existing data renders as
+  before. Stories: **SLAI/ClassOverviewGrid › Standard only**, **› With no verdict**.
+
+### Patch Changes
+
+- **`SummaryCard` empty state is centered:** "No summary yet" sits in the middle of the card, like the
+  other empty panels, instead of at the top. With earlier phases and no summary it's one line above
+  them.
+- **`TranscriptCard` has no "SLAI can make mistakes" line:** a transcript isn't an AI answer, and the
+  system doesn't use the disclaimer (see Composition Patterns, "AI answers show their grounding").
+
 ## 3.9.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.9.0`.
