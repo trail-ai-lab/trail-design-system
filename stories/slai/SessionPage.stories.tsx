@@ -21,10 +21,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Toggle } from "@/components/ui/toggle"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GoalsPanel } from "@/components/slai/goals-panel"
-import { INSIGHTS } from "./_student-fixtures"
+import { GOAL, INSIGHTS } from "./_student-fixtures"
 import { ActivityLogCard } from "@/components/slai/activity-log-card"
 import { AppShell } from "@/components/slai/app-shell"
 import { AudioPlayerCard } from "@/components/slai/audio-player-card"
@@ -54,6 +53,7 @@ import {
   type SpeakerCountMode,
 } from "@/components/slai/speaker-form"
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
+import { PanelToggle } from "@/components/patterns/panel-toggle"
 import { DeleteConfirmDialog } from "@/components/slai/delete-confirm-dialog"
 import { RenameDialog } from "@/components/slai/rename-dialog"
 import { UploadMaterialsSheet } from "@/components/slai/upload-materials-sheet"
@@ -443,28 +443,23 @@ function SessionReviewPage() {
           />
           <div className="ml-auto flex items-center gap-2">
             {!isAll && (
-              <Toggle
-                variant="outline"
+              <PanelToggle
+                variant="primary"
                 pressed={qaVisible}
                 onPressedChange={setQaVisible}
-                aria-label="Toggle Summary and Q&A"
-                // Primary: the AI panel is the most-used toggle on this page.
-                className="border-primary text-primary hover:bg-primary/10 hover:text-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:hover:bg-primary/80"
               >
                 <MessagesSquareIcon data-icon="inline-start" />
                 Summary &amp; Q&amp;A
-              </Toggle>
+              </PanelToggle>
             )}
             {!isAll && (
-              <Toggle
-                variant="outline"
+              <PanelToggle
                 pressed={audioVisible}
                 onPressedChange={setAudioVisible}
-                aria-label="Toggle audio playback"
               >
                 <AudioLinesIcon data-icon="inline-start" />
                 Audio
-              </Toggle>
+              </PanelToggle>
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -561,13 +556,9 @@ function SessionReviewPage() {
                     <GoalsPanel
                       standardLabel="CCSS"
                       students={INSIGHTS}
-                      goal={{
-                        standardCode: "3.OA.A.2",
-                        languageObjective:
-                          'Explain equal sharing using "each".',
-                        standardDescription:
-                          "Interpret whole-number quotients as the number of objects in each share.",
-                      }}
+                      goal={GOAL}
+                      checkedAt="Aug 21, 4:12 PM"
+                      onCheck={() => {}}
                     />
                   </TabsContent>
                   <TabsContent value="transcript" className="min-h-0">

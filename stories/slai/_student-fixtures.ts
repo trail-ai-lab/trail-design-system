@@ -15,44 +15,89 @@ export const INSIGHTS: StudentInsight[] = [
     id: "mei",
     name: "Mei",
     primaryLanguage: "Mandarin",
-    talkTimePct: 18,
-    wida: {
-      verdict: "partial",
-      score: 3.2,
-      reasoning: "Uses short sentences with some prompting.",
-    },
+    words: 84,
     standard: {
       verdict: "not-yet",
-      reasoning: "Has not yet shown equal grouping independently.",
+      reasoning:
+        "Mei compared the rows by adding, not by a constant ratio, and didn't connect the table to the graph.",
     },
-    culturalContext: "Compared sharing dumplings to equal groups.",
-    academicTerms: [{ term: "equal groups" }, { term: "每组", language: "ZH" }],
-    transcriptQuote: "Each group has the same number, four and four.",
-    note: "Spoke mostly in Mandarin before switching to English.",
-    actionPrompt: "Ask Mei to explain the dumpling example to the whole group.",
+    evidence: [
+      {
+        quote: "每次都加三，所以是对的。",
+        translation: "You add three every time, so it's right.",
+        language: "Mandarin",
+        time: "3:12",
+      },
+    ],
+    academicTerms: [{ term: "table" }, { term: "比例", language: "ZH" }],
+    actionPrompt:
+      "Ask Mei to divide flour by sugar in each row and compare the results.",
   },
   {
     id: "liam",
     name: "Liam",
     primaryLanguage: "English",
-    talkTimePct: 46,
-    wida: null,
-    standard: { verdict: "met" },
-    academicTerms: [{ term: "divide" }, { term: "remainder" }],
-    transcriptQuote: "Twelve divided by three is four in each group.",
-    actionPrompt: "Pair Liam with a peer to explain his strategy.",
+    words: 212,
+    standard: {
+      verdict: "met",
+      reasoning:
+        "Liam tested the ratio in every row and explained why the graph must pass through the origin.",
+    },
+    evidence: [
+      {
+        quote:
+          "Six over four is one point five too, but nine over seven isn't.",
+        time: "1:48",
+      },
+      {
+        quote: "If you double the flour you have to double the sugar.",
+        time: "4:05",
+      },
+    ],
+    academicTerms: [
+      { term: "ratio" },
+      { term: "proportional" },
+      { term: "origin" },
+    ],
+    actionPrompt: "Have Liam write the equation y = 2/3x and explain the 2/3.",
   },
   {
     id: "rosa",
     name: "Rosa",
     primaryLanguage: "Spanish",
-    talkTimePct: 36,
+    words: 131,
     wida: { verdict: "met", score: 4.1 },
-    standard: { verdict: "partial" },
-    academicTerms: [{ term: "grupos iguales", language: "ES" }],
-    transcriptQuote: "Cuatro en cada grupo.",
+    standard: {
+      verdict: "partial",
+      reasoning:
+        "Rosa found the constant of proportionality but didn't say what it means for the recipe.",
+    },
+    evidence: [
+      {
+        quote: "La constante es dos tercios.",
+        translation: "The constant is two thirds.",
+        language: "Spanish",
+        time: "5:30",
+      },
+    ],
+    academicTerms: [{ term: "constante", language: "ES" }],
+  },
+  {
+    id: "noah",
+    name: "Noah",
+    primaryLanguage: "English",
+    words: 9,
+    standard: { verdict: null, noVerdictReason: "Said too little to judge" },
   },
 ]
+
+/** The session's standard for the goals stories. */
+export const GOAL = {
+  heading: "Grade 7 · Ratios and Proportional Relationships",
+  code: "7.RP.2",
+  description:
+    "Recognize and represent proportional relationships between quantities.",
+}
 
 const sessions = (
   base: Array<
@@ -149,4 +194,37 @@ export const MEI_EARLY: StudentProgressData = {
       href: "#/session/physics/period-3-oct-9/team-a",
     },
   ],
+}
+
+/** Students in the 3.10 shape (talk-time shares, one quote, a WIDA verdict
+ * or null for native English), still accepted though deprecated. */
+export const LEGACY_INSIGHTS: StudentInsight[] = [
+  {
+    id: "legacy-1",
+    name: "Ana Ruiz",
+    primaryLanguage: "Spanish",
+    talkTimePct: 42,
+    wida: { verdict: "partial", score: 3.5 },
+    standard: { verdict: "met", reasoning: "Explains the unit rate." },
+    culturalContext: "Compared the recipe to one her family cooks.",
+    academicTerms: [{ term: "unit rate" }],
+    transcriptQuote:
+      "It's two cups for every three, so the rate stays the same.",
+    note: "Led the group's first answer.",
+  },
+  {
+    id: "legacy-2",
+    name: "Ben Ito",
+    primaryLanguage: "English",
+    talkTimePct: 18,
+    wida: null,
+    standard: { verdict: "not-yet" },
+  },
+]
+
+/** The 3.10 shape of `GoalsPanel`'s `goal`. */
+export const LEGACY_GOAL = {
+  languageObjective: GOAL.heading,
+  standardCode: GOAL.code,
+  standardDescription: GOAL.description,
 }

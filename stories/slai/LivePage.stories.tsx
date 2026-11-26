@@ -1,5 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import { MessagesSquareIcon, ScrollTextIcon } from "lucide-react"
 
 import { ActivityPickerSheet } from "@/components/slai/activity-picker"
 import { AppShell } from "@/components/slai/app-shell"
@@ -20,6 +21,11 @@ import {
   type TranscriptGroup,
 } from "@/components/slai/transcript-card"
 import { PageBreadcrumb } from "@/components/patterns/page-breadcrumb"
+import { PanelToggle } from "@/components/patterns/panel-toggle"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { GoalsPanel } from "@/components/slai/goals-panel"
+import type { StudentInsight } from "@/components/slai/student-insight-card"
+import { cn } from "@/lib/utils"
 import { UploadMaterialsSheet } from "@/components/slai/upload-materials-sheet"
 import { useSessionMaterials } from "./_material-fixtures"
 import { NewSessionWithMaterials } from "./_new-session-with-materials"
@@ -79,12 +85,14 @@ const GROUPS: TranscriptGroup[] = [
         timestamp: "3:40 PM",
         language: "English",
         original: "Gravity pulls the ball down the ramp, so it speeds up.",
+        speaker: { name: "Aarav" },
       },
       {
         id: "3",
         timestamp: "3:41 PM",
         language: "Marathi",
         original: "उताराचा कोन वाढवला तर चेंडू वेगाने जाईल.",
+        speaker: { name: "Mia" },
         translation:
           "If we increase the angle of the ramp, the ball will go faster.",
       },
@@ -94,12 +102,14 @@ const GROUPS: TranscriptGroup[] = [
         language: "English",
         original:
           "Let's test it with three different angles and time each run.",
+        speaker: { name: "Jordan" },
       },
       {
         id: "5",
         timestamp: "3:44 PM",
         language: "Marathi",
         original: "मी कोन मोजतो, तू वेळ नोंदव.",
+        speaker: { name: "Mia" },
         translation: "I will measure the angle, you record the time.",
       },
       {
@@ -107,6 +117,7 @@ const GROUPS: TranscriptGroup[] = [
         timestamp: "3:46 PM",
         language: "English",
         original: "First run at fifteen degrees took about two seconds.",
+        speaker: { name: "Jordan" },
       },
     ],
   },
@@ -125,14 +136,70 @@ const GROUPS: TranscriptGroup[] = [
         timestamp: "3:42 PM",
         language: "English",
         original: "Should we start with the steepest ramp or the flattest?",
+        speaker: { name: "Ms. Lee", role: "teacher" },
       },
       {
         id: "2",
         timestamp: "3:45 PM",
         language: "English",
         original: "Flattest first, so we have a baseline to compare against.",
+        speaker: { name: "Priya" },
       },
     ],
+  },
+]
+
+// Live goal results for Group 1 (the session's standard is set)
+const LIVE_GOAL = {
+  heading: "Grade 7 · Ratios and Proportional Relationships",
+  code: "7.RP.2",
+  description:
+    "Recognize and represent proportional relationships between quantities.",
+}
+const LIVE_INSIGHTS: StudentInsight[] = [
+  {
+    id: "aarav",
+    name: "Aarav",
+    primaryLanguage: "English",
+    words: 96,
+    standard: {
+      verdict: "partial",
+      reasoning:
+        "Aarav linked a steeper ramp to a faster ball but hasn't compared the times as a ratio yet.",
+    },
+    evidence: [
+      {
+        quote: "Gravity pulls the ball down the ramp, so it speeds up.",
+        time: "3:40 PM",
+      },
+    ],
+  },
+  {
+    id: "mia",
+    name: "Mia",
+    primaryLanguage: "Marathi",
+    words: 61,
+    standard: {
+      verdict: "not-yet",
+      reasoning:
+        "Mia planned the measurements but hasn't related the quantities.",
+    },
+    evidence: [
+      {
+        quote: "मी कोन मोजतो, तू वेळ नोंदव.",
+        translation: "I will measure the angle, you record the time.",
+        language: "Marathi",
+        time: "3:44 PM",
+      },
+    ],
+    actionPrompt: "Ask Mia what happens to the time when the angle doubles.",
+  },
+  {
+    id: "jordan",
+    name: "Jordan",
+    primaryLanguage: "English",
+    words: 12,
+    standard: { verdict: null, noVerdictReason: "Said too little to judge" },
   },
 ]
 
@@ -217,7 +284,23 @@ const CHATS: Record<string, ChatMessage[]> = {
 
 const SLAI_SIDEBAR = <PageSidebar activeNav="live" liveSessionActive />
 
-function ActiveSessionPage() {
+function ActiveSessionPage({
+  defaultQaVisible = true,
+  defaultTranscriptVisible = true,
+  defaultTab = "transcript",
+}: {
+  defaultQaVisible?: boolean
+  defaultTranscriptVisible?: boolean
+  /** The right panel's open tab: Goals or Transcript */
+  defaultTab?: "goals" | "transcript"
+}) {
+  const [tab, setTab] = React.useState(defaultTab)
+  const [checking, setChecking] = React.useState(false)
+  // Which panels show; the last one showing can't be hidden.
+  const [qaVisible, setQaVisible] = React.useState(defaultQaVisible)
+  const [transcriptVisible, setTranscriptVisible] = React.useState(
+    defaultTranscriptVisible
+  )
   const [sheet, setSheet] = React.useState<
     "activity" | "materials" | "language" | "invite" | null
   >(null)
@@ -285,7 +368,24 @@ function ActiveSessionPage() {
             value={scope}
             onValueChange={setScope}
           />
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-x-3 gap-y-2">
+            <PanelToggle
+              variant="primary"
+              pressed={qaVisible}
+              onPressedChange={setQaVisible}
+              disabled={qaVisible && !transcriptVisible}
+            >
+              <MessagesSquareIcon data-icon="inline-start" />
+              Summary &amp; Q&amp;A
+            </PanelToggle>
+            <PanelToggle
+              pressed={transcriptVisible}
+              onPressedChange={setTranscriptVisible}
+              disabled={transcriptVisible && !qaVisible}
+            >
+              <ScrollTextIcon data-icon="inline-start" />
+              Transcript
+            </PanelToggle>
             <SessionActions
               onAddActivity={() => setSheet("activity")}
               onOpenMaterials={() => setSheet("materials")}
@@ -299,46 +399,94 @@ function ActiveSessionPage() {
         </>
       }
     >
-      <div className="flex min-h-0 flex-1 flex-col gap-(--shell-gap) p-(--shell-gap) lg:grid lg:grid-cols-2">
-        <SummaryQaPanel
-          className="h-(--shell-panel-h) lg:h-full"
-          summary={{
-            scopeLabel,
-            summary: SUMMARIES[scope],
-            range,
-            since: range === "since-checkin" ? "3:50 PM" : undefined,
-            versions,
-            onRegenerate: () => setRange("whole-session"),
-            onSummarizeSinceCheckIn: () => setRange("since-checkin"),
-            lastCheckIn: "3:50 PM",
-          }}
-          chat={{
-            scopeLabel,
-            messages: CHATS[scope],
-            onMessageClick: showSource,
-            materials: sessionMaterials.counts,
-            onMaterialsClick: () => setSheet("materials"),
-            curriculum,
-            onCurriculumChange: setCurriculum,
-            suggestions: [
-              "Which group needs help?",
-              "Summarize misconceptions",
-            ],
-          }}
-        />
-        <TranscriptCard
-          className="h-(--shell-panel-h) lg:h-full"
-          groups={groups}
-          scope={scope}
-          status={activeGroup?.status ?? "recording"}
-          translationLanguage="English"
-          highlightedEntryId={highlightedEntryId}
-          onHighlightedEntryIdChange={(entryId) =>
-            setHighlight({ scope, entryId })
-          }
-          onCheckIn={checkIn}
-          checkingIn={checkingIn}
-        />
+      <div
+        className={cn(
+          "flex min-h-0 flex-1 flex-col gap-(--shell-gap) p-(--shell-gap)",
+          qaVisible && transcriptVisible && "lg:grid lg:grid-cols-2"
+        )}
+      >
+        {qaVisible && (
+          <SummaryQaPanel
+            className={cn(
+              "h-(--shell-panel-h) lg:h-full",
+              !transcriptVisible && "h-auto min-h-0 flex-1"
+            )}
+            summary={{
+              scopeLabel,
+              summary: SUMMARIES[scope],
+              range,
+              since: range === "since-checkin" ? "3:50 PM" : undefined,
+              versions,
+              onRegenerate: () => setRange("whole-session"),
+              onSummarizeSinceCheckIn: () => setRange("since-checkin"),
+              lastCheckIn: "3:50 PM",
+            }}
+            chat={{
+              scopeLabel,
+              messages: CHATS[scope],
+              onMessageClick: showSource,
+              materials: sessionMaterials.counts,
+              onMaterialsClick: () => setSheet("materials"),
+              curriculum,
+              onCurriculumChange: setCurriculum,
+              suggestions: [
+                "Which group needs help?",
+                "Summarize misconceptions",
+              ],
+            }}
+          />
+        )}
+        {transcriptVisible && (
+          <Tabs
+            value={tab}
+            onValueChange={(value) => setTab(value as typeof tab)}
+            className={cn(
+              "h-(--shell-panel-h) min-h-0 lg:h-full",
+              !qaVisible && "h-auto flex-1"
+            )}
+          >
+            <TabsList className="w-full">
+              <TabsTrigger value="goals">Goals</TabsTrigger>
+              <TabsTrigger value="transcript">Transcript</TabsTrigger>
+            </TabsList>
+            <TabsContent
+              value="goals"
+              // Inset (cancelled by the negative margin) so the cards' ring
+              // and shadow aren't clipped by the scroll edge.
+              className="-mx-1 min-h-0 overflow-y-auto px-1 pb-1"
+            >
+              <GoalsPanel
+                standardLabel="CCSS"
+                goal={LIVE_GOAL}
+                students={scope === "group-1" ? LIVE_INSIGHTS : []}
+                provisional
+                checkedAt="3:45 PM"
+                newLines={scope === "group-1" ? 3 : undefined}
+                loading={checking}
+                onCheck={() => {
+                  setChecking(true)
+                  setTimeout(() => setChecking(false), 1500)
+                }}
+                missingSamples={scope === "group-2" ? ["Sam"] : undefined}
+              />
+            </TabsContent>
+            <TabsContent value="transcript" className="min-h-0">
+              <TranscriptCard
+                className="h-full"
+                groups={groups}
+                scope={scope}
+                status={activeGroup?.status ?? "recording"}
+                translationLanguage="English"
+                highlightedEntryId={highlightedEntryId}
+                onHighlightedEntryIdChange={(entryId) =>
+                  setHighlight({ scope, entryId })
+                }
+                onCheckIn={checkIn}
+                checkingIn={checkingIn}
+              />
+            </TabsContent>
+          </Tabs>
+        )}
       </div>
 
       <ActivityPickerSheet
@@ -436,6 +584,21 @@ export default meta
 type Story = StoryObj
 
 export const ActiveSession: Story = { render: () => <ActiveSessionPage /> }
+/** "Summary & Q&A" off: the transcript takes the whole page. Its own toggle
+ * is disabled while it's the only panel showing. */
+/** The Goals tab: each student's progress on the session's standard so far
+ * (provisional until the recording is uploaded). Group 2 shows the
+ * not-checked-yet state, with a student who has no voice sample. */
+export const Goals: Story = {
+  render: () => <ActiveSessionPage defaultTab="goals" />,
+}
+export const TranscriptOnly: Story = {
+  render: () => <ActiveSessionPage defaultQaVisible={false} />,
+}
+/** "Transcript" off: Summary and Q&A take the whole page. */
+export const SummaryQaOnly: Story = {
+  render: () => <ActiveSessionPage defaultTranscriptVisible={false} />,
+}
 export const WaitingForGroups: Story = {
   render: () => <WaitingForGroupsPage />,
 }

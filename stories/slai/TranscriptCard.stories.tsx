@@ -119,6 +119,47 @@ export const AllGroups: Story = {
   },
 }
 
+// The same groups with each line's speaker matched by voice (from the
+// group's own students); one line in each group stays unnamed.
+const WITH_SPEAKERS: TranscriptGroup[] = GROUPS.map((group, g) => ({
+  ...group,
+  entries: group.entries.map((entry, i) => {
+    if (i === 1) return entry
+    if (g === 0 && i === 0) {
+      return {
+        ...entry,
+        speaker: { name: "Ms. Lee", role: "teacher" as const },
+      }
+    }
+    const names = group.students ?? []
+    return names.length
+      ? { ...entry, speaker: { name: names[i % names.length] } }
+      : entry
+  }),
+}))
+
+/** Live lines named by voice matching: the name leads the row (the
+ * teacher is tagged), an unmatched line shows none, and the header says
+ * names come from voice matching. */
+export const WithSpeakers: Story = {
+  args: {
+    groups: WITH_SPEAKERS,
+    scope: "group-1",
+    status: "recording",
+    translationLanguage: "English",
+    className: "h-full",
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("Names matched by voice")).toBeVisible()
+    await expect(canvas.getByText("Teacher")).toBeVisible()
+  },
+}
+
+/** All groups: each named line keeps its group badge. */
+export const WithSpeakersAllGroups: Story = {
+  args: { ...WithSpeakers.args, scope: ALL_GROUPS },
+}
+
 export const NoTranslations: Story = {
   args: {
     groups: [GROUPS[1]],

@@ -5,6 +5,51 @@ see [VERSIONING.md](VERSIONING.md) for which changes bump which number.
 
 ## Unreleased
 
+## 3.11.0
+
+Install with `github:trail-ai-lab/trail-design-system#v3.11.0`.
+
+### Minor Changes
+
+- **`StudentInsight` / `StudentInsightCard` match the standards assessment:** a student's result is
+  a verdict on the session's standard, or a reason there is none, backed by their own words. New:
+  `words` (and `maxWords` on the card) for how much they said; `standard.verdict` may be `null`
+  with `standard.noVerdictReason` (the badge reads e.g. "CCSS · Said too little to judge");
+  `evidence: StudentEvidence[]` (quote, translation, language, time); `primaryLanguage` and `wida`
+  are optional (omit `wida` for no WIDA badge, `null` still shows "Native English"). The card can
+  be controlled (`open` / `onOpenChange`) and doesn't open when it has nothing to show; the empty
+  "Academic language used" line is gone. `studentCardId(id)` gives a card's element id. Stories:
+  **SLAI/StudentInsightCard**.
+- **`GoalsPanel` is the whole Goals tab, for Session review and Live:** `goal` takes
+  `{ heading, code, description }` (`GoalsPanelGoal`) and is optional. New: `standardPicker` (a
+  "Session standard" section on top), `blocked` (why results can't be produced), `onCheck` /
+  `loading` ("Check students", "Check again"), `stale` (results kept with a "Check again" alert),
+  `checkedAt`, and for Live `provisional` (a "Live · provisional" badge and footer), `newLines`
+  (lines since the last check) and `missingSamples` (students with no voice sample, so no
+  verdict). Students sort Not yet → Partial → Met → no verdict, and the first with a verdict starts
+  open; picking one in the class overview opens and scrolls to their card. Stories:
+  **SLAI/GoalsPanel**, **SLAI/Pages/Live › Goals**.
+- **`TranscriptEntry.speaker`** (`{ name, role? }`, type `TranscriptSpeaker`): who said a live line,
+  when voice matching named them. The row leads with their initials and name (a "Teacher" tag for
+  the teacher; in All groups, the group badge follows) and the header adds "Names matched by
+  voice". Lines without one look as before. Stories: **SLAI/TranscriptCard › With speakers**.
+- **`PanelToggle`** (new, `…/patterns`): the toolbar switch that shows or hides one of a page's
+  panels ("Summary & Q&A", "Transcript", "Audio"). `variant="primary"` (brand outline, filled while
+  pressed) for the page's most-used panel, `outline` for the rest; its visible label is its name.
+  Replaces the hand-styled `Toggle` in the Session page story; the Live page story now has "Summary
+  & Q&A" and "Transcript" toggles, the last panel showing can't be hidden. Stories:
+  **Patterns/PanelToggle**, **SLAI/Pages/Live › Transcript only / Summary Q&A only**.
+
+### Deprecated
+
+- `StudentInsight.talkTimePct` and `StudentInsightCard`'s `maxTalkTimePct`: use `words` and
+  `maxWords`. The bar still shows the talk-time share when `words` is absent.
+- `StudentInsight.transcriptQuote`: use `evidence: [{ quote }]`; it still shows as the quote when
+  `evidence` is absent.
+- `GoalsPanel`'s 3.10 `goal` shape `{ languageObjective, standardCode, standardDescription }`
+  (`LegacyGoalsPanelGoal`): use `{ heading, code, description }`. Both work until the next major.
+  Stories: **SLAI/StudentInsightCard › Legacy data**, **SLAI/GoalsPanel › Legacy props**.
+
 ## 3.10.0
 
 Install with `github:trail-ai-lab/trail-design-system#v3.10.0`.

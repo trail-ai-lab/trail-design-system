@@ -38,6 +38,7 @@ export {
   TranscriptCard,
   GroupsEmptyState,
   type TranscriptEntry,
+  type TranscriptSpeaker,
   type TranscriptGroup,
 } from "./transcript-card"
 export {
@@ -191,11 +192,17 @@ export { InsightItem, TranscriptQuote } from "./insight-blocks"
 export { ClassOverviewGrid, type OverviewStudent } from "./class-overview-grid"
 export {
   StudentInsightCard,
+  studentCardId,
   type StudentInsight,
+  type StudentEvidence,
   type AcademicTerm,
 } from "./student-insight-card"
 export { SessionGoalCard } from "./session-goal-card"
-export { GoalsPanel } from "./goals-panel"
+export {
+  GoalsPanel,
+  type GoalsPanelGoal,
+  type LegacyGoalsPanelGoal,
+} from "./goals-panel"
 export { ProgressChart } from "./progress-chart"
 export {
   SessionEvidenceCard,

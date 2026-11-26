@@ -7,6 +7,7 @@ import {
   CaptionsOffIcon,
   CheckCheckIcon,
   ClockIcon,
+  AudioWaveformIcon,
   LanguagesIcon,
   QrCodeIcon,
   UsersIcon,
@@ -37,12 +38,21 @@ import { HeaderSwitch } from "@/components/slai/header-switch"
 import { ALL_GROUPS } from "@/components/slai/group-switcher"
 import { NoisyAudioBanner } from "@/components/slai/noisy-audio-banner"
 import { RecordingTimer } from "@/components/slai/recording-timer"
+import { SpeakerTags, type SpeakerRole } from "@/components/slai/speaker-tags"
+import { initials } from "@/lib/format"
 import {
   SessionStatusBadge,
   type SessionStatus,
 } from "@/components/slai/session-status-badge"
 import { StudentChip } from "@/components/slai/student-chip"
 import { TranscriptUtteranceRow } from "@/components/slai/transcript-utterance-row"
+
+/** Who said a live line, when voice matching named them. */
+export interface TranscriptSpeaker {
+  name: string
+  /** "teacher" when it's the teacher rather than a student */
+  role?: SpeakerRole
+}
 
 export interface TranscriptEntry {
   id: string
@@ -52,9 +62,13 @@ export interface TranscriptEntry {
    * places the check-in divider; without it lines are ordered by
    * `timestamp`, to the minute. */
   at?: number | string
-  /** Detected language of the utterance, e.g. "Marathi" — the speaker is
-   * unknown; omit when the language is unknown */
+  /** Detected language of the utterance, e.g. "Marathi"; omit when the
+   * language is unknown */
   language?: string
+  /** Who said it, matched by voice; omit when unknown (the row then shows
+   * no name). Any line with a speaker adds "Names matched by voice" to the
+   * header. */
+  speaker?: TranscriptSpeaker
   original: string
   /** Rendered stacked below the original; hidden when identical to it */
   translation?: string
@@ -141,15 +155,31 @@ function TranscriptRow({
       leading={
         <Avatar size="sm" className="mt-0.5" aria-hidden>
           <AvatarFallback>
-            <AudioLinesIcon className="size-3" />
+            {entry.speaker ? (
+              initials(entry.speaker.name)
+            ) : (
+              <AudioLinesIcon className="size-3" />
+            )}
           </AvatarFallback>
         </Avatar>
       }
       meta={
-        groupName && (
-          <Badge variant="outline" className="h-4 px-1.5 text-xs">
-            {groupName}
-          </Badge>
+        (entry.speaker || groupName) && (
+          <>
+            {entry.speaker && (
+              <span className="inline-flex items-center gap-1.5">
+                <span className="font-medium text-foreground">
+                  {entry.speaker.name}
+                </span>
+                <SpeakerTags role={entry.speaker.role} />
+              </span>
+            )}
+            {groupName && (
+              <Badge variant="outline" className="h-4 px-1.5 text-xs">
+                {groupName}
+              </Badge>
+            )}
+          </>
         )
       }
       entry={entry}
@@ -160,9 +190,11 @@ function TranscriptRow({
 /**
  * Hero card for the live session. Shows the active group's transcript — or
  * every group's, interleaved in time order and badged — with translations
- * stacked below each utterance. The speaker is not identified; the detected
- * language leads. Also used after a session (with `title="Transcript"`) to
- * show the raw, speaker-unknown transcript alongside the diarized one.
+ * stacked below each utterance. A line names its speaker when voice
+ * matching identified them (`TranscriptEntry.speaker`); otherwise the
+ * detected language leads. Also used after a session (with
+ * `title="Transcript"`) to show the raw, speaker-unknown transcript
+ * alongside the diarized one.
  *
  * A single group's students show as `StudentChip`s under the header, as on
  * the student's recording screen; without names, the meta line counts them.
@@ -314,6 +346,8 @@ function TranscriptCard({
     return byIndex
   }, [checkInsProp, checkIn, rows])
 
+  const hasSpeakers = rows.some(({ entry }) => entry.speaker)
+
   const noisyGroups = (isAll ? groups : activeGroup ? [activeGroup] : [])
     .filter((group) => group.noisyAudio)
     .map((group) => group.name)
@@ -445,6 +479,15 @@ function TranscriptCard({
             <span className="flex items-center gap-1">
               <LanguagesIcon className="size-3.5" />
               Translated to {translationLanguage}
+            </span>
+          )}
+          {hasSpeakers && (
+            <span
+              className="flex items-center gap-1"
+              title="Names come from matching each line to students' voice samples; review confirms them after upload"
+            >
+              <AudioWaveformIcon className="size-3.5" />
+              Names matched by voice
             </span>
           )}
         </div>
